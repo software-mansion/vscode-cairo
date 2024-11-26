@@ -5,7 +5,9 @@
  */
 
 import assert from "assert/strict";
+import * as child_process from "node:child_process";
 import fs from "node:fs/promises";
+import os from "node:os";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
 import { format } from "prettier";
@@ -18,14 +20,22 @@ const runners = {
   test_partial_parser_tree_with_trivia: cairoCodeTestRunner,
 };
 
-const cairoLangParserRoot = path.join(
-  fileURLToPath(import.meta.url),
-  "..",
-  "..",
-  "..",
-  "crates",
-  "cairo-lang-parser",
-);
+const cairoCheckout = await fs.mkdtemp(path.join(os.tmpdir(), "cairo-"));
+
+await new Promise((resolve, reject) => {
+  const proc = child_process.spawn(
+    "git",
+    ["clone", "https://github.com/starkware-libs/cairo.git", cairoCheckout],
+    {
+      stdio: "inherit",
+    },
+  );
+
+  proc.on("error", reject);
+  proc.on("close", resolve);
+});
+
+const cairoLangParserRoot = path.join(cairoCheckout, "crates", "cairo-lang-parser");
 
 const parserTestDataRoot = path.join(cairoLangParserRoot, "src", "parser_test_data");
 assert.ok((await fs.stat(parserTestDataRoot)).isDirectory());
