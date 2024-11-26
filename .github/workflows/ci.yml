@@ -2,10 +2,10 @@ name: CI
 
 on:
   push:
-    branches: [ main ]
+    branches: [main]
   pull_request:
   merge_group:
-    types: [ checks_requested ]
+    types: [checks_requested]
 
 jobs:
   ensure-no_std:
@@ -166,6 +166,6 @@ jobs:
     steps:
       - uses: actions/checkout@v4
         with:
-          fetch-depth: '0'
+          fetch-depth: "0"
       - run: >
           scripts/sierra_update_check.sh origin/$GITHUB_BASE_REF origin/$GITHUB_HEAD_REF
