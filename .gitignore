@@ -3,3 +3,5 @@
 /out
 /*.vsix
 /.vscode/settings.json
+/.idea/
+.DS_Store
