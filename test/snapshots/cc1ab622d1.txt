@@ -1,0 +1,22 @@
+//! > cairo_code
+fn f() {
+    for i in 1..x {}
+}
+
+//! > syntax
+fn                   source.cairo meta.function.definition.cairo keyword.other.fn.cairo
+␣                    source.cairo meta.function.definition.cairo
+f                    source.cairo meta.function.definition.cairo entity.name.function.cairo
+(                    source.cairo meta.function.definition.cairo punctuation.brackets.round.cairo
+)                    source.cairo meta.function.definition.cairo punctuation.brackets.round.cairo
+␣                    source.cairo meta.function.definition.cairo
+{                    source.cairo meta.function.definition.cairo punctuation.brackets.curly.cairo
+for                  source.cairo keyword.control.cairo
+i                    source.cairo variable.other.cairo
+in                   source.cairo keyword.other.cairo
+1                    source.cairo constant.numeric.decimal.cairo
+..                   source.cairo keyword.operator.range.cairo
+x                    source.cairo variable.other.cairo
+{                    source.cairo punctuation.brackets.curly.cairo
+}                    source.cairo punctuation.brackets.curly.cairo
+}                    source.cairo punctuation.brackets.curly.cairo
