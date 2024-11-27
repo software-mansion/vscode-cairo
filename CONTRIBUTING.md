@@ -1,8 +1,7 @@
 # Contributing to the Cairo extension for Visual Studio Code
 
-This document is a supplement to the [general contributing guidelines](../docs/CONTRIBUTING.md) for
-the Cairo repository.
-Please read that document first carefully before proceeding with the instructions below.
+When contributing to this repository, please first discuss the change you wish to make via issue,
+email, or any other method with the owners of this repository before making a change.
 
 You might also want to check out
 the [CairoLS contributing guidelines](../crates/cairo-lang-language-server/CONTRIBUTING.md).
@@ -13,8 +12,8 @@ There are three ways you can develop and run the extension.
 
 1. ### Develop and debug from within VS Code
 
-   Open the `vscode-cairo` directory in VS Code and press `F5` to start debugging.
-   Everything should be already set up in the `vscode-cairo/.vscode` directory.
+   Open this repository in VS Code and press `F5` to start debugging.
+   Everything should be already set up in the `.vscode` directory.
 
 2. ### Develop in your editor of choice and run in the VS Code Extension Host
 
@@ -23,16 +22,16 @@ There are three ways you can develop and run the extension.
 
    ```sh
    # Build the extension.
-   $ npm --prefix vscode-cairo run compile
+   $ npm run compile
 
    # Run the extension in the VS Code Extension Host.
-   $ code "--extensionDevelopmentPath=$PWD/vscode-cairo" --wait --verbose
+   $ code "--extensionDevelopmentPath=$PWD" --wait --verbose
    ```
 
    The `--wait --verbose` arguments make the command wait until the Extension Host is closed.
    You can skip them if you do not want to block your terminal.
 
-3. ### Package the extension manually and install in VS Code
+3. ### Package the extension manually and install it in VS Code
 
    This technique is useful if you are not interested in developing the extension itself,
    but you need some unreleased changes when working on the Cairo compiler overall.
@@ -44,15 +43,9 @@ There are three ways you can develop and run the extension.
    $ brew install vsce
 
    # Package the extension.
-   $ cd vscode-cairo
    $ vsce package
 
    # Install the extension in your VS Code installation.
    # The `<version>` part will vary depending on the HEAD you are working on.
    $ code --install-extension cairo1-<version>.vsix
    ```
-
-## Commits
-
-If your commit/pull request is solely related to the VSCode extension, please prefix your commit
-message/PR title with `VSCode: `.

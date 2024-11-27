@@ -1,0 +1,23 @@
+//! > cairo_code
+fn f() {
+    x += false && true..1 + 2
+}
+
+//! > syntax
+fn                   source.cairo meta.function.definition.cairo keyword.other.fn.cairo
+␣                    source.cairo meta.function.definition.cairo
+f                    source.cairo meta.function.definition.cairo entity.name.function.cairo
+(                    source.cairo meta.function.definition.cairo punctuation.brackets.round.cairo
+)                    source.cairo meta.function.definition.cairo punctuation.brackets.round.cairo
+␣                    source.cairo meta.function.definition.cairo
+{                    source.cairo meta.function.definition.cairo punctuation.brackets.curly.cairo
+x                    source.cairo variable.other.cairo
++=                   source.cairo keyword.operator.assignment.cairo
+false                source.cairo constant.language.bool.cairo
+&&                   source.cairo keyword.operator.logical.cairo
+true                 source.cairo constant.language.bool.cairo
+..                   source.cairo keyword.operator.range.cairo
+1                    source.cairo constant.numeric.decimal.cairo
++                    source.cairo keyword.operator.math.cairo
+2                    source.cairo constant.numeric.decimal.cairo
+}                    source.cairo punctuation.brackets.curly.cairo

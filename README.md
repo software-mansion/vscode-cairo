@@ -56,7 +56,7 @@ If you run into issues with the extension, try these debugging steps:
 1. Make sure you have the latest version of the extension installed.
 2. Make sure you have the latest version of Scarb installed.
 3. Make sure the problem is also not appearing while running `scarb build`.
-4. Try the latest nightly release of Scarb, to verify the bug is not fixed yet.
+4. Try the latest nightly release of Scarb to verify the bug is not fixed yet.
    This is simple to do with asdf:
    ```sh
    asdf install scarb latest:nightly
@@ -87,21 +87,17 @@ If you feel brave enough, you can try some of the more advanced debugging techni
 
 ## Submitting bugs/issues
 
-If you have a problem that you think should be fixed, please follow steps below:
+If you have a problem that you think should be fixed, please follow the steps below:
 
-1. Submit [a new `bug` issue][cairo-new-bug]
-2. Choose [`ide` label][cairo-ide-label]
-3. Fill out the issue template
-4. Attach all relevant screenshots, logs with trace (obtained with steps in [Troubleshooting])
-5. Do not forget to attach context like:
-   - Scarb version (which version or which nightly?), or commit reference (if built locally),
-   - relevant `Cairo` extension VSCode configuration,
-   - `Cairo` extension version.
+1. Submit [a new bug report][new-bug]
+2. Fill out the issue template
+3. Attach all relevant screenshots, logs with trace (obtained with steps in [Troubleshooting])
+4. Remember to provide as much information as possible.
+   The issue form will guide you through the process.
 
 [cairo]: https://www.cairo-lang.org/
-[cairo-ide-label]: https://github.com/starkware-libs/cairo/labels/ide
-[cairo-new-bug]: https://github.com/starkware-libs/cairo/issues/new?assignees=&labels=bug&projects=&template=01_BUG_REPORT.md&title=bug%3A+
-[debugging]: https://github.com/starkware-libs/cairo/blob/main/crates/cairo-lang-language-server/CONTRIBUTING.md#debugging
+[new-bug]: https://github.com/software-mansion/vscode-cairo/issues/new?assignees=&labels=bug&projects=&template=bug_report.yml
+[debugging]: https://github.com/software-mansion/cairols/blob/main/CONTRIBUTING.md#debugging
 [discord]: https://discord.gg/QypNMzkHbc
 [dojo engine]: https://book.dojoengine.org/
 [scarb]: https://docs.swmansion.com/scarb
