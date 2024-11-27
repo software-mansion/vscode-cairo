@@ -1,7 +1,7 @@
 import { spawn } from "child_process";
 import * as vscode from "vscode";
 import * as lc from "vscode-languageclient/node";
-import type { LanguageServerExecutableProvider } from "./cairols";
+import type { LanguageServerExecutableProvider } from "./lsExecutable";
 import type { Context } from "./context";
 import { checkTool, findToolInAsdf, findToolInPath } from "./toolchain";
 
@@ -18,6 +18,8 @@ export class Scarb implements LanguageServerExecutableProvider {
      * hence we associate workspace folder reference with the Scarb instance.
      */
     public readonly workspaceFolder?: vscode.WorkspaceFolder | undefined,
+
+    private version?: string | undefined,
   ) {}
 
   /**
@@ -88,8 +90,8 @@ export class Scarb implements LanguageServerExecutableProvider {
   }
 
   public async getVersion(ctx: Context): Promise<string> {
-    const output = await this.execWithOutput(["--version"], ctx);
-    return output.trim();
+    this.version ??= (await this.execWithOutput(["--version"], ctx)).trim();
+    return this.version;
   }
 
   public async cacheClean(ctx: Context): Promise<void> {

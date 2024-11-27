@@ -4,18 +4,13 @@ import { SemanticTokensFeature } from "vscode-languageclient/lib/common/semantic
 import * as lc from "vscode-languageclient/node";
 import { Context } from "./context";
 import { Scarb } from "./scarb";
-import { isScarbProject } from "./scarbProject";
-import { StandaloneLS } from "./standalonels";
 import {
   registerMacroExpandProvider,
   registerVfsProvider,
   registerViewAnalyzedCratesProvider,
 } from "./textDocumentProviders";
-import assert, { AssertionError } from "node:assert";
-
-export interface LanguageServerExecutableProvider {
-  languageServerExecutable(): lc.Executable;
-}
+import { executablesEqual, getLSExecutables, LSExecutable } from "./lsExecutable";
+import assert from "node:assert";
 
 function notifyScarbMissing(ctx: Context) {
   const errorMessage =
@@ -26,71 +21,30 @@ function notifyScarbMissing(ctx: Context) {
   ctx.log.error(errorMessage);
 }
 
-// Deep equality (based on native nodejs assertion), without throwing an error
-function safeStrictDeepEqual<T>(a: T, b: T): boolean {
-  try {
-    assert.deepStrictEqual(a, b);
-    return true;
-  } catch (err) {
-    if (err instanceof AssertionError) {
-      return false;
-    }
-    throw err;
-  }
+export interface SetupResult {
+  client: lc.LanguageClient;
+  executable: LSExecutable;
 }
 
-function areExecutablesEqual(a: lc.Executable, b: lc.Executable): boolean {
-  return (
-    a.command === b.command &&
-    safeStrictDeepEqual(a.args, b.args) &&
-    safeStrictDeepEqual(a.options?.env, b.options?.env)
-  );
-}
-
-async function allFoldersHaveSameLSProvider(
-  ctx: Context,
-  executables: LSExecutable[],
-): Promise<boolean> {
-  if (executables.length < 2) {
-    return true;
+export async function setupLanguageServer(ctx: Context): Promise<SetupResult | undefined> {
+  const executables = await getLSExecutables(vscode.workspace.workspaceFolders || [], ctx);
+  if (executables.length === 0) {
+    return;
   }
 
-  // If every executable is scarb based, check if the versions match additionally
-  if (executables.every((v) => !!v.scarb)) {
-    const versions = await Promise.all(executables.map((v) => v.scarb!.getVersion(ctx)));
-    if (!versions.every((x) => versions[0] === x)) {
-      return false;
-    }
-  }
-
-  return executables.every((x) => areExecutablesEqual(executables[0]!.run, x.run));
-}
-
-export async function setupLanguageServer(ctx: Context): Promise<lc.LanguageClient | undefined> {
-  const executables = (
-    await Promise.all(
-      (vscode.workspace.workspaceFolders || []).map((workspaceFolder) =>
-        getLanguageServerExecutable(workspaceFolder, ctx),
-      ),
-    )
-  ).filter((x) => !!x);
-
-  const sameProvider = await allFoldersHaveSameLSProvider(ctx, executables);
-  if (!sameProvider) {
+  const sameCommand = await executablesEqual(executables);
+  if (!sameCommand) {
     await vscode.window.showErrorMessage(
-      "Using multiple Scarb versions in one workspace are not supported.",
+      "Using multiple Scarb versions in one workspace is not supported.",
     );
     return;
   }
 
   // First one is good as any of them since they should be all the same at this point
-  const lsExecutable = executables[0];
+  assert(executables[0], "executable should be present at this point");
+  const [{ preparedInvocation: run, scarb }] = executables;
 
-  assert(lsExecutable, "Failed to start Cairo LS");
-
-  const { run, scarb } = lsExecutable;
   setupEnv(run, ctx);
-
   ctx.log.debug(`using CairoLS: ${quoteServerExecutable(run)}`);
 
   const serverOptions = { run, debug: run };
@@ -100,26 +54,6 @@ export async function setupLanguageServer(ctx: Context): Promise<lc.LanguageClie
     "Cairo Language Server",
     serverOptions,
     {},
-  );
-
-  // Notify the server when the client configuration changes.
-  // CairoLS pulls configuration properties it is interested in by itself, so it
-  // is unnecessary to attach any details in the notification payload.
-  const weakClient = new WeakRef(client);
-
-  ctx.extension.subscriptions.push(
-    vscode.workspace.onDidChangeConfiguration(
-      async () => {
-        const client = weakClient.deref();
-        if (client != undefined) {
-          await client.sendNotification(lc.DidChangeConfigurationNotification.type, {
-            settings: "",
-          });
-        }
-      },
-      null,
-      ctx.extension.subscriptions,
-    ),
   );
 
   client.registerFeature(new SemanticTokensFeature(client));
@@ -160,10 +94,7 @@ export async function setupLanguageServer(ctx: Context): Promise<lc.LanguageClie
       );
 
       const restartLS = async () => {
-        const client = weakClient.deref();
-        if (client) {
-          await client.restart();
-        }
+        await client.restart();
       };
 
       switch (selectedValue) {
@@ -193,10 +124,10 @@ export async function setupLanguageServer(ctx: Context): Promise<lc.LanguageClie
 
   await client.start();
 
-  return client;
+  return { client, executable: executables[0] };
 }
 
-async function findScarbForWorkspaceFolder(
+export async function findScarbForWorkspaceFolder(
   workspaceFolder: vscode.WorkspaceFolder | undefined,
   ctx: Context,
 ): Promise<Scarb | undefined> {
@@ -212,71 +143,6 @@ async function findScarbForWorkspaceFolder(
       ctx.log.error(`${e}`);
       ctx.log.error("note: Scarb integration is disabled due to this error");
       return undefined;
-    }
-  }
-}
-
-interface LSExecutable {
-  run: lc.Executable;
-  scarb: Scarb | undefined;
-}
-
-async function getLanguageServerExecutable(
-  workspaceFolder: vscode.WorkspaceFolder | undefined,
-  ctx: Context,
-): Promise<LSExecutable | undefined> {
-  const scarb = await findScarbForWorkspaceFolder(workspaceFolder, ctx);
-  try {
-    const provider = await determineLanguageServerExecutableProvider(workspaceFolder, scarb, ctx);
-    return { run: provider.languageServerExecutable(), scarb };
-  } catch (e) {
-    ctx.log.error(`${e}`);
-  }
-  return undefined;
-}
-
-async function determineLanguageServerExecutableProvider(
-  workspaceFolder: vscode.WorkspaceFolder | undefined,
-  scarb: Scarb | undefined,
-  ctx: Context,
-): Promise<LanguageServerExecutableProvider> {
-  const log = ctx.log.span("determineLanguageServerExecutableProvider");
-  const standalone = () => StandaloneLS.find(workspaceFolder, scarb, ctx);
-
-  if (!scarb) {
-    log.trace("Scarb is missing");
-    return await standalone();
-  }
-
-  if (await isScarbProject()) {
-    log.trace("this is a Scarb project");
-
-    if (!ctx.config.get("preferScarbLanguageServer", true)) {
-      log.trace("`preferScarbLanguageServer` is false, using standalone LS");
-      return await standalone();
-    }
-
-    if (await scarb.hasCairoLS(ctx)) {
-      log.trace("using Scarb LS");
-      return scarb;
-    }
-
-    log.trace("Scarb has no LS extension, falling back to standalone");
-    return await standalone();
-  } else {
-    log.trace("this is *not* a Scarb project, looking for standalone LS");
-
-    try {
-      return await standalone();
-    } catch (e) {
-      log.trace("could not find standalone LS, trying Scarb LS");
-      if (await scarb.hasCairoLS(ctx)) {
-        log.trace("using Scarb LS");
-        return scarb;
-      }
-
-      log.trace("could not find standalone LS and Scarb has no LS extension, will error out");
-      throw e;
     }
   }
 }
