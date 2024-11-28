@@ -5,7 +5,7 @@ body:
   - type: markdown
     attributes:
       value: |
-        Thanks for filing a 🙋 feature request 😄!
+        Thanks for filing a 🙋 feature request! 😄
 
         If the feature request is relatively small and already with a possible solution, this might be the place for you.
 
