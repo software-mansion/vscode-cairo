@@ -1,10 +1,20 @@
 # Contributing to the Cairo extension for Visual Studio Code
 
+Cairo extension for Visual Studio Code is actively developed and open for contributions!
+
+_Want to get started?_
+Grab any unassigned issue labelled with [
+`help wanted`](https://github.com/software-mansion/vscode-cairo/labels/help%20wanted)!
+
+_Looking for some easy warmup tasks?_
+Check out issues labelled with [
+`good first issue`](https://github.com/software-mansion/vscode-cairo/labels/good%20first%20issue)!
+
 When contributing to this repository, please first discuss the change you wish to make via issue,
 email, or any other method with the owners of this repository before making a change.
 
-You might also want to check out
-the [CairoLS contributing guidelines](../crates/cairo-lang-language-server/CONTRIBUTING.md).
+You might also want to check out the
+[CairoLS contributing guidelines](https://github.com/software-mansion/cairols/blob/main/CONTRIBUTING.md).
 
 ## Development environment setup
 
@@ -49,3 +59,26 @@ There are three ways you can develop and run the extension.
    # The `<version>` part will vary depending on the HEAD you are working on.
    $ code --install-extension cairo1-<version>.vsix
    ```
+
+## Git
+
+Try to make small PRs that could be squashed into a single commit.
+For larger work, try to make your commits small, self-contained, and well-described.
+Each commit should pass lints and tests.
+Then, set up a stack of pull requests, separate PR for each commit, and pointing to the previous
+one.
+
+While your PR is being reviewed on, you can push merge commits and use [
+`git commit --fixup`](https://git-scm.com/docs/git-commit/2.32.0#Documentation/git-commit.txt---fixupamendrewordltcommitgt)
+to push further changes to your commits.
+
+## Typos
+
+Our policy is to not accept PRs that only fix typos in the documentation and code.
+We appreciate your effort, but we encourage you to focus on bugs and features instead.
+
+---
+
+Thanks! ❤️ ❤️ ❤️
+
+CairoLS Team
