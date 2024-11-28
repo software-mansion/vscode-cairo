@@ -1,16 +1,16 @@
 {
   "comments": {
-    "lineComment": "//",
+    "lineComment": "//"
   },
   "brackets": [
     ["{", "}"],
     ["[", "]"],
-    ["(", ")"],
+    ["(", ")"]
   ],
   "colorizedBracketPairs": [
     ["{", "}"],
     ["[", "]"],
-    ["(", ")"],
+    ["(", ")"]
   ],
   "autoClosingPairs": [
     { "open": "{", "close": "}" },
@@ -18,7 +18,7 @@
     { "open": "(", "close": ")" },
     { "open": "\"", "close": "\"", "notIn": ["string"] },
     { "open": "'", "close": "'", "notIn": ["string"] },
-    { "open": "`", "close": "`", "notIn": ["string"] },
+    { "open": "`", "close": "`", "notIn": ["string"] }
   ],
   "autoCloseBefore": ";:.,=}])> \n\t",
   "surroundingPairs": [
@@ -28,39 +28,39 @@
     ["<", ">"],
     ["\"", "\""],
     ["'", "'"],
-    ["`", "`"],
+    ["`", "`"]
   ],
   "indentationRules": {
     "increaseIndentPattern": "^.*\\{[^}\"']*$|^.*\\([^\\)\"']*$",
-    "decreaseIndentPattern": "^\\s*(\\s*\\/[*].*[*]\\/\\s*)*[})]",
+    "decreaseIndentPattern": "^\\s*(\\s*\\/[*].*[*]\\/\\s*)*[})]"
   },
   "folding": {
     "markers": {
       "start": "^\\s*// region:\\b",
-      "end": "^\\s*// endregion\\b",
-    },
+      "end": "^\\s*// endregion\\b"
+    }
   },
   "onEnterRules": [
     {
       // Carry indentation from the previous line if it's only whitespace.
       "beforeText": "^\\s+$",
-      "action": { "indent": "none" },
+      "action": { "indent": "none" }
     },
     {
       // After the end of a function/field chain, with the semicolon on the same line.
       "beforeText": "^\\s+\\..*;",
-      "action": { "indent": "outdent" },
+      "action": { "indent": "outdent" }
     },
     {
       // After the end of a function/field chain, with semicolon detached from the rest.
       "beforeText": "^\\s+;",
       "previousLineText": "^\\s+\\..*",
-      "action": { "indent": "outdent" },
+      "action": { "indent": "outdent" }
     },
     {
       // Doc single-line comment e.g. ///|
       "beforeText": "^\\s*\\/{3}.*$",
-      "action": { "indent": "none", "appendText": "/// " },
-    },
-  ],
+      "action": { "indent": "none", "appendText": "/// " }
+    }
+  ]
 }
