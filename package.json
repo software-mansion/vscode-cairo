@@ -181,18 +181,18 @@
     "vscode-languageclient": "^9.0.1"
   },
   "devDependencies": {
-    "@tsconfig/node18": "^18.2.2",
-    "@tsconfig/strictest": "^2.0.2",
-    "@types/node": "^18.15.3",
-    "@types/vscode": "^1.84.0",
-    "@typescript-eslint/eslint-plugin": "^6.19.1",
-    "@vscode/test-electron": "^2.3.9",
-    "esbuild": "^0.21.4",
+    "@tsconfig/node18": "^18.2.4",
+    "@tsconfig/strictest": "^2.0.5",
+    "@types/node": "^22.10.1",
+    "@types/vscode": "^1.95.0",
+    "@typescript-eslint/eslint-plugin": "^8.16.0",
+    "@vscode/test-electron": "^2.4.1",
+    "esbuild": "^0.24.0",
     "eslint": "^8.56.0",
     "eslint-config-prettier": "^9.1.0",
-    "prettier": "3.2.4",
-    "typescript": "^5.6.3",
+    "prettier": "3.4.1",
+    "typescript": "^5.7.2",
     "vscode-oniguruma": "^2.0.1",
-    "vscode-textmate": "^9.0.0"
+    "vscode-textmate": "^9.1.0"
   }
 }
