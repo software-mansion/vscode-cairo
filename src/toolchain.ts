@@ -61,7 +61,7 @@ async function isExecutable(path: string): Promise<boolean> {
   try {
     await fs.promises.access(path, fs.constants.X_OK);
     return true;
-  } catch (e) {
+  } catch {
     return false;
   }
 }
