@@ -9,8 +9,10 @@ import {
   registerVfsProvider,
   registerViewAnalyzedCratesProvider,
 } from "./textDocumentProviders";
+
 import { executablesEqual, getLSExecutables, LSExecutable } from "./lsExecutable";
 import assert from "node:assert";
+import { projectConfigParsingFailed } from "./lspRequests";
 
 function notifyScarbMissing(ctx: Context) {
   const errorMessage =
@@ -150,6 +152,19 @@ export async function setupLanguageServer(ctx: Context): Promise<SetupResult | u
 
     const selectedValue = await vscode.window.showErrorMessage(
       "`scarb metadata` failed. Check if your project builds correctly via `scarb build`.",
+      goToLogs,
+    );
+
+    if (selectedValue === goToLogs) {
+      client.outputChannel.show(true);
+    }
+  });
+
+  client.onNotification(projectConfigParsingFailed, async (params) => {
+    const goToLogs = "Go to logs";
+
+    const selectedValue = await vscode.window.showErrorMessage(
+      `Failed to parse: ${params.projectConfigPath}. Project analysis will not be available.`,
       goToLogs,
     );
 
