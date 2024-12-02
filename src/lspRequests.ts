@@ -25,3 +25,9 @@ export type ViewAnalyzedCratesResponse = string;
 export const viewAnalyzedCrates = new lc.RequestType0<ViewAnalyzedCratesResponse, void>(
   "cairo/viewAnalyzedCrates",
 );
+
+export type ProjectConfigParsingFailedRequest = {
+  projectConfigPath: string;
+};
+export const projectConfigParsingFailed =
+  new lc.NotificationType<ProjectConfigParsingFailedRequest>("cairo/projectConfigParsingFailed");
