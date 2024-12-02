@@ -13,7 +13,7 @@ import assert from "node:assert";
  *
  * Thus, the client/server instance is effectively a singleton.
  */
-export class CairoExtensionManager {
+export class CairoExtensionManager implements vscode.Disposable {
   private constructor(
     public readonly context: Context,
     private client: lc.LanguageClient | undefined,
@@ -63,7 +63,7 @@ export class CairoExtensionManager {
   }
 
   public dispose() {
-    this.stopClient();
+    void this.stopClient();
   }
 
   private handleWorkspaceFoldersRemoved() {
@@ -71,14 +71,12 @@ export class CairoExtensionManager {
   }
 
   private async handleWorkspaceFoldersAdded(added: readonly vscode.WorkspaceFolder[]) {
-    const ctx = this.context;
-
-    const newExecutables = await getLSExecutables(added, ctx);
+    const newExecutables = await getLSExecutables(added, this.context);
     if (newExecutables.length === 0) {
       return;
     }
 
-    // Check if new ones are of same provider.
+    // Check if new ones are of the same provider.
     const newExecutablesHaveSameProvider = await executablesEqual(newExecutables);
 
     if (newExecutablesHaveSameProvider) {
@@ -94,8 +92,9 @@ export class CairoExtensionManager {
         this.runningExecutable,
       ]);
 
-      // If it's not consistent, we need to stop LS and show an error, it's better to show no analysis results than broken ones.
-      // For example - a person can turn on a project with incompatible corelib version.
+      // If it's not consistent, we need to stop LS and show an error as it's better to show
+      // no analysis results than broken ones.
+      // For example, a person can turn on a project with an incompatible `core` version.
       if (!consistentWithPreviousLS) {
         await this.stopClient();
         vscode.window.showErrorMessage(
