@@ -48,12 +48,20 @@ export async function setupLanguageServer(ctx: Context): Promise<SetupResult | u
   ctx.log.debug(`using CairoLS: ${quoteServerExecutable(run)}`);
 
   const serverOptions = { run, debug: run };
+  // We pass client options to maintain compability with older LS binaries.
+  // Any pre 2.9.0 LS doesn't register files it wants to be informed about, it was done on the client side instead.
+  const clientOptions: lc.LanguageClientOptions = {
+    documentSelector: [
+      { scheme: "file", language: "cairo" },
+      { scheme: "vfs", language: "cairo" },
+    ],
+  };
 
   const client = new lc.LanguageClient(
     "cairoLanguageServer",
     "Cairo Language Server",
     serverOptions,
-    {},
+    clientOptions,
   );
 
   client.registerFeature(new SemanticTokensFeature(client));
