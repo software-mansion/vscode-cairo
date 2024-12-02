@@ -35,11 +35,9 @@ There are three ways you can develop and run the extension.
    $ npm run compile
 
    # Run the extension in the VS Code Extension Host.
-   $ code "--extensionDevelopmentPath=$PWD" --wait --verbose
+   # This npm script uses the --wait and --verbose arguments.
+   $ npm run code
    ```
-
-   The `--wait --verbose` arguments make the command wait until the Extension Host is closed.
-   You can skip them if you do not want to block your terminal.
 
 3. ### Package the extension manually and install it in VS Code
 

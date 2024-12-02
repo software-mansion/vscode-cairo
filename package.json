@@ -164,6 +164,7 @@
   },
   "scripts": {
     "vscode:prepublish": "npm run compile",
+    "code": "code --extensionDevelopmentPath=$PWD --wait --verbose",
     "compile": "esbuild ./src/extension.ts --bundle --outfile=dist/extension.js --external:vscode --format=cjs --platform=node --sourcemap",
     "compile-watch": "npm run compile -- --watch",
     "compile-test": "tsc -p ./",
