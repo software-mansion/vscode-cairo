@@ -14,7 +14,7 @@ interface ConfigProps {
 }
 
 export class Config {
-  public static ROOT: string = "cairo1";
+  public static ROOT = "cairo1";
 
   // TODO(mkaput): Attach configs to workspace folders when we'll support
   //  multi-root workspaces.
