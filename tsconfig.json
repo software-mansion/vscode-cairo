@@ -3,8 +3,10 @@
   "compilerOptions": {
     "outDir": "out",
     "sourceMap": true,
-    "rootDir": "src"
+    "rootDir": ".",
+    "allowJs": true,
+    "checkJs": false
   },
   "exclude": ["node_modules", ".vscode-test"],
-  "include": ["src", "tests"]
+  "include": ["src", "test-support", "ui-test"]
 }
