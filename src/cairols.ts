@@ -226,7 +226,12 @@ function setupEnv(serverExecutable: lc.Executable, ctx: Context) {
 
 function buildEnvFilter(ctx: Context): string {
   const level = convertVscodeLogLevelToRust(ctx.log.logLevel);
-  return level ? `cairo_lang_language_server=${level}` : "";
+  return level
+    ? // CairoLS >= 2.9.1 is written in `cairo_language_server` crate,
+      // while earlier versions are `cairo_lang_language_server`.
+      // We want to support both for a while.
+      `cairo_language_server=${level},cairo_lang_language_server=${level}`
+    : "";
 }
 
 function convertVscodeLogLevelToRust(logLevel: vscode.LogLevel): string | null {
