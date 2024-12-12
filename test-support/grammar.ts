@@ -1,30 +1,23 @@
 import * as fs from "node:fs/promises";
-import { createRequire } from "node:module";
 import * as path from "node:path";
-import { fileURLToPath } from "node:url";
-import oniguruma from "vscode-oniguruma";
-import vsctm from "vscode-textmate";
-
-const require = createRequire(import.meta.url);
+import * as oniguruma from "vscode-oniguruma";
+import * as vsctm from "vscode-textmate";
 
 const wasmPath = require.resolve("vscode-oniguruma").replace(/main\.js$/, "onig.wasm");
 const vscodeOnigurumaLib = fs
   .readFile(wasmPath)
   .then((wasmBin) => oniguruma.loadWASM(wasmBin.buffer))
   .then(() => ({
-    createOnigScanner(patterns) {
+    createOnigScanner(patterns: string[]) {
       return new oniguruma.OnigScanner(patterns);
     },
-    createOnigString(s) {
+    createOnigString(s: string) {
       return new oniguruma.OnigString(s);
     },
   }));
 
 const cairoGrammar = fs
-  .readFile(
-    path.join(fileURLToPath(import.meta.url), "..", "..", "syntaxes", "cairo.tmLanguage.json"),
-    "utf-8",
-  )
+  .readFile(path.join(__filename, "..", "..", "..", "syntaxes", "cairo.tmLanguage.json"), "utf-8")
   .then((grammar) => JSON.parse(grammar));
 
 // Create a registry that can create a grammar from a scope name.
@@ -41,7 +34,7 @@ const registry = new vsctm.Registry({
 /**
  * Highlights Cairo code using the Cairo TextMate grammar.
  */
-export async function highlightCairoCode(code) {
+export async function highlightCairoCode(code: string) {
   const grammar = await registry.loadGrammar("source.cairo");
   if (!grammar) {
     throw new Error("Could not load scope: source.cairo");
@@ -70,7 +63,7 @@ export async function highlightCairoCode(code) {
   return output.join("\n");
 }
 
-function escapeWhitespace(str) {
+function escapeWhitespace(str: string) {
   return str.replace(/\s/g, (char) => {
     switch (char) {
       case "\n":
