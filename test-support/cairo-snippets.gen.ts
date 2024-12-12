@@ -71,6 +71,7 @@ export default [
   "fn f(ref _: felt252) {}",
   "fn f(ref mod: felt252) {}",
   "fn f(x: felt252) {\n    let x = 5;\n    match x {\n        0 | 1 => 1,\n        _ => 2,\n    };\n}",
+  "fn f<+I[a : b], impl C: G<A, B>[c],T[a:b]>() {}",
   "fn foo (x:T) -> S\n{\n    let x = -5 + 3;\n    let y : T = x*2 + 3*5; // Comment.\n    let z = ;\n    let v = bool::True == false;\n    5 + Struct{a: 5, b: Struct2{_gg: ()}};\n    return df == 6;\n    x + y\n}\n\npub impl A of B {\n    fn foo() {\n        if bla.\n        // The module below should parse correctly, not inside this impl.\n    }\n}\n\npub mod my_mod{\n    fn bar (x:T0, s: S) -> X {\n        x.a *+-. s.s * foo(1,3)\n    }\n    struct A{\n        x: a, // Comment.\n        y: int\n    }\n\n}\n\nskipped tokens\n",
   "fn foo() -> Aaaaa  Bbb + Cc  {\n}",
   "fn foo() -> Aaaaa  Bbb + Cc; let x = 0; }",
