@@ -8,5 +8,5 @@
     "checkJs": false
   },
   "exclude": ["node_modules", ".test-extensions"],
-  "include": ["src", "test-support", "ui-test"]
+  "include": ["src", "test", "test-support", "ui-test"]
 }

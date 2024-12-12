@@ -1,8 +1,8 @@
 import assert from "assert/strict";
 import test from "node:test";
-import snippets from "../test-support/cairo-snippets.gen.mjs";
-import { highlightCairoCode } from "../test-support/grammar.mjs";
-import { snap } from "../test-support/snapshots.mjs";
+import snippets from "../test-support/cairo-snippets.gen";
+import { highlightCairoCode } from "../test-support/grammar";
+import { snap } from "../test-support/snapshots";
 
 test("highlighting cairo-lang-parser tests", async (t) => {
   for (const code of snippets) {

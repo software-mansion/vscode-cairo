@@ -173,7 +173,7 @@
     "lint": "npm run lint-fmt && npm run lint-eslint",
     "lint-eslint": "eslint .",
     "lint-fmt": "prettier --check .",
-    "test": "node --test **/test/**/*.{cjs,mjs,js}",
+    "test": "node --test out/test/**/*.js",
     "ui-test": "extest setup-and-run './out/ui-test/*.js' --code_version max --code_settings ui-test/settings.json --extensions_dir .test-extensions"
   },
   "engines": {
