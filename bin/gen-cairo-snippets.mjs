@@ -82,7 +82,7 @@ const snippetsPath = path.join(
   "..",
   "..",
   "test-support",
-  "cairo-snippets.gen.mjs",
+  "cairo-snippets.gen.ts",
 );
 await fs.writeFile(snippetsPath, snippetsFormatted, "utf8");
 
