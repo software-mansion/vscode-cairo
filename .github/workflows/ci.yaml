@@ -11,8 +11,7 @@ permissions:
   contents: read
 
 jobs:
-  fmt-and-lint:
-    name: format, lint and test
+  checks:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
@@ -23,5 +22,34 @@ jobs:
       - run: npm ci
       - run: npm run lint-fmt
       - run: npm run lint-eslint
+  test:
+    name: test
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "22.x"
+          cache: npm
+      - run: npm ci
       - run: npm run compile-test
       - run: npm test
+  test-ui:
+    name: test ui
+    strategy:
+      matrix:
+        scarb: [disabled, "2.7.1", "2.8.5", "2.9.1"]
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "22.x"
+          cache: npm
+      - uses: software-mansion/setup-scarb@v1
+        if: ${{ matrix.scarb != 'disabled' }}
+        with:
+          scarb-version: ${{ matrix.scarb }}
+      - run: npm ci
+      - run: npm run compile-test
+      - run: xvfb-run --auto-servernum --server-args='-screen 0 1920x1080x24' npm run ui-test
