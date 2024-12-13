@@ -34,7 +34,7 @@ jobs:
       - run: npm ci
       - run: npm run compile-test
       - run: npm test
-  test-ui:
+  test-ui-parametrized:
     name: test ui
     strategy:
       matrix:
@@ -53,3 +53,12 @@ jobs:
       - run: npm ci
       - run: npm run compile-test
       - run: xvfb-run --auto-servernum --server-args='-screen 0 1920x1080x24' npm run ui-test
+  test-ui:
+    if: ${{ always() }}
+    needs: test-ui-parametrized
+    runs-on: ubuntu-latest
+    steps:
+      - if: needs.test-ui-parametrized.result == 'success'
+        run: exit 0
+      - if: needs.test-ui-parametrized.result != 'success'
+        run: exit 1
