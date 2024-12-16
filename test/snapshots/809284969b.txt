@@ -1,0 +1,47 @@
+//! > cairo_code
+fn f<+I[a : b], impl C: G<A, B>[c],T[a:b]>() {}
+
+//! > syntax
+fn                   source.cairo meta.function.definition.cairo keyword.other.fn.cairo
+␣                    source.cairo meta.function.definition.cairo
+f                    source.cairo meta.function.definition.cairo entity.name.function.cairo
+<                    source.cairo meta.function.definition.cairo punctuation.brackets.angle.cairo
++                    source.cairo meta.function.definition.cairo keyword.operator.math.cairo
+I                    source.cairo meta.function.definition.cairo entity.name.type.cairo
+[                    source.cairo meta.function.definition.cairo punctuation.brackets.square.cairo
+a                    source.cairo meta.function.definition.cairo variable.other.cairo
+␣                    source.cairo meta.function.definition.cairo
+:                    source.cairo meta.function.definition.cairo keyword.operator.key-value.cairo
+␣                    source.cairo meta.function.definition.cairo
+b                    source.cairo meta.function.definition.cairo variable.other.cairo
+]                    source.cairo meta.function.definition.cairo punctuation.brackets.square.cairo
+,                    source.cairo meta.function.definition.cairo punctuation.comma.cairo
+␣                    source.cairo meta.function.definition.cairo
+impl                 source.cairo meta.function.definition.cairo keyword.other.cairo
+␣                    source.cairo meta.function.definition.cairo
+C                    source.cairo meta.function.definition.cairo entity.name.type.cairo
+:                    source.cairo meta.function.definition.cairo keyword.operator.key-value.cairo
+␣                    source.cairo meta.function.definition.cairo
+G                    source.cairo meta.function.definition.cairo entity.name.type.cairo
+<                    source.cairo meta.function.definition.cairo punctuation.brackets.angle.cairo
+A                    source.cairo meta.function.definition.cairo entity.name.type.cairo
+,                    source.cairo meta.function.definition.cairo punctuation.comma.cairo
+␣                    source.cairo meta.function.definition.cairo
+B                    source.cairo meta.function.definition.cairo entity.name.type.cairo
+>                    source.cairo meta.function.definition.cairo punctuation.brackets.angle.cairo
+[                    source.cairo meta.function.definition.cairo punctuation.brackets.square.cairo
+c                    source.cairo meta.function.definition.cairo variable.other.cairo
+]                    source.cairo meta.function.definition.cairo punctuation.brackets.square.cairo
+,                    source.cairo meta.function.definition.cairo punctuation.comma.cairo
+T                    source.cairo meta.function.definition.cairo entity.name.type.cairo
+[                    source.cairo meta.function.definition.cairo punctuation.brackets.square.cairo
+a                    source.cairo meta.function.definition.cairo variable.other.cairo
+:                    source.cairo meta.function.definition.cairo keyword.operator.key-value.cairo
+b                    source.cairo meta.function.definition.cairo variable.other.cairo
+]                    source.cairo meta.function.definition.cairo punctuation.brackets.square.cairo
+>                    source.cairo meta.function.definition.cairo punctuation.brackets.angle.cairo
+(                    source.cairo meta.function.definition.cairo punctuation.brackets.round.cairo
+)                    source.cairo meta.function.definition.cairo punctuation.brackets.round.cairo
+␣                    source.cairo meta.function.definition.cairo
+{                    source.cairo meta.function.definition.cairo punctuation.brackets.curly.cairo
+}                    source.cairo punctuation.brackets.curly.cairo
