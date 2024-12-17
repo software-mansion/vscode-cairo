@@ -38,6 +38,45 @@ jobs:
       - run: npm ci
       - run: npm run compile-test
       - run: npm test
+  ui-test-scarb:
+    name: check scarb from different sources
+    strategy:
+      matrix:
+        from-config: [true, false]
+        from-path: [true, false]
+        from-asdf-local: [true, false]
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "22.x"
+          cache: npm
+      # Scarb in PATH
+      - run: |
+          curl --proto '=https' --tlsv1.2 -sSf https://docs.swmansion.com/scarb/install.sh | sh -s -- -v "2.9.1"
+          echo "PATH_SCARB_VERSION=2.9.1" >> $GITHUB_ENV
+        if: ${{ matrix.from-path }}
+
+      # Scarb in config on ~/.local/bin/scarb
+      - run: |
+          curl --proto '=https' --tlsv1.2 -sSf https://docs.swmansion.com/scarb/install.sh | sh -s -- -p -v "2.8.5"
+          echo "CONFIG_SCARB_VERSION=2.8.5" >> $GITHUB_ENV
+        if: ${{ matrix.from-config }}
+
+      # Scarb from asdf
+      - uses: asdf-vm/actions/setup@v3
+        if: ${{ matrix.from-asdf-local }}
+      - run: |
+          asdf plugin add scarb
+          asdf install scarb "2.9.2"
+          asdf local scarb "2.9.2"
+          echo "ASDF_SCARB_VERSION=2.9.2" >> $GITHUB_ENV
+        if: ${{ matrix.from-asdf-local }}
+
+      - run: npm ci
+      - run: npm run compile-test
+      - run: xvfb-run --auto-servernum --server-args='-screen 0 1920x1080x24' npm run ui-test-scarb
   test-ui-parametrized:
     name: test ui
     strategy:
@@ -63,10 +102,12 @@ jobs:
         if: ${{ matrix.os != 'ubuntu-latest'}}
   test-ui:
     if: ${{ always() }}
-    needs: test-ui-parametrized
+    needs:
+      - test-ui-parametrized
+      - ui-test-scarb
     runs-on: ubuntu-latest
     steps:
-      - if: needs.test-ui-parametrized.result == 'success'
+      - if: needs.test-ui-parametrized.result == 'success' && needs.ui-test-scarb.result == 'success'
         run: exit 0
-      - if: needs.test-ui-parametrized.result != 'success'
+      - if: needs.test-ui-parametrized.result != 'success' || needs.ui-test-scarb.result != 'success'
         run: exit 1
