@@ -18,10 +18,6 @@ describe("Expand macro test", function () {
     await VSBrowser.instance.openResources(path.join("ui-test", "fixtures", "expand_macro"));
   });
 
-  afterEach(async function () {
-    await editorView.closeAllEditors();
-  });
-
   it("checks if macro correctly expands", async function () {
     assertExpandAt(
       editorView,
