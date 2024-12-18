@@ -39,7 +39,8 @@ jobs:
     strategy:
       matrix:
         scarb: [disabled, "2.7.1", "2.8.5", "2.9.1"]
-    runs-on: ubuntu-latest
+        os: [ubuntu-latest, windows-latest]
+    runs-on: ${{ matrix.os }}
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4
@@ -53,6 +54,9 @@ jobs:
       - run: npm ci
       - run: npm run compile-test
       - run: xvfb-run --auto-servernum --server-args='-screen 0 1920x1080x24' npm run ui-test
+        if: ${{ matrix.os == 'ubuntu-latest'}}
+      - run: npm run ui-test
+        if: ${{ matrix.os != 'ubuntu-latest'}}
   test-ui:
     if: ${{ always() }}
     needs: test-ui-parametrized
