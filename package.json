@@ -173,7 +173,8 @@
     "lint": "npm run lint-fmt && npm run lint-eslint",
     "lint-eslint": "eslint .",
     "lint-fmt": "prettier --check .",
-    "test": "node --test out/test/**/*.js",
+    "test": "node --test out/test/**/*.test.js",
+    "scarb-pick-test": "extest setup-and-run './out/test/lsVersion.js' --code_version max --code_settings ui-test/settings.json --extensions_dir .test-extensions",
     "ui-test": "extest setup-and-run './out/ui-test/*.js' --code_version max --code_settings ui-test/settings.json --extensions_dir .test-extensions"
   },
   "engines": {
