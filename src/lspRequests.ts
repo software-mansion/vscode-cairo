@@ -31,3 +31,17 @@ export interface ProjectConfigParsingFailedRequest {
 }
 export const projectConfigParsingFailed =
   new lc.NotificationType<ProjectConfigParsingFailedRequest>("cairo/projectConfigParsingFailed");
+
+export interface PathAndVersion {
+  path: string;
+  version: string;
+}
+
+export interface ToolchainInfoResponse {
+  ls: PathAndVersion;
+  scarb: PathAndVersion | null;
+}
+
+export const toolchainInfo = new lc.RequestType0<ToolchainInfoResponse, void>(
+  "cairo/toolchainInfo",
+);

@@ -8,7 +8,7 @@ export async function activate(extensionContext: vscode.ExtensionContext) {
 
   if (ctx.config.get("enableLanguageServer")) {
     const extensionManager = CairoExtensionManager.fromContext(ctx);
-    extensionManager.tryStartClient();
+    await extensionManager.tryStartClient();
 
     // Notify the server when the client configuration changes.
     // CairoLS pulls configuration properties it is interested in by itself, so it

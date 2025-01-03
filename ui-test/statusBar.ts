@@ -30,7 +30,7 @@ describe("Status bar", function () {
 
     if (isScarbAvailable) {
       expect(title).to.match(
-        /Cairo, Cairo Language\nscarb .+ \(.+\)\ncairo: .+ \(.+\)\nsierra: .+/,
+        /Cairo, (Cairo Language Server .+ \(.+\)\n)?Cairo Language\nscarb .+ \(.+\)\ncairo: .+ \(.+\)\nsierra: .+/,
       );
     } else {
       expect(title).to.be.eq("Cairo, Cairo Language");
