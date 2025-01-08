@@ -4,6 +4,7 @@
   "description": "Cairo language support for Visual Studio Code.",
   "version": "2.9.1",
   "publisher": "StarkWare",
+  "type": "module",
   "categories": [
     "Programming Languages",
     "Snippets",
