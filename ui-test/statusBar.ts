@@ -1,4 +1,4 @@
-import { EditorView, StatusBar, VSBrowser, WebElement, Workbench } from "vscode-extension-tester";
+import { StatusBar, VSBrowser, WebElement, Workbench } from "vscode-extension-tester";
 import { expect } from "chai";
 import { isScarbAvailable } from "../test-support/scarb";
 import * as path from "path";
@@ -8,10 +8,6 @@ describe("Status bar", function () {
 
   before(async function () {
     await VSBrowser.instance.openResources(path.join("ui-test", "fixtures", "empty"));
-  });
-
-  afterEach(async function () {
-    await new EditorView().closeAllEditors();
   });
 
   it("Displays Cairo toolchain version", async function () {
