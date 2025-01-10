@@ -1,6 +1,6 @@
 import { EditorView, TextEditor, VSBrowser, Workbench } from "vscode-extension-tester";
 import { expect } from "chai";
-import { isScarbAvailable } from "../test-support/scarb";
+import { isScarbAvailable } from "../../test-support/scarb";
 import * as path from "path";
 
 describe("Expand macro test", function () {
