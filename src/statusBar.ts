@@ -3,7 +3,7 @@ import * as lc from "vscode-languageclient/node";
 import type { Context } from "./context";
 import { toolchainInfo } from "./lspRequests";
 import { Scarb } from "./scarb";
-import { timeout } from "promise-timeout";
+import timeout from "p-timeout";
 
 const CAIRO_STATUS_BAR_COMMAND = "cairo1.statusBar.clicked";
 
@@ -53,7 +53,7 @@ export class StatusBar {
         const request = this.client.sendRequest(toolchainInfo);
 
         // TODO(#50) When there is no handler for method on server it never resolves instead of failing.
-        const response = await timeout(request, 1000);
+        const response = await timeout(request, { milliseconds: 1000 });
 
         this.statusBarItem.tooltip = `Cairo Language Server ${response.ls.version} (${response.ls.path})`;
 
