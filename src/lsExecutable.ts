@@ -4,7 +4,6 @@ import * as vscode from "vscode";
 import { Scarb } from "./scarb";
 import { findScarbForWorkspaceFolder } from "./cairols";
 import { Context } from "./context";
-import { isScarbProject } from "./scarbProject";
 import { StandaloneLS } from "./standalonels";
 
 export async function getLSExecutables(
@@ -93,35 +92,16 @@ export async function determineLanguageServerExecutableProvider(
     return await standalone();
   }
 
-  if (await isScarbProject()) {
-    log.trace("this is a Scarb project");
-
-    if (!ctx.config.get("preferScarbLanguageServer", true)) {
-      log.trace("`preferScarbLanguageServer` is false, using standalone LS");
-      return await standalone();
-    }
-
-    if (await scarb.hasCairoLS(ctx)) {
-      log.trace("using Scarb LS");
-      return scarb;
-    }
-
-    log.trace("Scarb has no LS extension, falling back to standalone");
+  if (!ctx.config.get("preferScarbLanguageServer", true)) {
+    log.trace("`preferScarbLanguageServer` is false, using standalone LS");
     return await standalone();
-  } else {
-    log.trace("this is *not* a Scarb project, looking for standalone LS");
-
-    try {
-      return await standalone();
-    } catch (e) {
-      log.trace("could not find standalone LS, trying Scarb LS");
-      if (await scarb.hasCairoLS(ctx)) {
-        log.trace("using Scarb LS");
-        return scarb;
-      }
-
-      log.trace("could not find standalone LS and Scarb has no LS extension, will error out");
-      throw e;
-    }
   }
+
+  if (await scarb.hasCairoLS(ctx)) {
+    log.trace("using Scarb LS");
+    return scarb;
+  }
+
+  log.trace("Scarb has no LS extension, falling back to standalone");
+  return await standalone();
 }

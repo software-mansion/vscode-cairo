@@ -104,7 +104,7 @@
           "cairo1.preferScarbLanguageServer": {
             "type": "boolean",
             "default": "true",
-            "markdownDescription": "If the workspace contains a Scarb.toml file, prefer using `scarb cairo-language-server` over standalone `cairo-language-server` (e.g. one specified by `cairo1.languageServerPath`).",
+            "markdownDescription": "Prefer using `scarb cairo-language-server` over standalone `cairo-language-server` (e.g. one specified by `cairo1.languageServerPath`).",
             "scope": "window"
           },
           "cairo1.scarbPath": {
