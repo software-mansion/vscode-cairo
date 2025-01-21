@@ -16,7 +16,7 @@ concurrency:
 
 jobs:
   checks:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-22.04
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4
@@ -28,7 +28,7 @@ jobs:
       - run: npm run lint-eslint
   test:
     name: test
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-22.04
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4
@@ -45,7 +45,7 @@ jobs:
         from-config: [true, false]
         from-path: [true, false]
         from-asdf-local: [true, false]
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-22.04
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4
@@ -82,7 +82,7 @@ jobs:
     strategy:
       matrix:
         scarb: [disabled, "2.7.1", "2.8.5", "2.9.1"]
-        os: [ubuntu-latest, windows-latest]
+        os: [ubuntu-22.04, windows-latest]
     runs-on: ${{ matrix.os }}
     steps:
       - uses: actions/checkout@v4
@@ -97,15 +97,15 @@ jobs:
       - run: npm ci
       - run: npm run compile-test
       - run: xvfb-run --auto-servernum --server-args='-screen 0 1920x1080x24' npm run ui-test
-        if: ${{ matrix.os == 'ubuntu-latest'}}
+        if: ${{ matrix.os == 'ubuntu-22.04'}}
       - run: npm run ui-test
-        if: ${{ matrix.os != 'ubuntu-latest'}}
+        if: ${{ matrix.os != 'ubuntu-22.04'}}
   test-ui:
     if: ${{ always() }}
     needs:
       - test-ui-parametrized
       - ui-test-scarb
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-22.04
     steps:
       - if: needs.test-ui-parametrized.result == 'success' && needs.ui-test-scarb.result == 'success'
         run: exit 0
