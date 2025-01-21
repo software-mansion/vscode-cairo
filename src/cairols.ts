@@ -6,6 +6,7 @@ import { Context } from "./context";
 import { Scarb } from "./scarb";
 import {
   registerMacroExpandProvider,
+  registerViewSyntaxTreeProvider,
   registerVfsProvider,
   registerViewAnalyzedCratesProvider,
 } from "./textDocumentProviders";
@@ -71,6 +72,7 @@ export async function setupLanguageServer(ctx: Context): Promise<SetupResult | u
   registerVfsProvider(client, ctx);
   registerMacroExpandProvider(client, ctx);
   registerViewAnalyzedCratesProvider(client, ctx);
+  registerViewSyntaxTreeProvider(client, ctx);
 
   client.onNotification("scarb/could-not-find-scarb-executable", () => notifyScarbMissing(ctx));
 

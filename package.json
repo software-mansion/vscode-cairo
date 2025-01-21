@@ -79,6 +79,11 @@
         "command": "cairo.viewAnalyzedCrates",
         "title": "View currently analyzed crates",
         "category": "Cairo"
+      },
+      {
+        "command": "cairo.viewSyntaxTree",
+        "title": "View syntax tree of the current file content",
+        "category": "Cairo"
       }
     ],
     "configuration": [
