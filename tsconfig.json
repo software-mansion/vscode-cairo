@@ -1,8 +1,5 @@
 {
-  "extends": [
-    "@tsconfig/strictest/tsconfig.json",
-    "@tsconfig/node18/tsconfig.json"
-  ],
+  "extends": ["@tsconfig/strictest/tsconfig.json", "@tsconfig/node18/tsconfig.json"],
   "compilerOptions": {
     "outDir": "out",
     "sourceMap": true,
@@ -13,14 +10,6 @@
     "moduleResolution": "node",
     "esModuleInterop": true
   },
-  "exclude": [
-    "node_modules",
-    ".test-extensions"
-  ],
-  "include": [
-    "src",
-    "test",
-    "test-support",
-    "ui-test"
-  ]
+  "exclude": ["node_modules", ".test-extensions"],
+  "include": ["src", "test", "test-support", "ui-test"]
 }
