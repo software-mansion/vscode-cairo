@@ -32,6 +32,7 @@
     "workspaceContains:**/Scarb.toml"
   ],
   "main": "./dist/extension",
+  "type": "commonjs",
   "contributes": {
     "languages": [
       {

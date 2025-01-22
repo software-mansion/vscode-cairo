@@ -74,6 +74,9 @@ export async function setupLanguageServer(ctx: Context): Promise<SetupResult | u
 
   client.onNotification("scarb/could-not-find-scarb-executable", () => notifyScarbMissing(ctx));
 
+  client.onNotification("scarb/could-not-find-scarb-executable", () => notifyScarbMissing(ctx));
+  client.onNotification("scarb/could-not-find-scarb-executable", () => notifyScarbMissing(ctx));
+
   client.onNotification("scarb/resolving-start", () => {
     vscode.window.withProgress(
       {
