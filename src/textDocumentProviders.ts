@@ -2,6 +2,7 @@ import * as lc from "vscode-languageclient/node";
 import * as vscode from "vscode";
 import { Context } from "./context";
 import { expandMacro, viewSyntaxTree, vfsProvide, viewAnalyzedCrates } from "./lspRequests";
+import { AnsiDecorationProvider } from "./ansi";
 
 export const registerVfsProvider = (client: lc.LanguageClient, ctx: Context) => {
   const vfsProvider: vscode.TextDocumentContentProvider = {
@@ -83,9 +84,9 @@ export const registerViewAnalyzedCratesProvider = (client: lc.LanguageClient, ct
   ctx.extension.subscriptions.push(
     vscode.workspace.onDidChangeTextDocument((e) => {
       const path = e.document.uri.path;
-      const relevant_suffixes = [".cairo", "Scarb.toml", "Scarb.lock", "cairo_project.toml"];
+      const relevantSuffixes = [".cairo", "Scarb.toml", "Scarb.lock", "cairo_project.toml"];
 
-      for (const suffix of relevant_suffixes) {
+      for (const suffix of relevantSuffixes) {
         if (path.endsWith(suffix)) {
           eventEmitter.fire(uri);
           break;
@@ -96,8 +97,10 @@ export const registerViewAnalyzedCratesProvider = (client: lc.LanguageClient, ct
 };
 
 export const registerViewSyntaxTreeProvider = (client: lc.LanguageClient, ctx: Context) => {
-  const uri = vscode.Uri.parse("cairo-view-syntax-tree://viewSyntaxTree/[SYNTAX_TREE].txt");
-  const eventEmitter = new vscode.EventEmitter<vscode.Uri>();
+  let uriPostfix = 0;
+
+  const provider = new AnsiDecorationProvider();
+  let decorations = new Map<string, vscode.Range[]>();
 
   const tdcp: vscode.TextDocumentContentProvider = {
     async provideTextDocumentContent(): Promise<string> {
@@ -108,9 +111,14 @@ export const registerViewSyntaxTreeProvider = (client: lc.LanguageClient, ctx: C
         uri: client.code2ProtocolConverter.asUri(editor.document.uri),
       });
 
-      return syntaxTree ?? "Not available";
+      if (syntaxTree === null) {
+        return "Not available, please click on a file with cairo code";
+      }
+
+      decorations = AnsiDecorationProvider.extractDecorationsRanges(syntaxTree);
+
+      return AnsiDecorationProvider.getTextWithoutAnsi(syntaxTree);
     },
-    onDidChange: eventEmitter.event,
   };
 
   ctx.extension.subscriptions.push(
@@ -119,11 +127,15 @@ export const registerViewSyntaxTreeProvider = (client: lc.LanguageClient, ctx: C
 
   ctx.extension.subscriptions.push(
     vscode.commands.registerCommand("cairo.viewSyntaxTree", async () => {
+      const uri = vscode.Uri.parse(
+        `cairo-view-syntax-tree://viewSyntaxTree/[SYNTAX_TREE_${uriPostfix}].txt`,
+      );
+      uriPostfix += 1;
       const document = await vscode.workspace.openTextDocument(uri);
 
-      eventEmitter.fire(uri);
+      const editor = await vscode.window.showTextDocument(document, vscode.ViewColumn.Two, true);
 
-      return vscode.window.showTextDocument(document, vscode.ViewColumn.Two, true);
+      provider.setDecorations(decorations, editor);
     }),
   );
 
