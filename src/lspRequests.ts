@@ -45,3 +45,15 @@ export interface ToolchainInfoResponse {
 export const toolchainInfo = new lc.RequestType0<ToolchainInfoResponse, void>(
   "cairo/toolchainInfo",
 );
+
+export interface ViewSyntaxTreeRequest {
+  uri: string;
+}
+
+export type ViewSyntaxTreeRequestResponse = string | null;
+
+export const viewSyntaxTree = new lc.RequestType<
+  ViewSyntaxTreeRequest,
+  ViewSyntaxTreeRequestResponse,
+  void
+>("cairo/viewSyntaxTree");

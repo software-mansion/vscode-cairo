@@ -1,7 +1,7 @@
 import * as lc from "vscode-languageclient/node";
 import * as vscode from "vscode";
 import { Context } from "./context";
-import { expandMacro, vfsProvide, viewAnalyzedCrates } from "./lspRequests";
+import { expandMacro, viewSyntaxTree, vfsProvide, viewAnalyzedCrates } from "./lspRequests";
 
 export const registerVfsProvider = (client: lc.LanguageClient, ctx: Context) => {
   const vfsProvider: vscode.TextDocumentContentProvider = {
@@ -93,4 +93,39 @@ export const registerViewAnalyzedCratesProvider = (client: lc.LanguageClient, ct
       }
     }),
   );
+};
+
+export const registerViewSyntaxTreeProvider = (client: lc.LanguageClient, ctx: Context) => {
+  const uri = vscode.Uri.parse("cairo-view-syntax-tree://viewSyntaxTree/[SYNTAX_TREE].txt");
+  const eventEmitter = new vscode.EventEmitter<vscode.Uri>();
+
+  const tdcp: vscode.TextDocumentContentProvider = {
+    async provideTextDocumentContent(): Promise<string> {
+      const editor = vscode.window.activeTextEditor;
+      if (!editor) return "No file selected, please click on a file";
+
+      const syntaxTree = await client.sendRequest(viewSyntaxTree, {
+        uri: client.code2ProtocolConverter.asUri(editor.document.uri),
+      });
+
+      return syntaxTree ?? "Not available";
+    },
+    onDidChange: eventEmitter.event,
+  };
+
+  ctx.extension.subscriptions.push(
+    vscode.workspace.registerTextDocumentContentProvider("cairo-view-syntax-tree", tdcp),
+  );
+
+  ctx.extension.subscriptions.push(
+    vscode.commands.registerCommand("cairo.viewSyntaxTree", async () => {
+      const document = await vscode.workspace.openTextDocument(uri);
+
+      eventEmitter.fire(uri);
+
+      return vscode.window.showTextDocument(document, vscode.ViewColumn.Two, true);
+    }),
+  );
+
+  // TODO: re-request on file change
 };
