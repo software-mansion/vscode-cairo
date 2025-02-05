@@ -47,13 +47,14 @@ export const toolchainInfo = new lc.RequestType0<ToolchainInfoResponse, void>(
 );
 
 export interface ViewSyntaxTreeRequest {
-  uri: string;
+  textDocument: { uri: string };
+  position: { line: number; character: number };
 }
 
-export type ViewSyntaxTreeRequestResponse = string | null;
+export type ViewSyntaxTreeResponse = string | null;
 
 export const viewSyntaxTree = new lc.RequestType<
   ViewSyntaxTreeRequest,
-  ViewSyntaxTreeRequestResponse,
+  ViewSyntaxTreeResponse,
   void
 >("cairo/viewSyntaxTree");

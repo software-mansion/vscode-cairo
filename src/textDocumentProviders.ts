@@ -107,8 +107,10 @@ export const registerViewSyntaxTreeProvider = (client: lc.LanguageClient, ctx: C
       const editor = vscode.window.activeTextEditor;
       if (!editor) return "No file selected, please click on a file";
 
+      const position = editor.selection.active;
       const syntaxTree = await client.sendRequest(viewSyntaxTree, {
-        uri: client.code2ProtocolConverter.asUri(editor.document.uri),
+        textDocument: client.code2ProtocolConverter.asTextDocumentIdentifier(editor.document),
+        position,
       });
 
       if (syntaxTree === null) {
