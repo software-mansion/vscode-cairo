@@ -6,14 +6,15 @@ import { Context } from "./context";
 import { Scarb } from "./scarb";
 import {
   registerMacroExpandProvider,
-  registerViewSyntaxTreeProvider,
   registerVfsProvider,
   registerViewAnalyzedCratesProvider,
+  registerViewSyntaxTreeProvider,
 } from "./textDocumentProviders";
 
 import { executablesEqual, getLSExecutables, LSExecutable } from "./lsExecutable";
 import assert from "node:assert";
 import { projectConfigParsingFailed } from "./lspRequests";
+import * as lsp from "vscode-languageserver-protocol";
 
 function notifyScarbMissing(ctx: Context) {
   const errorMessage =
@@ -72,7 +73,6 @@ export async function setupLanguageServer(ctx: Context): Promise<SetupResult | u
   registerVfsProvider(client, ctx);
   registerMacroExpandProvider(client, ctx);
   registerViewAnalyzedCratesProvider(client, ctx);
-  registerViewSyntaxTreeProvider(client, ctx);
 
   client.onNotification("scarb/could-not-find-scarb-executable", () => notifyScarbMissing(ctx));
 
@@ -182,6 +182,21 @@ export async function setupLanguageServer(ctx: Context): Promise<SetupResult | u
       client.outputChannel.show(true);
     }
   });
+
+  ctx.extension.subscriptions.push(
+    client.onRequest(lsp.RegistrationRequest.type, ({ registrations }) => {
+      for (const reg of registrations) {
+        if (reg.method === "custom/ViewSyntaxTree") {
+          vscode.commands.executeCommand(
+            "setContext",
+            "cairo1.viewSyntaxTreeCommandAvailable",
+            true,
+          );
+          registerViewSyntaxTreeProvider(client, ctx);
+        }
+      }
+    }),
+  );
 
   await client.start();
 
