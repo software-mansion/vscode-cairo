@@ -6,7 +6,6 @@ import { Context } from "./context";
 import { Scarb } from "./scarb";
 import {
   registerMacroExpandProvider,
-  registerViewSyntaxTreeProvider,
   registerVfsProvider,
   registerViewAnalyzedCratesProvider,
 } from "./textDocumentProviders";
@@ -14,6 +13,7 @@ import {
 import { executablesEqual, getLSExecutables, LSExecutable } from "./lsExecutable";
 import assert from "node:assert";
 import { projectConfigParsingFailed } from "./lspRequests";
+import { ViewSyntaxTreeCapability } from "./capabilities";
 
 function notifyScarbMissing(ctx: Context) {
   const errorMessage =
@@ -72,7 +72,6 @@ export async function setupLanguageServer(ctx: Context): Promise<SetupResult | u
   registerVfsProvider(client, ctx);
   registerMacroExpandProvider(client, ctx);
   registerViewAnalyzedCratesProvider(client, ctx);
-  registerViewSyntaxTreeProvider(client, ctx);
 
   client.onNotification("scarb/could-not-find-scarb-executable", () => notifyScarbMissing(ctx));
 
@@ -182,6 +181,8 @@ export async function setupLanguageServer(ctx: Context): Promise<SetupResult | u
       client.outputChannel.show(true);
     }
   });
+
+  client.registerFeature(new ViewSyntaxTreeCapability(client, ctx));
 
   await client.start();
 

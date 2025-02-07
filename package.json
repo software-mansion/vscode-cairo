@@ -86,6 +86,14 @@
         "category": "Cairo"
       }
     ],
+    "menus": {
+      "commandPalette": [
+        {
+          "command": "cairo.viewSyntaxTree",
+          "when": "cairo1.viewSyntaxTreeCommandAvailable && editorLangId == cairo"
+        }
+      ]
+    },
     "configuration": [
       {
         "title": "Cairo",
