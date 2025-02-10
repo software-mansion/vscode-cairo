@@ -1,6 +1,6 @@
 name: Feature Request
 description: Suggest an idea for enhancing Cairo extension for Visual Studio Code
-labels: ["enhancement"]
+type: Feature
 body:
   - type: markdown
     attributes:
