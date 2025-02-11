@@ -73,114 +73,128 @@ export async function setupLanguageServer(ctx: Context): Promise<SetupResult | u
   registerMacroExpandProvider(client, ctx);
   registerViewAnalyzedCratesProvider(client, ctx);
 
-  client.onNotification("scarb/could-not-find-scarb-executable", () => notifyScarbMissing(ctx));
+  ctx.extension.subscriptions.push(
+    client.onNotification("scarb/could-not-find-scarb-executable", () => notifyScarbMissing(ctx)),
+  );
 
-  client.onNotification("scarb/resolving-start", () => {
-    vscode.window.withProgress(
-      {
-        title: "Scarb is resolving the project...",
-        location: vscode.ProgressLocation.Notification,
-        cancellable: false,
-      },
-      async () => {
-        return new Promise((resolve) => {
-          client.onNotification("scarb/resolving-finish", () => {
-            resolve(null);
+  ctx.extension.subscriptions.push(
+    client.onNotification("scarb/resolving-start", () => {
+      vscode.window.withProgress(
+        {
+          title: "Scarb is resolving the project...",
+          location: vscode.ProgressLocation.Notification,
+          cancellable: false,
+        },
+        async () => {
+          return new Promise((resolve) => {
+            ctx.extension.subscriptions.push(
+              client.onNotification("scarb/resolving-finish", () => {
+                resolve(null);
+              }),
+            );
           });
-        });
-      },
-    );
-  });
+        },
+      );
+    }),
+  );
 
-  client.onNotification(
-    new lc.NotificationType<
-      { reason: "noMoreRetries"; retries: number; inMinutes: number } | { reason: "spawnFail" }
-    >("cairo/procMacroServerInitializationFailed"),
-    async (errorMessage) => {
+  ctx.extension.subscriptions.push(
+    client.onNotification(
+      new lc.NotificationType<
+        { reason: "noMoreRetries"; retries: number; inMinutes: number } | { reason: "spawnFail" }
+      >("cairo/procMacroServerInitializationFailed"),
+      async (errorMessage) => {
+        const goToLogs = "Go to logs";
+
+        switch (errorMessage.reason) {
+          case "noMoreRetries": {
+            const { inMinutes, retries } = errorMessage;
+
+            const selectedValue = await vscode.window.showErrorMessage(
+              `Starting proc-macro-server failed ${retries} times in ${inMinutes} minutes, the proc-macro-server will not be restarted. Procedural macros will not be analyzed. See the output for more information`,
+              goToLogs,
+            );
+
+            if (selectedValue === goToLogs) {
+              client.outputChannel.show(true);
+            }
+            break;
+          }
+          case "spawnFail": {
+            const selectedValue = await vscode.window.showErrorMessage(
+              "Starting proc-macro-server failed, the proc-macro-server will not be restarted. Procedural macros will not be analyzed. See the output for more information",
+              goToLogs,
+            );
+
+            if (selectedValue === goToLogs) {
+              client.outputChannel.show(true);
+            }
+            break;
+          }
+        }
+      },
+    ),
+  );
+
+  ctx.extension.subscriptions.push(
+    client.onNotification(
+      new lc.NotificationType<string>("cairo/corelib-version-mismatch"),
+      async (errorMessage) => {
+        const restart = "Restart CairoLS";
+        const cleanScarbCache = "Clean Scarb cache and reload";
+
+        const selectedValue = await vscode.window.showErrorMessage(
+          errorMessage,
+          restart,
+          cleanScarbCache,
+        );
+
+        const restartLS = async () => {
+          await client.restart();
+        };
+
+        switch (selectedValue) {
+          case restart:
+            await restartLS();
+            break;
+          case cleanScarbCache:
+            await scarb?.cacheClean(ctx);
+            await restartLS();
+            break;
+        }
+      },
+    ),
+  );
+
+  ctx.extension.subscriptions.push(
+    client.onNotification(new lc.NotificationType("cairo/scarb-metadata-failed"), async () => {
       const goToLogs = "Go to logs";
 
-      switch (errorMessage.reason) {
-        case "noMoreRetries": {
-          const { inMinutes, retries } = errorMessage;
-
-          const selectedValue = await vscode.window.showErrorMessage(
-            `Starting proc-macro-server failed ${retries} times in ${inMinutes} minutes, the proc-macro-server will not be restarted. Procedural macros will not be analyzed. See the output for more information`,
-            goToLogs,
-          );
-
-          if (selectedValue === goToLogs) {
-            client.outputChannel.show(true);
-          }
-          break;
-        }
-        case "spawnFail": {
-          const selectedValue = await vscode.window.showErrorMessage(
-            "Starting proc-macro-server failed, the proc-macro-server will not be restarted. Procedural macros will not be analyzed. See the output for more information",
-            goToLogs,
-          );
-
-          if (selectedValue === goToLogs) {
-            client.outputChannel.show(true);
-          }
-          break;
-        }
-      }
-    },
-  );
-
-  client.onNotification(
-    new lc.NotificationType<string>("cairo/corelib-version-mismatch"),
-    async (errorMessage) => {
-      const restart = "Restart CairoLS";
-      const cleanScarbCache = "Clean Scarb cache and reload";
-
       const selectedValue = await vscode.window.showErrorMessage(
-        errorMessage,
-        restart,
-        cleanScarbCache,
+        "`scarb metadata` failed. Check if your project builds correctly via `scarb build`.",
+        goToLogs,
       );
 
-      const restartLS = async () => {
-        await client.restart();
-      };
-
-      switch (selectedValue) {
-        case restart:
-          await restartLS();
-          break;
-        case cleanScarbCache:
-          await scarb?.cacheClean(ctx);
-          await restartLS();
-          break;
+      if (selectedValue === goToLogs) {
+        client.outputChannel.show(true);
       }
-    },
+    }),
   );
 
-  client.onNotification(new lc.NotificationType("cairo/scarb-metadata-failed"), async () => {
-    const goToLogs = "Go to logs";
+  ctx.extension.subscriptions.push(
+    client.onNotification(projectConfigParsingFailed, async (params) => {
+      const goToLogs = "Go to logs";
 
-    const selectedValue = await vscode.window.showErrorMessage(
-      "`scarb metadata` failed. Check if your project builds correctly via `scarb build`.",
-      goToLogs,
-    );
+      const selectedValue = await vscode.window.showErrorMessage(
+        `Failed to parse: ${params.projectConfigPath}. Project analysis will not be available.`,
+        goToLogs,
+      );
 
-    if (selectedValue === goToLogs) {
-      client.outputChannel.show(true);
-    }
-  });
-
-  client.onNotification(projectConfigParsingFailed, async (params) => {
-    const goToLogs = "Go to logs";
-
-    const selectedValue = await vscode.window.showErrorMessage(
-      `Failed to parse: ${params.projectConfigPath}. Project analysis will not be available.`,
-      goToLogs,
-    );
-
-    if (selectedValue === goToLogs) {
-      client.outputChannel.show(true);
-    }
-  });
+      if (selectedValue === goToLogs) {
+        client.outputChannel.show(true);
+      }
+    }),
+  );
 
   client.registerFeature(new ViewSyntaxTreeCapability(client, ctx));
 
