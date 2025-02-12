@@ -16,25 +16,29 @@ concurrency:
 
 jobs:
   checks:
-    runs-on: ubuntu-22.04
+    runs-on: ubuntu-24.04
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4
         with:
-          node-version: "22.x"
+          node-version: "20.x"
           cache: npm
+      # https://github.com/redhat-developer/vscode-extension-tester/blob/eaf266f43e1dca66cb0d660ecbf8f59e56af4808/KNOWN_ISSUES.md?plain=1#L64
+      # This applies to all other usages of this command in this file
+      - run: sudo sysctl -w kernel.apparmor_restrict_unprivileged_userns=0
       - run: npm ci
       - run: npm run lint-fmt
       - run: npm run lint-eslint
   test:
     name: test
-    runs-on: ubuntu-22.04
+    runs-on: ubuntu-24.04
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4
         with:
-          node-version: "22.x"
+          node-version: "20.x"
           cache: npm
+      - run: sudo sysctl -w kernel.apparmor_restrict_unprivileged_userns=0
       - run: npm ci
       - run: npm run compile-test
       - run: npm test
@@ -45,13 +49,14 @@ jobs:
         from-config: [true, false]
         from-path: [true, false]
         from-asdf-local: [true, false]
-    runs-on: ubuntu-22.04
+    runs-on: ubuntu-24.04
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4
         with:
-          node-version: "22.x"
+          node-version: "20.x"
           cache: npm
+      - run: sudo sysctl -w kernel.apparmor_restrict_unprivileged_userns=0
       # Scarb in PATH
       - run: |
           curl --proto '=https' --tlsv1.2 -sSf https://docs.swmansion.com/scarb/install.sh | sh -s -- -v "2.9.1"
@@ -77,18 +82,19 @@ jobs:
       - run: npm ci
       - run: npm run compile-test
       - run: xvfb-run --auto-servernum --server-args='-screen 0 1920x1080x24' npm run ui-test-scarb
+
   test-ui-parametrized:
     name: test ui
     strategy:
       matrix:
         scarb: [disabled, "2.7.1", "2.8.5", "2.9.1"]
-        os: [ubuntu-22.04, windows-latest]
+        os: [ubuntu-24.04, windows-latest]
     runs-on: ${{ matrix.os }}
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4
         with:
-          node-version: "22.x"
+          node-version: "20.x"
           cache: npm
       - uses: software-mansion/setup-scarb@v1
         if: ${{ matrix.scarb != 'disabled' }}
@@ -96,16 +102,19 @@ jobs:
           scarb-version: ${{ matrix.scarb }}
       - run: npm ci
       - run: npm run compile-test
-      - run: xvfb-run --auto-servernum --server-args='-screen 0 1920x1080x24' npm run ui-test
-        if: ${{ matrix.os == 'ubuntu-22.04'}}
+      - run: |
+          sudo sysctl -w kernel.apparmor_restrict_unprivileged_userns=0
+          xvfb-run --auto-servernum --server-args='-screen 0 1920x1080x24' npm run ui-test
+        if: ${{ matrix.os == 'ubuntu-24.04'}}
       - run: npm run ui-test
-        if: ${{ matrix.os != 'ubuntu-22.04'}}
+        if: ${{ matrix.os != 'ubuntu-24.04'}}
+
   test-ui:
     if: ${{ always() }}
     needs:
       - test-ui-parametrized
       - ui-test-scarb
-    runs-on: ubuntu-22.04
+    runs-on: ubuntu-24.04
     steps:
       - if: needs.test-ui-parametrized.result == 'success' && needs.ui-test-scarb.result == 'success'
         run: exit 0
