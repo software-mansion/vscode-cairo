@@ -161,6 +161,12 @@
             "default": false,
             "description": "Enable support for procedural macros. This feature is in active development and may not work flawlessly yet!",
             "scope": "window"
+          },
+          "cairo1.enableLinter": {
+            "type": "boolean",
+            "default": true,
+            "description": "Enable cairo-lint during analysis.",
+            "scope": "window"
           }
         }
       }
