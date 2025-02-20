@@ -158,7 +158,7 @@
           },
           "cairo1.enableProcMacros": {
             "type": "boolean",
-            "default": false,
+            "default": true,
             "description": "Enable support for procedural macros. This feature is in active development and may not work flawlessly yet!",
             "scope": "window"
           },
