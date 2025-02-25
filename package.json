@@ -32,6 +32,7 @@
     "workspaceContains:**/Scarb.toml"
   ],
   "main": "./dist/extension",
+  "browser": "./dist/web",
   "type": "commonjs",
   "contributes": {
     "languages": [
@@ -183,9 +184,10 @@
     }
   },
   "scripts": {
-    "vscode:prepublish": "npm run compile",
+    "vscode:prepublish": "npm run compile && npm run compile-web",
     "code": "code --extensionDevelopmentPath=$PWD --wait --verbose",
     "compile": "esbuild ./src/extension.ts --bundle --outfile=dist/extension.js --external:vscode --format=cjs --platform=node --sourcemap",
+    "compile-web": "esbuild ./src/web.ts --bundle --outfile=dist/web.js --external:vscode --format=cjs --platform=browser",
     "compile-watch": "npm run compile -- --watch",
     "compile-test": "tsc -p ./",
     "fmt": "prettier --write .",
