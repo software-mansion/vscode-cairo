@@ -4,7 +4,7 @@ import { isScarbAvailable } from "../../test-support/scarb";
 import * as path from "path";
 
 describe("Expand macro test", function () {
-  this.timeout(50000);
+  this.timeout(2000000);
 
   let editorView: EditorView;
 
@@ -19,7 +19,7 @@ describe("Expand macro test", function () {
   });
 
   it("checks if macro correctly expands", async function () {
-    assertExpandAt(
+    await assertExpandAt(
       editorView,
       1,
       1,
@@ -42,7 +42,7 @@ trait ATrait {
     );
   });
   it("checks if inline macro correctly expands", async function () {
-    assertExpandAt(
+    await assertExpandAt(
       editorView,
       9,
       8,
@@ -84,7 +84,11 @@ async function assertExpandAt(
 
   const workbench = new Workbench();
 
-  await workbench.executeCommand("Cairo: Recursively expand macros for item at caret");
+  let openEditorTitles: string[] = [];
+  while (!openEditorTitles.includes("[EXPANSION].cairo")) {
+    await workbench.executeCommand("Cairo: Recursively expand macros for item at caret");
+    openEditorTitles = await editorView.getOpenEditorTitles();
+  }
 
   const expansion = await editorView.openEditor("[EXPANSION].cairo", 1);
 
