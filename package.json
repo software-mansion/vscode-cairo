@@ -168,6 +168,30 @@
             "default": true,
             "description": "Enable cairo-lint during analysis.",
             "scope": "window"
+          },
+          "cairo1.testRunner": {
+            "type": "string",
+            "default": "auto",
+            "enum": [
+              "auto",
+              "snforge",
+              "cairo-test",
+              "custom"
+            ],
+            "markdownEnumDescriptions": [
+              "Detects runner based on dependencies in `Scarb.toml`.",
+              "Shows lenses only for `snforge` tests.",
+              "Shows lenses only for `cairo_test` tests.",
+              "Use command specified under `cairo1.runTestCommand` for all tests."
+            ],
+            "description": "Select test runner to use.",
+            "scope": "window"
+          },
+          "cairo1.runTestCommand": {
+            "type": "string",
+            "default": "",
+            "markdownDescription": "Allow using custom command for running tests, there is `{{TEST_PATH}}` variable available. Note this will only take effect if `cairo1.testRunner == custom`.\n\nExample: `snforge tets {{TEST_PATH}} --exact`.",
+            "scope": "window"
           }
         }
       }
