@@ -4,7 +4,7 @@ import { isScarbAvailable } from "../../test-support/scarb";
 import * as path from "path";
 
 describe("Expand macro test", function () {
-  this.timeout(50000);
+  this.timeout(100000);
 
   let editorView: EditorView;
 
@@ -19,7 +19,7 @@ describe("Expand macro test", function () {
   });
 
   it("checks if macro correctly expands", async function () {
-    assertExpandAt(
+    await assertExpandAt(
       editorView,
       1,
       1,
@@ -42,7 +42,7 @@ trait ATrait {
     );
   });
   it("checks if inline macro correctly expands", async function () {
-    assertExpandAt(
+    await assertExpandAt(
       editorView,
       9,
       8,
