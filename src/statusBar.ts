@@ -54,7 +54,7 @@ export class StatusBar {
   }
 
   public async setup(extensionManager: CairoExtensionManager): Promise<void> {
-    // Handle initial client value
+    // Handle initial client value since it might be already initialized
     this.handleClientChange(extensionManager.getClient());
 
     extensionManager.onNewClient(this.handleClientChange);
