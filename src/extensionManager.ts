@@ -14,6 +14,7 @@ import assert from "node:assert";
  * Thus, the client/server instance is effectively a singleton.
  */
 export class CairoExtensionManager implements vscode.Disposable {
+  private newClientEmitter = new vscode.EventEmitter<lc.LanguageClient>();
   private constructor(
     public readonly context: Context,
     private client: lc.LanguageClient | undefined,
@@ -37,6 +38,7 @@ export class CairoExtensionManager implements vscode.Disposable {
       return false;
     }
     const { client, executable } = setupResult;
+    this.newClientEmitter.fire(client);
     this.client = client;
     this.runningExecutable = executable;
     return true;
@@ -63,6 +65,7 @@ export class CairoExtensionManager implements vscode.Disposable {
   }
 
   public dispose() {
+    this.newClientEmitter.dispose();
     void this.stopClient();
   }
 
@@ -102,5 +105,8 @@ export class CairoExtensionManager implements vscode.Disposable {
         );
       }
     }
+  }
+  public get onNewClient(): vscode.Event<lc.LanguageClient> {
+    return this.newClientEmitter.event;
   }
 }
