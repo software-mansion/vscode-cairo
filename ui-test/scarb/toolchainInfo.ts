@@ -8,7 +8,7 @@ describe("Toolchain info", function () {
   this.timeout(50000);
 
   it("Checks correct scarb precedence", async function () {
-    // asdf is in fact in PATH and in our tests it is first scarb in  path, special case this.
+    // asdf is in fact in PATH and in our tests it is the first scarb in PATH, special case this.
     // It is caused by `@actions/core addPath` implementation.
     // See: https://github.com/actions/toolkit/blob/01f21badd5a7522507f84558503b56c4deec5326/packages/core/src/core.ts#L107
     if (process.env.PATH_SCARB_VERSION && process.env.ASDF_SCARB_VERSION) {
