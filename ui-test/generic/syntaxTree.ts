@@ -11,7 +11,7 @@ describe("View syntax tree", function () {
 
   before(async function () {
     const scarb = process.env["SCARB_VERSION"]!;
-    if (!isScarbAvailable || ["2.7.1", "2.8.5", "2.9.1"].includes(scarb)) {
+    if (!isScarbAvailable || ["2.8.5", "2.9.1"].includes(scarb)) {
       this.skip();
     }
 
@@ -27,89 +27,54 @@ describe("View syntax tree", function () {
       1,
       `└── root (kind: SyntaxFile)
     ├── items (kind: ModuleItemList)
-    │   ├── child #0 (kind: ItemImpl)
-    │   │   ├── attributes (kind: AttributeList)
-    │   │   │   └── child #0 (kind: Attribute)
-    │   │   │       ├── hash (kind: TokenHash): '#'
-    │   │   │       ├── lbrack (kind: TokenLBrack): '['
-    │   │   │       ├── attr (kind: ExprPath)
-    │   │   │       │   └── item #0 (kind: PathSegmentSimple)
-    │   │   │       │       └── ident (kind: TokenIdentifier): 'generate_trait'
-    │   │   │       ├── arguments (kind: OptionArgListParenthesizedEmpty) []
-    │   │   │       └── rbrack (kind: TokenRBrack): ']'
-    │   │   ├── visibility (kind: VisibilityDefault) []
-    │   │   ├── impl_kw (kind: TokenImpl): 'impl'
-    │   │   ├── name (kind: TokenIdentifier): 'A'
-    │   │   ├── generic_params (kind: OptionWrappedGenericParamListEmpty) []
-    │   │   ├── of_kw (kind: TokenOf): 'of'
-    │   │   ├── trait_path (kind: ExprPath)
-    │   │   │   └── item #0 (kind: PathSegmentSimple)
-    │   │   │       └── ident (kind: TokenIdentifier): 'ATrait'
-    │   │   └── body (kind: ImplBody)
-    │   │       ├── lbrace (kind: TokenLBrace): '{'
-    │   │       ├── items (kind: ImplItemList)
-    │   │       │   └── child #0 (kind: FunctionWithBody)
-    │   │       │       ├── attributes (kind: AttributeList) []
-    │   │       │       ├── visibility (kind: VisibilityDefault) []
-    │   │       │       ├── declaration (kind: FunctionDeclaration)
-    │   │       │       │   ├── optional_const (kind: OptionTerminalConstEmpty) []
-    │   │       │       │   ├── function_kw (kind: TokenFunction): 'fn'
-    │   │       │       │   ├── name (kind: TokenIdentifier): 'lol'
-    │   │       │       │   ├── generic_params (kind: OptionWrappedGenericParamListEmpty) []
-    │   │       │       │   └── signature (kind: FunctionSignature)
-    │   │       │       │       ├── lparen (kind: TokenLParen): '('
-    │   │       │       │       ├── parameters (kind: ParamList) []
-    │   │       │       │       ├── rparen (kind: TokenRParen): ')'
-    │   │       │       │       ├── ret_ty (kind: ReturnTypeClause)
-    │   │       │       │       │   ├── arrow (kind: TokenArrow): '->'
-    │   │       │       │       │   └── ty (kind: ExprPath)
-    │   │       │       │       │       └── item #0 (kind: PathSegmentSimple)
-    │   │       │       │       │           └── ident (kind: TokenIdentifier): 'u32'
-    │   │       │       │       ├── implicits_clause (kind: OptionImplicitsClauseEmpty) []
-    │   │       │       │       └── optional_no_panic (kind: OptionTerminalNoPanicEmpty) []
-    │   │       │       └── body (kind: ExprBlock)
-    │   │       │           ├── lbrace (kind: TokenLBrace): '{'
-    │   │       │           ├── statements (kind: StatementList)
-    │   │       │           │   └── child #0 (kind: StatementExpr)
-    │   │       │           │       ├── attributes (kind: AttributeList) []
-    │   │       │           │       ├── expr (kind: TokenLiteralNumber): '12'
-    │   │       │           │       └── semicolon (kind: OptionTerminalSemicolonEmpty) []
-    │   │       │           └── rbrace (kind: TokenRBrace): '}'
-    │   │       └── rbrace (kind: TokenRBrace): '}'
-    │   └── child #1 (kind: FunctionWithBody)
-    │       ├── attributes (kind: AttributeList) []
+    │   └── child #0 (kind: ItemImpl)
+    │       ├── attributes (kind: AttributeList)
+    │       │   └── child #0 (kind: Attribute)
+    │       │       ├── hash (kind: TokenHash): '#'
+    │       │       ├── lbrack (kind: TokenLBrack): '['
+    │       │       ├── attr (kind: ExprPath)
+    │       │       │   └── item #0 (kind: PathSegmentSimple)
+    │       │       │       └── ident (kind: TokenIdentifier): 'generate_trait'
+    │       │       ├── arguments (kind: OptionArgListParenthesizedEmpty) []
+    │       │       └── rbrack (kind: TokenRBrack): ']'
     │       ├── visibility (kind: VisibilityDefault) []
-    │       ├── declaration (kind: FunctionDeclaration)
-    │       │   ├── optional_const (kind: OptionTerminalConstEmpty) []
-    │       │   ├── function_kw (kind: TokenFunction): 'fn'
-    │       │   ├── name (kind: TokenIdentifier): 'b'
-    │       │   ├── generic_params (kind: OptionWrappedGenericParamListEmpty) []
-    │       │   └── signature (kind: FunctionSignature)
-    │       │       ├── lparen (kind: TokenLParen): '('
-    │       │       ├── parameters (kind: ParamList) []
-    │       │       ├── rparen (kind: TokenRParen): ')'
-    │       │       ├── ret_ty (kind: OptionReturnTypeClauseEmpty) []
-    │       │       ├── implicits_clause (kind: OptionImplicitsClauseEmpty) []
-    │       │       └── optional_no_panic (kind: OptionTerminalNoPanicEmpty) []
-    │       └── body (kind: ExprBlock)
+    │       ├── impl_kw (kind: TokenImpl): 'impl'
+    │       ├── name (kind: TokenIdentifier): 'A'
+    │       ├── generic_params (kind: OptionWrappedGenericParamListEmpty) []
+    │       ├── of_kw (kind: TokenOf): 'of'
+    │       ├── trait_path (kind: ExprPath)
+    │       │   └── item #0 (kind: PathSegmentSimple)
+    │       │       └── ident (kind: TokenIdentifier): 'ATrait'
+    │       └── body (kind: ImplBody)
     │           ├── lbrace (kind: TokenLBrace): '{'
-    │           ├── statements (kind: StatementList)
-    │           │   └── child #0 (kind: StatementExpr)
+    │           ├── items (kind: ImplItemList)
+    │           │   └── child #0 (kind: FunctionWithBody)
     │           │       ├── attributes (kind: AttributeList) []
-    │           │       ├── expr (kind: ExprInlineMacro)
-    │           │       │   ├── path (kind: ExprPath)
-    │           │       │   │   └── item #0 (kind: PathSegmentSimple)
-    │           │       │   │       └── ident (kind: TokenIdentifier): 'println'
-    │           │       │   ├── bang (kind: TokenNot): '!'
-    │           │       │   └── arguments (kind: ArgListParenthesized)
+    │           │       ├── visibility (kind: VisibilityDefault) []
+    │           │       ├── declaration (kind: FunctionDeclaration)
+    │           │       │   ├── optional_const (kind: OptionTerminalConstEmpty) []
+    │           │       │   ├── function_kw (kind: TokenFunction): 'fn'
+    │           │       │   ├── name (kind: TokenIdentifier): 'lol'
+    │           │       │   ├── generic_params (kind: OptionWrappedGenericParamListEmpty) []
+    │           │       │   └── signature (kind: FunctionSignature)
     │           │       │       ├── lparen (kind: TokenLParen): '('
-    │           │       │       ├── arguments (kind: ArgList)
-    │           │       │       │   └── item #0 (kind: Arg)
-    │           │       │       │       ├── modifiers (kind: ModifierList) []
-    │           │       │       │       └── arg_clause (kind: ArgClauseUnnamed)
-    │           │       │       │           └── value (kind: TokenString): '"asdf"'
-    │           │       │       └── rparen (kind: TokenRParen): ')'
-    │           │       └── semicolon (kind: TokenSemicolon): ';'
+    │           │       │       ├── parameters (kind: ParamList) []
+    │           │       │       ├── rparen (kind: TokenRParen): ')'
+    │           │       │       ├── ret_ty (kind: ReturnTypeClause)
+    │           │       │       │   ├── arrow (kind: TokenArrow): '->'
+    │           │       │       │   └── ty (kind: ExprPath)
+    │           │       │       │       └── item #0 (kind: PathSegmentSimple)
+    │           │       │       │           └── ident (kind: TokenIdentifier): 'u32'
+    │           │       │       ├── implicits_clause (kind: OptionImplicitsClauseEmpty) []
+    │           │       │       └── optional_no_panic (kind: OptionTerminalNoPanicEmpty) []
+    │           │       └── body (kind: ExprBlock)
+    │           │           ├── lbrace (kind: TokenLBrace): '{'
+    │           │           ├── statements (kind: StatementList)
+    │           │           │   └── child #0 (kind: StatementExpr)
+    │           │           │       ├── attributes (kind: AttributeList) []
+    │           │           │       ├── expr (kind: TokenLiteralNumber): '12'
+    │           │           │       └── semicolon (kind: OptionTerminalSemicolonEmpty) []
+    │           │           └── rbrace (kind: TokenRBrace): '}'
     │           └── rbrace (kind: TokenRBrace): '}'
     └── eof (kind: TokenEndOfFile).
 
