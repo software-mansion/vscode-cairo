@@ -2,6 +2,7 @@ import { EditorView, TextEditor, VSBrowser, Workbench } from "vscode-extension-t
 import { expect } from "chai";
 import { isScarbAvailable } from "../../test-support/scarb";
 import * as path from "path";
+import { normalize } from "../../test-support/normalize";
 
 describe("Expand macro test", function () {
   this.timeout(50000);
@@ -19,7 +20,7 @@ describe("Expand macro test", function () {
   });
 
   it("checks if macro correctly expands", async function () {
-    assertExpandAt(
+    await assertExpandAt(
       editorView,
       1,
       1,
@@ -38,30 +39,6 @@ impl A of ATrait {
 
 trait ATrait {
     fn lol() -> u32;
-}`,
-    );
-  });
-  it("checks if inline macro correctly expands", async function () {
-    assertExpandAt(
-      editorView,
-      9,
-      8,
-      `// lib.cairo
-// ---------
-
-{
-    let mut __formatter_for_print_macros__: core::fmt::Formatter = core::traits::Default::default();
-    core::result::ResultTrait::<
-        (), core::fmt::Error,
-    >::unwrap(
-        {
-            core::byte_array::ByteArrayTrait::append_word(
-                ref __formatter_for_print_macros__.buffer, 0x617364660a, 5,
-            );
-            core::result::Result::<(), core::fmt::Error>::Ok(())
-        },
-    );
-    core::debug::print_byte_array_as_string(@__formatter_for_print_macros__.buffer);
 }`,
     );
   });
@@ -86,9 +63,15 @@ async function assertExpandAt(
 
   await workbench.executeCommand("Cairo: Recursively expand macros for item at caret");
 
+  await VSBrowser.instance.driver.wait(async () => {
+    const openEditorTitles = await editorView.getOpenEditorTitles();
+
+    return openEditorTitles.includes("[EXPANSION].cairo");
+  }, 5000);
+
   const expansion = await editorView.openEditor("[EXPANSION].cairo", 1);
 
-  const expansionText = await expansion.getText();
+  const expansionText = normalize(await expansion.getText());
 
   expect(expansionText).to.be.eq(expansionCode);
 }

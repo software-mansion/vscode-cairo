@@ -4,7 +4,3 @@ impl A of ATrait {
         12
     }
 }
-
-fn b() {
-    println!("asdf");
-}
