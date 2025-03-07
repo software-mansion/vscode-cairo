@@ -24,10 +24,10 @@ To cut a new release and publish it, follow the steps below.
    and you've passed through all legal formalities.
    There is a step-by-step tutorial on
    this [here](https://github.com/eclipse/openvsx/wiki/Publishing-Extensions#how-to-publish-an-extension).
-2. Make sure you have access to the `starkware` namespace.
-3. Authenticate with your Open VSX account:
+2. Make sure you have access to the `StarkWare` namespace.
+3. Authenticate with your Open VSX account (note: namespace name is case-sensitive here):
    ```bash
-   npx ovsx login starkware
+   npx ovsx login StarkWare
    ```
 
 ### Bump the version number
