@@ -122,6 +122,7 @@ export async function setupLanguageServer(ctx: Context): Promise<SetupResult | u
       new lc.NotificationType<
         { reason: "noMoreRetries"; retries: number; inMinutes: number } | { reason: "spawnFail" }
       >("cairo/procMacroServerInitializationFailed"),
+      // eslint-disable-next-line @typescript-eslint/no-misused-promises
       async (errorMessage) => {
         const goToLogs = "Go to logs";
 
@@ -158,6 +159,7 @@ export async function setupLanguageServer(ctx: Context): Promise<SetupResult | u
   ctx.extension.subscriptions.push(
     client.onNotification(
       new lc.NotificationType<string>("cairo/corelib-version-mismatch"),
+      // eslint-disable-next-line @typescript-eslint/no-misused-promises
       async (errorMessage) => {
         const restart = "Restart CairoLS";
         const cleanScarbCache = "Clean Scarb cache and reload";
@@ -186,33 +188,41 @@ export async function setupLanguageServer(ctx: Context): Promise<SetupResult | u
   );
 
   ctx.extension.subscriptions.push(
-    client.onNotification(new lc.NotificationType("cairo/scarb-metadata-failed"), async () => {
-      const goToLogs = "Go to logs";
+    client.onNotification(
+      new lc.NotificationType("cairo/scarb-metadata-failed"),
+      // eslint-disable-next-line @typescript-eslint/no-misused-promises
+      async () => {
+        const goToLogs = "Go to logs";
 
-      const selectedValue = await vscode.window.showErrorMessage(
-        "`scarb metadata` failed. Check if your project builds correctly via `scarb build`.",
-        goToLogs,
-      );
+        const selectedValue = await vscode.window.showErrorMessage(
+          "`scarb metadata` failed. Check if your project builds correctly via `scarb build`.",
+          goToLogs,
+        );
 
-      if (selectedValue === goToLogs) {
-        client.outputChannel.show(true);
-      }
-    }),
+        if (selectedValue === goToLogs) {
+          client.outputChannel.show(true);
+        }
+      },
+    ),
   );
 
   ctx.extension.subscriptions.push(
-    client.onNotification(projectConfigParsingFailed, async (params) => {
-      const goToLogs = "Go to logs";
+    client.onNotification(
+      projectConfigParsingFailed,
+      // eslint-disable-next-line @typescript-eslint/no-misused-promises
+      async (params) => {
+        const goToLogs = "Go to logs";
 
-      const selectedValue = await vscode.window.showErrorMessage(
-        `Failed to parse: ${params.projectConfigPath}. Project analysis will not be available.`,
-        goToLogs,
-      );
+        const selectedValue = await vscode.window.showErrorMessage(
+          `Failed to parse: ${params.projectConfigPath}. Project analysis will not be available.`,
+          goToLogs,
+        );
 
-      if (selectedValue === goToLogs) {
-        client.outputChannel.show(true);
-      }
-    }),
+        if (selectedValue === goToLogs) {
+          client.outputChannel.show(true);
+        }
+      },
+    ),
   );
 
   client.registerFeature(new ViewSyntaxTreeCapability(client, ctx));
@@ -251,6 +261,7 @@ function setupEnv(serverExecutable: lc.Executable, ctx: Context) {
   const extraEnv = ctx.config.get("languageServerExtraEnv");
 
   serverExecutable.options ??= {};
+  // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
   serverExecutable.options.env = {
     // Inherit env from parent process.
     ...process.env,
@@ -291,6 +302,7 @@ function quoteServerExecutable(serverExecutable: lc.Executable): string {
   const parts: string[] = [];
 
   if (serverExecutable.options?.env) {
+    // eslint-disable-next-line @typescript-eslint/no-unsafe-argument
     for (const [key, value] of Object.entries(serverExecutable.options.env)) {
       parts.push(`${key}=${value}`);
     }

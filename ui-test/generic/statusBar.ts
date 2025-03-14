@@ -38,7 +38,7 @@ describe("Status bar", function () {
     const settings = await new Workbench().openSettings();
 
     const setting = await settings.findSetting("Show In Status Bar", "Cairo1");
-    setting.setValue(false);
+    await setting.setValue(false);
 
     const statusBarIsUndefined = await VSBrowser.instance.driver.wait(async () => {
       const statusBar = await getStatusBarItem();

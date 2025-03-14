@@ -44,6 +44,7 @@ export class StandaloneLS implements LanguageServerExecutableProvider {
     };
 
     if (this.scarb?.path) {
+      // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
       exec.options.env["SCARB"] = this.scarb.path;
     }
 

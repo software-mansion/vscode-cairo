@@ -96,7 +96,7 @@ export class AnsiDecorationProvider {
       return decorationType;
     }
 
-    const style: Style = JSON.parse(key);
+    const style = JSON.parse(key) as Style;
 
     // @ts-expect-error copied from vscode-ansi
     decorationType = vscode.window.createTextEditorDecorationType({

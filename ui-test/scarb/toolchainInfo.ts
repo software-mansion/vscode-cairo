@@ -36,7 +36,7 @@ describe("Toolchain info", function () {
 
       const setting = await settings.findSetting("Scarb Path", "Cairo1");
 
-      setting.setValue(path.join(homedir(), ".local", "bin", "scarb"));
+      await setting.setValue(path.join(homedir(), ".local", "bin", "scarb"));
 
       await workbench.executeCommand("Cairo: Reload workspace");
     }
