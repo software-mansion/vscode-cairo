@@ -100,6 +100,25 @@ export async function setupLanguageServer(ctx: Context): Promise<SetupResult | u
 
   ctx.extension.subscriptions.push(
     client.onNotification(
+      new lc.NotificationType<{ command: string; cwd: string }>("cairo/executeInTerminal"),
+      ({ command, cwd }) => {
+        // Use task instead of vscode.window.crateTerminal() so it is easy to close after job is finished.
+        const task = new vscode.Task(
+          { type: "shell" },
+          vscode.TaskScope.Workspace,
+          // This task is unrepeatable and it is not registered so following are unused.
+          "", // Name does not matter.
+          "CairoLS", // Source does not matter but if empty VSC is ignoring this task.
+          new vscode.ShellExecution(command, { cwd }),
+        );
+
+        vscode.tasks.executeTask(task);
+      },
+    ),
+  );
+
+  ctx.extension.subscriptions.push(
+    client.onNotification(
       new lc.NotificationType<
         { reason: "noMoreRetries"; retries: number; inMinutes: number } | { reason: "spawnFail" }
       >("cairo/procMacroServerInitializationFailed"),
