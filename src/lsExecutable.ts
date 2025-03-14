@@ -48,6 +48,7 @@ export class LSExecutable {
       const preparedInvocation = provider.languageServerExecutable();
       return new LSExecutable(workspaceFolder, preparedInvocation, scarb, ctx);
     } catch (e) {
+      // eslint-disable-next-line @typescript-eslint/restrict-template-expressions
       ctx.log.error(`${e}`);
     }
     return undefined;

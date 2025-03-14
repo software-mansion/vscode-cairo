@@ -96,6 +96,7 @@ export class AnsiDecorationProvider {
       return decorationType;
     }
 
+    // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
     const style: Style = JSON.parse(key);
 
     // @ts-expect-error copied from vscode-ansi

@@ -6,15 +6,25 @@ import pluginChaiFriendly from "eslint-plugin-chai-friendly";
 
 export default ts.config(
   {
-    ignores: ["dist/*", "out/*", ".test-extensions"],
+    ignores: [
+      "dist/*",
+      "out/*",
+      ".test-extensions",
+      "eslint.config.mjs",
+      "bin/gen-cairo-snippets.mjs",
+    ],
   },
   js.configs.recommended,
-  ts.configs.recommended,
+  ts.configs.recommendedTypeChecked,
   ts.configs.stylistic,
   prettier,
   {
     languageOptions: {
       globals: globals.node,
+      parserOptions: {
+        projectService: true,
+        tsconfigRootDir: import.meta.dirname,
+      },
     },
   },
   pluginChaiFriendly.configs.recommendedFlat,
