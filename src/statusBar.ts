@@ -57,11 +57,11 @@ export class StatusBar {
     // Handle initial client value since it might be already initialized
     this.handleClientChange(extensionManager.getClient());
 
-    extensionManager.onNewClient(this.handleClientChange);
+    extensionManager.onNewClient((newClient) => this.handleClientChange(newClient));
 
     this.context.extension.subscriptions.push(
-      vscode.workspace.onDidChangeConfiguration(() => {
-        this.update();
+      vscode.workspace.onDidChangeConfiguration(async () => {
+        await this.update();
       }),
     );
 
@@ -110,6 +110,7 @@ export class StatusBar {
             this.statusBarItem.tooltip = `Cairo Language\n${version}`;
           }
         } catch (error) {
+          // eslint-disable-next-line @typescript-eslint/restrict-template-expressions
           this.context.log.error(`Error getting Scarb version: ${error}`);
         }
       }

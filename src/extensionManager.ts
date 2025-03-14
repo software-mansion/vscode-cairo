@@ -60,7 +60,7 @@ export class CairoExtensionManager implements vscode.Disposable {
     }
 
     if (event.removed.length > 0) {
-      this.handleWorkspaceFoldersRemoved();
+      await this.handleWorkspaceFoldersRemoved();
     }
   }
 
@@ -69,8 +69,8 @@ export class CairoExtensionManager implements vscode.Disposable {
     void this.stopClient();
   }
 
-  private handleWorkspaceFoldersRemoved() {
-    this.tryStartClient();
+  private async handleWorkspaceFoldersRemoved() {
+    await this.tryStartClient();
   }
 
   private async handleWorkspaceFoldersAdded(added: readonly vscode.WorkspaceFolder[]) {
