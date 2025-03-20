@@ -190,7 +190,7 @@
           "cairo1.runTestCommand": {
             "type": "string",
             "default": "",
-            "markdownDescription": "Allow using custom command for running tests, there is `{{TEST_PATH}}` variable available. Note this will only take effect if `cairo1.testRunner == custom`.\n\nExample: `snforge tets {{TEST_PATH}} --exact`.",
+            "markdownDescription": "Allow using custom command for running tests, there is `{{TEST_PATH}}` variable available. Note this will only take effect if `cairo1.testRunner == custom`.\n\nExample: `snforge test {{TEST_PATH}} --exact`.",
             "scope": "window"
           }
         }
