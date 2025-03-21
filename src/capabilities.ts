@@ -24,11 +24,11 @@ export class ViewSyntaxTreeCapability implements lc.DynamicFeature<"cairo/viewSy
     return;
   }
 
-  async register(): Promise<void> {
+  register(): void {
     // We do it here to make sure the command is registered only when available.
     // We can do that since this registration happens only once per LS instance.
     registerViewSyntaxTreeProvider(this.client, this.ctx);
-    await vscode.commands.executeCommand(
+    void vscode.commands.executeCommand(
       "setContext",
       "cairo1.viewSyntaxTreeCommandAvailable",
       true,

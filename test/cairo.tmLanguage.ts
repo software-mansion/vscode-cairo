@@ -4,7 +4,7 @@ import snippets from "../test-support/cairo-snippets.gen";
 import { highlightCairoCode } from "../test-support/grammar";
 import { snap } from "../test-support/snapshots";
 
-test("highlighting cairo-lang-parser tests", async (t) => {
+void test("highlighting cairo-lang-parser tests", async (t) => {
   for (const code of snippets) {
     const testName = code.replace(/\s+/g, " ").slice(0, 20);
 
@@ -18,7 +18,7 @@ ${code}
 ${syntax}
 `;
       const snapshot = await snap(code, actual);
-      await assert.equal(actual, snapshot);
+      assert.equal(actual, snapshot);
     });
   }
 });

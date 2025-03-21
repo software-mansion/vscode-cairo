@@ -18,7 +18,7 @@ const vscodeOnigurumaLib = fs
 
 const cairoGrammar = fs
   .readFile(path.join(__filename, "..", "..", "..", "syntaxes", "cairo.tmLanguage.json"), "utf-8")
-  .then((grammar) => JSON.parse(grammar));
+  .then((grammar) => JSON.parse(grammar) as vsctm.IRawGrammar);
 
 // Create a registry that can create a grammar from a scope name.
 const registry = new vsctm.Registry({

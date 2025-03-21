@@ -109,8 +109,8 @@ export class Scarb implements LanguageServerExecutableProvider {
       .split("\n")
       .map((v) => v.trim())
       .filter((v) => !!v)
-      .map((v) => JSON.parse(v))
-      .some((commands: Record<string, unknown>) => !!commands[command]);
+      .map((v) => JSON.parse(v) as Record<string, unknown>)
+      .some((commands) => !!commands[command]);
   }
 
   private async execWithOutput(args: readonly string[], ctx: Context): Promise<string> {
