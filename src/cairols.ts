@@ -125,38 +125,18 @@ export async function setupLanguageServer(ctx: Context): Promise<SetupResult | u
       >("cairo/procMacroServerInitializationFailed"),
       // eslint-disable-next-line @typescript-eslint/no-misused-promises
       async (errorMessage) => {
-        const goToLogs = "Go to logs";
-
         switch (errorMessage.reason) {
           case "noMoreRetries": {
             const { inMinutes, retries } = errorMessage;
 
             const message = `Starting proc-macro-server failed ${retries} times in ${inMinutes} minutes, the proc-macro-server will not be restarted. Procedural macros will not be analyzed. See the output for more information`;
             await ctx.statusBar.setStatus({ health: "error", message });
-
-            const selectedValue = await vscode.window.showErrorMessage(
-              message,
-              goToLogs,
-            );
-
-            if (selectedValue === goToLogs) {
-              client.outputChannel.show(true);
-            }
             break;
           }
           case "spawnFail": {
             const message =
               "Starting proc-macro-server failed, the proc-macro-server will not be restarted. Procedural macros will not be analyzed. See the output for more information";
             await ctx.statusBar.setStatus({ health: "error", message });
-
-            const selectedValue = await vscode.window.showErrorMessage(
-              message,
-              goToLogs,
-            );
-
-            if (selectedValue === goToLogs) {
-              client.outputChannel.show(true);
-            }
             break;
           }
         }
@@ -206,17 +186,6 @@ export async function setupLanguageServer(ctx: Context): Promise<SetupResult | u
         const message =
           "`scarb metadata` failed. Check if your project builds correctly via `scarb build`.";
         await ctx.statusBar.setStatus({ health: "error", message });
-
-        const goToLogs = "Go to logs";
-
-        const selectedValue = await vscode.window.showErrorMessage(
-          message,
-          goToLogs,
-        );
-
-        if (selectedValue === goToLogs) {
-          client.outputChannel.show(true);
-        }
       },
     ),
   );
@@ -228,17 +197,6 @@ export async function setupLanguageServer(ctx: Context): Promise<SetupResult | u
       async (params) => {
         const message = `Failed to parse: ${params.projectConfigPath}. Project analysis will not be available.`;
         await ctx.statusBar.setStatus({ health: "error", message });
-
-        const goToLogs = "Go to logs";
-
-        const selectedValue = await vscode.window.showErrorMessage(
-          message,
-          goToLogs,
-        );
-
-        if (selectedValue === goToLogs) {
-          client.outputChannel.show(true);
-        }
       },
     ),
   );
