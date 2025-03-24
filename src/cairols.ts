@@ -16,12 +16,12 @@ import { projectConfigParsingFailed } from "./lspRequests";
 import { ViewSyntaxTreeCapability } from "./capabilities";
 
 function notifyScarbMissing(ctx: Context) {
-  const errorMessage =
+  const message =
     "This is a Scarb project, but could not find Scarb executable on this machine. " +
     "Please add Scarb to the PATH environmental variable or set the 'cairo1.scarbPath' configuration " +
     "parameter. Otherwise Cairo code analysis will not work.";
-  void vscode.window.showWarningMessage(errorMessage);
-  ctx.log.error(errorMessage);
+  void ctx.statusBar.setStatus({ health: "warning", message });
+  ctx.log.error(message);
 }
 
 export interface SetupResult {
@@ -37,9 +37,10 @@ export async function setupLanguageServer(ctx: Context): Promise<SetupResult | u
 
   const sameCommand = await executablesEqual(executables);
   if (!sameCommand) {
-    await vscode.window.showErrorMessage(
-      "Using multiple Scarb versions in one workspace is not supported.",
-    );
+    await ctx.statusBar.setStatus({
+      health: "error",
+      message: "Using multiple Scarb versions in one workspace is not supported.",
+    });
     return;
   }
 
@@ -130,8 +131,11 @@ export async function setupLanguageServer(ctx: Context): Promise<SetupResult | u
           case "noMoreRetries": {
             const { inMinutes, retries } = errorMessage;
 
+            const message = `Starting proc-macro-server failed ${retries} times in ${inMinutes} minutes, the proc-macro-server will not be restarted. Procedural macros will not be analyzed. See the output for more information`;
+            await ctx.statusBar.setStatus({ health: "error", message });
+
             const selectedValue = await vscode.window.showErrorMessage(
-              `Starting proc-macro-server failed ${retries} times in ${inMinutes} minutes, the proc-macro-server will not be restarted. Procedural macros will not be analyzed. See the output for more information`,
+              message,
               goToLogs,
             );
 
@@ -141,8 +145,12 @@ export async function setupLanguageServer(ctx: Context): Promise<SetupResult | u
             break;
           }
           case "spawnFail": {
+            const message =
+              "Starting proc-macro-server failed, the proc-macro-server will not be restarted. Procedural macros will not be analyzed. See the output for more information";
+            await ctx.statusBar.setStatus({ health: "error", message });
+
             const selectedValue = await vscode.window.showErrorMessage(
-              "Starting proc-macro-server failed, the proc-macro-server will not be restarted. Procedural macros will not be analyzed. See the output for more information",
+              message,
               goToLogs,
             );
 
@@ -160,18 +168,21 @@ export async function setupLanguageServer(ctx: Context): Promise<SetupResult | u
     client.onNotification(
       new lc.NotificationType<string>("cairo/corelib-version-mismatch"),
       // eslint-disable-next-line @typescript-eslint/no-misused-promises
-      async (errorMessage) => {
+      async (message) => {
+        await ctx.statusBar.setStatus({ health: "error", message });
+
         const restart = "Restart CairoLS";
         const cleanScarbCache = "Clean Scarb cache and reload";
 
         const selectedValue = await vscode.window.showErrorMessage(
-          errorMessage,
+          message,
           restart,
           cleanScarbCache,
         );
 
         const restartLS = async () => {
           await client.restart();
+          await ctx.statusBar.reset();
         };
 
         switch (selectedValue) {
@@ -192,10 +203,14 @@ export async function setupLanguageServer(ctx: Context): Promise<SetupResult | u
       new lc.NotificationType("cairo/scarb-metadata-failed"),
       // eslint-disable-next-line @typescript-eslint/no-misused-promises
       async () => {
+        const message =
+          "`scarb metadata` failed. Check if your project builds correctly via `scarb build`.";
+        await ctx.statusBar.setStatus({ health: "error", message });
+
         const goToLogs = "Go to logs";
 
         const selectedValue = await vscode.window.showErrorMessage(
-          "`scarb metadata` failed. Check if your project builds correctly via `scarb build`.",
+          message,
           goToLogs,
         );
 
@@ -211,10 +226,13 @@ export async function setupLanguageServer(ctx: Context): Promise<SetupResult | u
       projectConfigParsingFailed,
       // eslint-disable-next-line @typescript-eslint/no-misused-promises
       async (params) => {
+        const message = `Failed to parse: ${params.projectConfigPath}. Project analysis will not be available.`;
+        await ctx.statusBar.setStatus({ health: "error", message });
+
         const goToLogs = "Go to logs";
 
         const selectedValue = await vscode.window.showErrorMessage(
-          `Failed to parse: ${params.projectConfigPath}. Project analysis will not be available.`,
+          message,
           goToLogs,
         );
 
