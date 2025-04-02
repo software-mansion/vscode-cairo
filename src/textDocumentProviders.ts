@@ -58,7 +58,7 @@ export const registerMacroExpandProvider = (client: lc.LanguageClient, ctx: Cont
 
 export const registerViewAnalyzedCratesProvider = (client: lc.LanguageClient, ctx: Context) => {
   const uri = vscode.Uri.parse(
-    "cairo-view-analyzed-crates://viewAnalyzedCrates/[ANALYZED_CRATES].txt",
+    "cairo-view-analyzed-crates://viewAnalyzedCrates/[ANALYZED_CRATES].md",
   );
   const eventEmitter = new vscode.EventEmitter<vscode.Uri>();
 
