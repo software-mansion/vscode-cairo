@@ -88,11 +88,35 @@ jobs:
       - run: npm run compile-test
       - run: xvfb-run --auto-servernum --server-args='-screen 0 1920x1080x24' npm run ui-test-scarb
 
+  fetch-latest-scarb-nightly:
+    runs-on: ubuntu-24.04
+    outputs:
+      latest_scarb_nightly: ${{ steps.set_var.outputs.latest_scarb }}
+    steps:
+      - id: set_var
+        run: |
+          LATEST_VER=$(git ls-remote --tags --refs "https://github.com/software-mansion/scarb-nightlies" |
+          grep -o 'refs/tags/.*' |
+          cut -d/ -f3- |
+          sed 'h; s/[+-]/./g; s/.p\([[:digit:]]\)/.z\1/; s/$/.z/; G; s/\n/ /' |
+          LC_ALL=C sort -t. -k 1,1 -k 2,2n -k 3,3n -k 4,4n -k 5,5n |
+          awk '{print $2}' |
+          tail -n1)
+          echo "latest_scarb=$LATEST_VER" >> $GITHUB_OUTPUT
+
   test-ui-parametrized:
     name: test ui
+    needs: fetch-latest-scarb-nightly
     strategy:
       matrix:
-        scarb: [disabled, "2.8.5", "2.9.1", "nightly-2025-03-01"]
+        scarb:
+          [
+            disabled,
+            "2.8.5",
+            "2.9.1",
+            "latest",
+            "${{ needs.fetch-latest-scarb-nightly.outputs.latest_scarb_nightly }}",
+          ]
         os: [ubuntu-24.04, windows-latest]
     runs-on: ${{ matrix.os }}
     steps:
