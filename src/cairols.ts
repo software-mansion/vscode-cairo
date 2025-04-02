@@ -78,27 +78,6 @@ export async function setupLanguageServer(ctx: Context): Promise<SetupResult | u
   );
 
   ctx.extension.subscriptions.push(
-    client.onNotification("scarb/resolving-start", () => {
-      vscode.window.withProgress(
-        {
-          title: "Scarb is resolving the project...",
-          location: vscode.ProgressLocation.Notification,
-          cancellable: false,
-        },
-        async () => {
-          return new Promise((resolve) => {
-            ctx.extension.subscriptions.push(
-              client.onNotification("scarb/resolving-finish", () => {
-                resolve(null);
-              }),
-            );
-          });
-        },
-      );
-    }),
-  );
-
-  ctx.extension.subscriptions.push(
     client.onNotification(
       new lc.NotificationType<{ command: string; cwd: string }>("cairo/executeInTerminal"),
       ({ command, cwd }) => {
