@@ -26,12 +26,6 @@ export const viewAnalyzedCrates = new lc.RequestType0<ViewAnalyzedCratesResponse
   "cairo/viewAnalyzedCrates",
 );
 
-export interface ProjectConfigParsingFailedRequest {
-  projectConfigPath: string;
-}
-export const projectConfigParsingFailed =
-  new lc.NotificationType<ProjectConfigParsingFailedRequest>("cairo/projectConfigParsingFailed");
-
 export interface PathAndVersion {
   path: string;
   version: string;
