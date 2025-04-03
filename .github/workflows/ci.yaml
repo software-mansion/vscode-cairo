@@ -87,59 +87,10 @@ jobs:
       - run: npm ci
       - run: npm run compile-test
       - run: xvfb-run --auto-servernum --server-args='-screen 0 1920x1080x24' npm run ui-test-scarb
-
-  fetch-latest-scarb-nightly:
-    runs-on: ubuntu-24.04
-    outputs:
-      latest_scarb_nightly: ${{ steps.set_var.outputs.latest_scarb }}
-    steps:
-      - id: set_var
-        run: |
-          LATEST_VER=$(git ls-remote --tags --refs "https://github.com/software-mansion/scarb-nightlies" |
-          grep -o 'refs/tags/.*' |
-          cut -d/ -f3- |
-          sed 'h; s/[+-]/./g; s/.p\([[:digit:]]\)/.z\1/; s/$/.z/; G; s/\n/ /' |
-          LC_ALL=C sort -t. -k 1,1 -k 2,2n -k 3,3n -k 4,4n -k 5,5n |
-          awk '{print $2}' |
-          tail -n1)
-          echo "latest_scarb=$LATEST_VER" >> $GITHUB_OUTPUT
-
   test-ui-parametrized:
-    name: test ui
-    needs: fetch-latest-scarb-nightly
-    strategy:
-      matrix:
-        scarb:
-          [
-            disabled,
-            "2.8.5",
-            "2.9.1",
-            "latest",
-            "${{ needs.fetch-latest-scarb-nightly.outputs.latest_scarb_nightly }}",
-          ]
-        os: [ubuntu-24.04, windows-latest]
-    runs-on: ${{ matrix.os }}
-    steps:
-      - uses: actions/checkout@v4
-      - uses: actions/setup-node@v4
-        with:
-          node-version: "20.x"
-          cache: npm
-      - uses: software-mansion/setup-scarb@v1
-        if: ${{ matrix.scarb != 'disabled' }}
-        with:
-          scarb-version: ${{ matrix.scarb }}
-      - run: npm ci
-      - run: npm run compile-test
-      - run: echo "SCARB_VERSION=${{ matrix.scarb }}" >> $GITHUB_ENV
-        shell: bash
-      - run: |
-          sudo sysctl -w kernel.apparmor_restrict_unprivileged_userns=0
-          xvfb-run --auto-servernum --server-args='-screen 0 1920x1080x24' npm run ui-test
-        if: ${{ matrix.os == 'ubuntu-24.04'}}
-      - run: npm run ui-test
-        if: ${{ matrix.os != 'ubuntu-24.04'}}
-
+    uses: ./.github/workflows/ui-test-parametrized.yml
+    with:
+      scarb_versions: '["disabled", "2.8.5", "2.9.1", "latest"]'
   test-ui:
     if: ${{ always() }}
     needs:

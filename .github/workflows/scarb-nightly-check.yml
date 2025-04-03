@@ -1,0 +1,11 @@
+name: Check new scarb nightly
+on:
+  repository_dispatch:
+    types: [new-scarb-nightly-published]
+
+jobs:
+  test-with-nightly-scarb:
+    name: Check with scarb nightly release from tag (${{ github.event.client_payload.tag_name }})
+    uses: ./.github/workflows/ui-test-parametrized.yml
+    with:
+      scarb_versions: '["${{ github.event.client_payload.tag_name }}"]'
