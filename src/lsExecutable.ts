@@ -44,8 +44,11 @@ export class LSExecutable {
   ): Promise<LSExecutable | undefined> {
     const scarb = await findScarbForWorkspaceFolder(workspaceFolder, ctx);
     try {
-      const provider = await determineLanguageServerExecutableProvider(workspaceFolder, scarb, ctx);
-      const preparedInvocation = provider.languageServerExecutable();
+      const preparedInvocation = await determineLanguageServerExecutableProvider(
+        workspaceFolder,
+        scarb,
+        ctx,
+      );
       return new LSExecutable(workspaceFolder, preparedInvocation, scarb, ctx);
     } catch (e) {
       ctx.log.error(`${e}`);
@@ -74,34 +77,32 @@ export class LSExecutable {
   }
 }
 
-// TODO(6740): Get rid of this interface, it's an extra level of abstraction we don't need (we call it immediataly anyways).
-export interface LanguageServerExecutableProvider {
-  languageServerExecutable(): lc.Executable;
-}
-
 export async function determineLanguageServerExecutableProvider(
   workspaceFolder: vscode.WorkspaceFolder | undefined,
   scarb: Scarb | undefined,
   ctx: Context,
-): Promise<LanguageServerExecutableProvider> {
+): Promise<lc.Executable> {
   const log = ctx.log.span("determineLanguageServerExecutableProvider");
-  const standalone = () => StandaloneLS.find(workspaceFolder, scarb, ctx);
+  const standaloneExecutable = async () => {
+    const ls = await StandaloneLS.find(workspaceFolder, scarb, ctx);
+    return ls.getExecutable();
+  };
 
   if (!scarb) {
     log.trace("Scarb is missing");
-    return await standalone();
+    return await standaloneExecutable();
   }
 
   if (!ctx.config.get("preferScarbLanguageServer", true)) {
     log.trace("`preferScarbLanguageServer` is false, using standalone LS");
-    return await standalone();
+    return await standaloneExecutable();
   }
 
   if (await scarb.hasCairoLS(ctx)) {
     log.trace("using Scarb LS");
-    return scarb;
+    return scarb.getExecutable();
   }
 
   log.trace("Scarb has no LS extension, falling back to standalone");
-  return await standalone();
+  return await standaloneExecutable();
 }

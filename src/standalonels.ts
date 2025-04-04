@@ -1,11 +1,10 @@
 import * as vscode from "vscode";
 import * as lc from "vscode-languageclient/node";
-import type { LanguageServerExecutableProvider } from "./lsExecutable";
 import type { Context } from "./context";
 import type { Scarb } from "./scarb";
 import { checkTool } from "./toolchain";
 
-export class StandaloneLS implements LanguageServerExecutableProvider {
+export class StandaloneLS {
   public constructor(
     public readonly path: string,
     public readonly workspaceFolder?: vscode.WorkspaceFolder | undefined,
@@ -35,7 +34,7 @@ export class StandaloneLS implements LanguageServerExecutableProvider {
     return new StandaloneLS(configPathChecked, workspaceFolder, scarb);
   }
 
-  languageServerExecutable(): lc.Executable {
+  getExecutable(): lc.Executable {
     const exec: Required<Pick<lc.Executable, "options">> & lc.Executable = {
       command: this.path,
       options: {
