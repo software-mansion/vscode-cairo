@@ -12,7 +12,6 @@ import {
 
 import { executablesEqual, getLSExecutables, LSExecutable } from "./lsExecutable";
 import assert from "node:assert";
-import { projectConfigParsingFailed } from "./lspRequests";
 import { ViewSyntaxTreeCapability } from "./capabilities";
 
 function notifyScarbMissing(ctx: Context) {
@@ -78,27 +77,6 @@ export async function setupLanguageServer(ctx: Context): Promise<SetupResult | u
   );
 
   ctx.extension.subscriptions.push(
-    client.onNotification("scarb/resolving-start", () => {
-      vscode.window.withProgress(
-        {
-          title: "Scarb is resolving the project...",
-          location: vscode.ProgressLocation.Notification,
-          cancellable: false,
-        },
-        async () => {
-          return new Promise((resolve) => {
-            ctx.extension.subscriptions.push(
-              client.onNotification("scarb/resolving-finish", () => {
-                resolve(null);
-              }),
-            );
-          });
-        },
-      );
-    }),
-  );
-
-  ctx.extension.subscriptions.push(
     client.onNotification(
       new lc.NotificationType<{ command: string; cwd: string }>("cairo/executeInTerminal"),
       ({ command, cwd }) => {
@@ -113,45 +91,6 @@ export async function setupLanguageServer(ctx: Context): Promise<SetupResult | u
         );
 
         vscode.tasks.executeTask(task);
-      },
-    ),
-  );
-
-  ctx.extension.subscriptions.push(
-    client.onNotification(
-      new lc.NotificationType<
-        { reason: "noMoreRetries"; retries: number; inMinutes: number } | { reason: "spawnFail" }
-      >("cairo/procMacroServerInitializationFailed"),
-      // eslint-disable-next-line @typescript-eslint/no-misused-promises
-      async (errorMessage) => {
-        const goToLogs = "Go to logs";
-
-        switch (errorMessage.reason) {
-          case "noMoreRetries": {
-            const { inMinutes, retries } = errorMessage;
-
-            const selectedValue = await vscode.window.showErrorMessage(
-              `Starting proc-macro-server failed ${retries} times in ${inMinutes} minutes, the proc-macro-server will not be restarted. Procedural macros will not be analyzed. See the output for more information`,
-              goToLogs,
-            );
-
-            if (selectedValue === goToLogs) {
-              client.outputChannel.show(true);
-            }
-            break;
-          }
-          case "spawnFail": {
-            const selectedValue = await vscode.window.showErrorMessage(
-              "Starting proc-macro-server failed, the proc-macro-server will not be restarted. Procedural macros will not be analyzed. See the output for more information",
-              goToLogs,
-            );
-
-            if (selectedValue === goToLogs) {
-              client.outputChannel.show(true);
-            }
-            break;
-          }
-        }
       },
     ),
   );
@@ -182,44 +121,6 @@ export async function setupLanguageServer(ctx: Context): Promise<SetupResult | u
             await scarb?.cacheClean(ctx);
             await restartLS();
             break;
-        }
-      },
-    ),
-  );
-
-  ctx.extension.subscriptions.push(
-    client.onNotification(
-      new lc.NotificationType("cairo/scarb-metadata-failed"),
-      // eslint-disable-next-line @typescript-eslint/no-misused-promises
-      async () => {
-        const goToLogs = "Go to logs";
-
-        const selectedValue = await vscode.window.showErrorMessage(
-          "`scarb metadata` failed. Check if your project builds correctly via `scarb build`.",
-          goToLogs,
-        );
-
-        if (selectedValue === goToLogs) {
-          client.outputChannel.show(true);
-        }
-      },
-    ),
-  );
-
-  ctx.extension.subscriptions.push(
-    client.onNotification(
-      projectConfigParsingFailed,
-      // eslint-disable-next-line @typescript-eslint/no-misused-promises
-      async (params) => {
-        const goToLogs = "Go to logs";
-
-        const selectedValue = await vscode.window.showErrorMessage(
-          `Failed to parse: ${params.projectConfigPath}. Project analysis will not be available.`,
-          goToLogs,
-        );
-
-        if (selectedValue === goToLogs) {
-          client.outputChannel.show(true);
         }
       },
     ),
