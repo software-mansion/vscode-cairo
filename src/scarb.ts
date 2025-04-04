@@ -1,13 +1,12 @@
 import { spawn } from "child_process";
 import * as vscode from "vscode";
 import * as lc from "vscode-languageclient/node";
-import type { LanguageServerExecutableProvider } from "./lsExecutable";
 import type { Context } from "./context";
 import { checkTool, findToolInAsdf, findToolInPath } from "./toolchain";
 
 let globalExecId = 0;
 
-export class Scarb implements LanguageServerExecutableProvider {
+export class Scarb {
   public constructor(
     /**
      * The path to the Scarb binary on the local filesystem.
@@ -70,7 +69,7 @@ export class Scarb implements LanguageServerExecutableProvider {
     }
   }
 
-  public languageServerExecutable(): lc.Executable {
+  public getExecutable(): lc.Executable {
     const exec: lc.Executable = {
       command: this.path,
       args: ["cairo-language-server"],
