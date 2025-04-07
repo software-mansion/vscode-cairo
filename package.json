@@ -103,71 +103,8 @@
             "type": "boolean",
             "default": "true",
             "description": "Enable the Cairo language server.",
-            "scope": "window"
-          },
-          "cairo1.languageServerPath": {
-            "type": "string",
-            "description": "Path to the Cairo language server (cairo-language-server).",
-            "scope": "window"
-          },
-          "cairo1.enableScarb": {
-            "type": "boolean",
-            "default": "true",
-            "description": "Enable the use of Scarb package manager.",
-            "scope": "window"
-          },
-          "cairo1.preferScarbLanguageServer": {
-            "type": "boolean",
-            "default": "true",
-            "markdownDescription": "Prefer using `scarb cairo-language-server` over standalone `cairo-language-server` (e.g. one specified by `cairo1.languageServerPath`).",
-            "scope": "window"
-          },
-          "cairo1.scarbPath": {
-            "type": "string",
-            "description": "Absolute path to the Scarb package manager binary.",
-            "scope": "window"
-          },
-          "cairo1.corelibPath": {
-            "type": "string",
-            "description": "Absolute path to the Cairo core library, used in non-Scarb projects.",
-            "scope": "window"
-          },
-          "cairo1.traceMacroDiagnostics": {
-            "type": "boolean",
-            "description": "Attach additional information to diagnostics coming from macros, providing diagnostic source in macro generated code.",
-            "scope": "window"
-          },
-          "cairo1.languageServerExtraEnv": {
-            "type": [
-              "null",
-              "object"
-            ],
-            "additionalProperties": {
-              "type": [
-                "string",
-                "number"
-              ]
-            },
-            "default": {},
-            "markdownDescription": "Extra environment variables that will be passed to the `cairo-language-server` executable.\nUseful for passing e.g. `CAIRO_LS_LOG` for debugging."
-          },
-          "cairo1.showInStatusBar": {
-            "type": "boolean",
-            "default": true,
-            "description": "Show CairoLS information in the status bar.",
-            "scope": "window"
-          },
-          "cairo1.enableProcMacros": {
-            "type": "boolean",
-            "default": true,
-            "description": "Enable support for procedural macros. This feature is in active development and may not work flawlessly yet!",
-            "scope": "window"
-          },
-          "cairo1.enableLinter": {
-            "type": "boolean",
-            "default": true,
-            "description": "Enable cairo-lint during analysis.",
-            "scope": "window"
+            "scope": "window",
+            "order": 1
           },
           "cairo1.testRunner": {
             "type": "string",
@@ -185,13 +122,89 @@
               "Use command specified under `cairo1.runTestCommand` for all tests."
             ],
             "description": "Select test runner to use.",
-            "scope": "window"
+            "scope": "window",
+            "order": 2
           },
           "cairo1.runTestCommand": {
             "type": "string",
             "default": "",
             "markdownDescription": "Allow using custom command for running tests, there is `{{TEST_PATH}}` variable available. Note this will only take effect if `cairo1.testRunner == custom`.\n\nExample: `snforge test {{TEST_PATH}} --exact`.",
-            "scope": "window"
+            "scope": "window",
+            "order": 3
+          },
+          "cairo1.enableLinter": {
+            "type": "boolean",
+            "default": true,
+            "description": "Enable cairo-lint during analysis.",
+            "scope": "window",
+            "order": 4
+          },
+          "cairo1.enableProcMacros": {
+            "type": "boolean",
+            "default": true,
+            "description": "Enable support for procedural macros. This feature is in active development and may not work flawlessly yet!",
+            "scope": "window",
+            "order": 5
+          },
+          "cairo1.showInStatusBar": {
+            "type": "boolean",
+            "default": true,
+            "description": "Show CairoLS information in the status bar.",
+            "scope": "window",
+            "order": 6
+          },
+          "cairo1.traceMacroDiagnostics": {
+            "type": "boolean",
+            "description": "Attach additional information to diagnostics coming from macros, providing diagnostic source in macro generated code.",
+            "scope": "window",
+            "order": 7
+          },
+          "cairo1.languageServerExtraEnv": {
+            "type": [
+              "null",
+              "object"
+            ],
+            "additionalProperties": {
+              "type": [
+                "string",
+                "number"
+              ]
+            },
+            "default": {},
+            "markdownDescription": "Extra environment variables that will be passed to the `cairo-language-server` executable.\nUseful for passing e.g. `CAIRO_LS_LOG` for debugging.",
+            "order": 8
+          },
+          "cairo1.scarbPath": {
+            "type": "string",
+            "description": "Absolute path to the Scarb package manager binary.",
+            "scope": "window",
+            "order": 9
+          },
+          "cairo1.preferScarbLanguageServer": {
+            "type": "boolean",
+            "default": "true",
+            "markdownDescription": "Prefer using `scarb cairo-language-server` over standalone `cairo-language-server` (e.g. one specified by `cairo1.languageServerPath`).",
+            "scope": "window",
+            "order": 10
+          },
+          "cairo1.languageServerPath": {
+            "type": "string",
+            "description": "Path to the Cairo language server (cairo-language-server).",
+            "scope": "window",
+            "order": 11
+          },
+          "cairo1.corelibPath": {
+            "type": "string",
+            "description": "Absolute path to the Cairo core library, used in non-Scarb projects.",
+            "scope": "window",
+            "order": 12
+          },
+          "cairo1.enableScarb": {
+            "type": "boolean",
+            "default": "true",
+            "description": "Enable the use of Scarb package manager.",
+            "scope": "window",
+            "order": 13
           }
         }
       }
