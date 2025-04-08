@@ -49,14 +49,21 @@ describe("Toolchain info", function () {
 
     const title = await statusBar!.getAttribute(StatusBar["locators"].StatusBar.itemTitle);
 
+    expect(title).to.match(
+      /Cairo, (Cairo Language|Cairo Language Server.+\(.+\))\n\n.+\(.+\)\n\ncairo:.+\(.+\)\n\nsierra:.+\n/,
+    );
+
     const matches =
-      /Cairo, (?:Cairo Language Server .+ \(.+\)\n)?Cairo Language\nscarb (.+) \(.+\)\ncairo: .+ \(.+\)\nsierra: .+/.exec(
+      /Cairo, (?:Cairo Language|Cairo Language Server.+\(.+\))\n\nscarb(.+)\(.+\)\n\ncairo:.+\(.+\)\n\nsierra:.+\n/.exec(
         title,
       );
 
     expect(matches).to.not.be.undefined;
+    expect(matches).to.not.be.null;
+    expect(matches![1]).to.not.be.undefined;
+    expect(matches![1]).to.not.be.null;
 
-    const scarbVersion = matches![1];
+    const scarbVersion = matches![1]!.replaceAll("&nbsp;", "").replaceAll("\\", "");
 
     expect(scarbVersion).to.be.eq(expectedScarbVersion);
   });
