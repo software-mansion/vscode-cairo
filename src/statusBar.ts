@@ -106,7 +106,7 @@ export class StatusBar {
       const request = this.client.sendRequest(toolchainInfo);
 
       // TODO(#50) When there is no handler for method on server it never resolves instead of failing.
-      const response = await timeout(request, 1000);
+      const response = await timeout(request, 2000);
 
       tooltip.value = `Cairo Language Server ${response.ls.version} (${response.ls.path})`;
 

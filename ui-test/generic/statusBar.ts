@@ -30,7 +30,7 @@ describe("Status bar", function () {
         /Cairo, (Cairo Language|Cairo Language Server.+\(.+\))\n\nscarb.+\(.+\)\n\ncairo:.+\(.+\)\n\nsierra:.+\n/,
       );
     } else {
-      expect(title).to.be.eq("Cairo, Cairo Language\n---\nServer&nbsp;status:&nbsp;OK");
+      expect(title).to.be.eq("Cairo, Cairo Language\n---\nServer status: OK");
     }
   });
 
