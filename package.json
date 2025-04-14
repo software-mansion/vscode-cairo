@@ -159,6 +159,12 @@
             "scope": "window",
             "order": 7
           },
+          "cairo1.scarbPath": {
+            "type": "string",
+            "description": "Absolute path to the Scarb package manager binary.",
+            "scope": "window",
+            "order": 8
+          },
           "cairo1.languageServerExtraEnv": {
             "type": [
               "null",
@@ -172,12 +178,6 @@
             },
             "default": {},
             "markdownDescription": "Extra environment variables that will be passed to the `cairo-language-server` executable.\nUseful for passing e.g. `CAIRO_LS_LOG` for debugging.",
-            "order": 8
-          },
-          "cairo1.scarbPath": {
-            "type": "string",
-            "description": "Absolute path to the Scarb package manager binary.",
-            "scope": "window",
             "order": 9
           },
           "cairo1.preferScarbLanguageServer": {
