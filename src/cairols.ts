@@ -1,5 +1,6 @@
 import * as vscode from "vscode";
 import { SemanticTokensFeature } from "vscode-languageclient/lib/common/semanticTokens";
+import { coerce, satisfies } from "semver";
 
 import * as lc from "vscode-languageclient/node";
 import { Context } from "./context";
@@ -49,6 +50,17 @@ export async function setupLanguageServer(ctx: Context): Promise<SetupResult | u
 
   setupEnv(run, ctx);
   ctx.log.debug(`using CairoLS: ${quoteServerExecutable(run)}`);
+
+  const scarbVersionOutput = await executables[0].scarb?.getVersion(ctx);
+  const scarbVersion = scarbVersionOutput?.match(/scarb (.+) /)?.at(1);
+
+  // Skip "rc", "dev" and "nightly" suffixes. 2.12.0-rc.0 will become 2.12.0.
+  const scarbVersionFull = coerce(scarbVersion);
+
+  // Proc macros are enabled since 2.12.0-rc.0. There is no elegant way to exclude "rc" while still including "dev" and "nightly".
+  if (satisfies(scarbVersionFull ?? "0.0.1", ">= 2.12.0")) {
+    ctx.config.set("enableProcMacros", true);
+  }
 
   const serverOptions = { run, debug: run };
   // We pass client options to maintain compability with older LS binaries.

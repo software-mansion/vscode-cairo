@@ -33,6 +33,10 @@ export class Config {
     }
     return value;
   }
+
+  public set<K extends keyof ConfigProps>(prop: K, value: ConfigProps[K]) {
+    vscode.workspace.getConfiguration(Config.ROOT).update(prop, value);
+  }
 }
 
 function isPropWithPlaceholders(prop: keyof ConfigProps): boolean {
