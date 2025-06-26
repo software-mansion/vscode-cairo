@@ -3,14 +3,18 @@ import * as vscode from "vscode";
 
 interface ConfigProps {
   enableLanguageServer: boolean;
+  testRunner: string;
+  runTestCommand: string;
+  enableLinter: boolean;
+  enableProcMacros: boolean;
   showInStatusBar: boolean;
-  languageServerPath: string;
-  enableScarb: boolean;
-  preferScarbLanguageServer: boolean;
-  scarbPath: string;
-  corelibPath: string;
   traceMacroDiagnostics: boolean;
+  scarbPath: string;
   languageServerExtraEnv: null | Record<string, string | number>;
+  preferScarbLanguageServer: boolean;
+  languageServerPath: string;
+  corelibPath: string;
+  enableScarb: boolean;
 }
 
 export class Config {
