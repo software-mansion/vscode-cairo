@@ -146,24 +146,31 @@
             "scope": "window",
             "order": 5
           },
+          "cairo1.experimental.enableProcMacroCache": {
+            "type": "boolean",
+            "default": false,
+            "markdownDescription": "Enable on disk cache for procedural macros.\n\nThis feature is in active development and does not work flawlessly yet!\n\n**WARNING**: currently the cache is **never** invalidated. If **ANY** of your proc macro dependencies change - remove the `cairo-language-server/proc_macro.cache` file from your target.",
+            "scope": "window",
+            "order": 6
+          },
           "cairo1.showInStatusBar": {
             "type": "boolean",
             "default": true,
             "description": "Show CairoLS information in the status bar.",
             "scope": "window",
-            "order": 6
+            "order": 7
           },
           "cairo1.traceMacroDiagnostics": {
             "type": "boolean",
             "description": "Attach additional information to diagnostics coming from macros, providing diagnostic source in macro generated code.",
             "scope": "window",
-            "order": 7
+            "order": 8
           },
           "cairo1.scarbPath": {
             "type": "string",
             "description": "Absolute path to the Scarb package manager binary.",
             "scope": "window",
-            "order": 8
+            "order": 9
           },
           "cairo1.languageServerExtraEnv": {
             "type": [
@@ -178,33 +185,33 @@
             },
             "default": {},
             "markdownDescription": "Extra environment variables that will be passed to the `cairo-language-server` executable.\nUseful for passing e.g. `CAIRO_LS_LOG` for debugging.",
-            "order": 9
+            "order": 10
           },
           "cairo1.preferScarbLanguageServer": {
             "type": "boolean",
             "default": "true",
             "markdownDescription": "Prefer using `scarb cairo-language-server` over standalone `cairo-language-server` (e.g. one specified by `cairo1.languageServerPath`).",
             "scope": "window",
-            "order": 10
+            "order": 11
           },
           "cairo1.languageServerPath": {
             "type": "string",
             "description": "Path to the Cairo language server (cairo-language-server).",
             "scope": "window",
-            "order": 11
+            "order": 12
           },
           "cairo1.corelibPath": {
             "type": "string",
             "description": "Absolute path to the Cairo core library, used in non-Scarb projects.",
             "scope": "window",
-            "order": 12
+            "order": 13
           },
           "cairo1.enableScarb": {
             "type": "boolean",
             "default": "true",
             "description": "Enable the use of Scarb package manager.",
             "scope": "window",
-            "order": 13
+            "order": 14
           }
         }
       }
