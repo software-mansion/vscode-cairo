@@ -13,6 +13,7 @@ import {
 import { executablesEqual, getLSExecutables, LSExecutable } from "./lsExecutable";
 import assert from "node:assert";
 import { ViewSyntaxTreeCapability } from "./capabilities";
+import { MessageType, ShowMessageParams } from "vscode-languageclient/node";
 
 function notifyScarbMissing(ctx: Context) {
   const message =
@@ -124,6 +125,25 @@ export async function setupLanguageServer(ctx: Context): Promise<SetupResult | u
           case cleanScarbCache:
             await scarb?.cacheClean(ctx);
             await restartLS();
+            break;
+        }
+      },
+    ),
+  );
+
+  ctx.extension.subscriptions.push(
+    client.onNotification(
+      new lc.NotificationType<ShowMessageParams>("window/showMessage"),
+      // eslint-disable-next-line @typescript-eslint/no-misused-promises
+      async (message) => {
+        switch (message.type) {
+          case MessageType.Error:
+            await ctx.statusBar.setStatus({ health: "error", message: message.message });
+            break;
+          case MessageType.Warning:
+            await ctx.statusBar.setStatus({ health: "warning", message: message.message });
+            break;
+          default:
             break;
         }
       },
