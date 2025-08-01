@@ -12,7 +12,7 @@ import {
 
 import { executablesEqual, getLSExecutables, LSExecutable } from "./lsExecutable";
 import assert from "node:assert";
-import { ViewSyntaxTreeCapability } from "./capabilities";
+import { ExecuteInTerminal, ViewSyntaxTreeCapability } from "./capabilities";
 
 function notifyScarbMissing(ctx: Context) {
   const message =
@@ -130,6 +130,7 @@ export async function setupLanguageServer(ctx: Context): Promise<SetupResult | u
     ),
   );
 
+  client.registerFeature(new ExecuteInTerminal());
   client.registerFeature(new ViewSyntaxTreeCapability(client, ctx));
 
   await client.start();
