@@ -2,6 +2,7 @@ import * as lc from "vscode-languageclient/node";
 import { Context } from "./context";
 import { registerViewSyntaxTreeProvider } from "./textDocumentProviders";
 import vscode from "vscode";
+import { ClientCapabilities } from "vscode-languageclient";
 
 export class ViewSyntaxTreeCapability implements lc.DynamicFeature<"cairo/viewSyntaxTree"> {
   constructor(
@@ -36,6 +37,24 @@ export class ViewSyntaxTreeCapability implements lc.DynamicFeature<"cairo/viewSy
   }
 
   unregister(): void {
+    return;
+  }
+}
+
+export class ExecuteInTerminal implements lc.StaticFeature {
+  clear(): void {
+    return;
+  }
+
+  fillClientCapabilities(capabilities: ClientCapabilities): void {
+    capabilities.experimental = { cairo: { executeInTerminal: {} } };
+  }
+
+  getState(): lc.FeatureState {
+    return { kind: "static" };
+  }
+
+  initialize(): void {
     return;
   }
 }
