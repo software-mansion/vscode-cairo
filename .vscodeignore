@@ -1,7 +1,10 @@
 .gitignore
+.github
 .prettierignore
 .vscode
+.idea
 .vscode-test
+.tool-versions
 bin/
 node_modules
 out/
@@ -9,3 +12,4 @@ src/
 test/
 test-support/
 tsconfig.json
+ui-test/
