@@ -24,19 +24,14 @@ describe("Expand macro test", function () {
       editorView,
       1,
       1,
-      `// lib.cairo
-// ---------
-
-#[generate_trait]
+`#[generate_trait]
 impl A of ATrait {
     fn lol() -> u32 {
         12
     }
 }
 
-// generate_trait
-// --------------
-
+//-----
 trait ATrait {
     fn lol() -> u32;
 }`,
