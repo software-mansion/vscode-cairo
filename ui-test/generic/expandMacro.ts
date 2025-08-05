@@ -19,7 +19,8 @@ describe("Expand macro test", function () {
     await VSBrowser.instance.openResources(path.join("ui-test", "fixtures", "expand_macro"));
   });
 
-  it("checks if macro correctly expands", async function () {
+  // TODO(#136): Fix this test yielding different results depending on scarb version
+  it.skip("checks if macro correctly expands", async function () {
     await assertExpandAt(
       editorView,
       1,
