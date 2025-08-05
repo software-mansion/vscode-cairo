@@ -25,7 +25,7 @@ describe("Expand macro test", function () {
       editorView,
       1,
       1,
-`#[generate_trait]
+      `#[generate_trait]
 impl A of ATrait {
     fn lol() -> u32 {
         12
