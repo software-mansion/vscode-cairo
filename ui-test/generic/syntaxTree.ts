@@ -20,7 +20,8 @@ describe("View syntax tree", function () {
     await VSBrowser.instance.openResources(path.join("ui-test", "fixtures", "expand_macro"));
   });
 
-  it("checks if syntax tree is correctly printed", async function () {
+  // TODO(#136): Fix this test yielding different results depending on scarb version
+  it.skip("checks if syntax tree is correctly printed", async function () {
     await assertSyntaxTree(
       editorView,
       1,

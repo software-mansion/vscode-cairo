@@ -19,24 +19,20 @@ describe("Expand macro test", function () {
     await VSBrowser.instance.openResources(path.join("ui-test", "fixtures", "expand_macro"));
   });
 
-  it("checks if macro correctly expands", async function () {
+  // TODO(#136): Fix this test yielding different results depending on scarb version
+  it.skip("checks if macro correctly expands", async function () {
     await assertExpandAt(
       editorView,
       1,
       1,
-      `// lib.cairo
-// ---------
-
-#[generate_trait]
+      `#[generate_trait]
 impl A of ATrait {
     fn lol() -> u32 {
         12
     }
 }
 
-// generate_trait
-// --------------
-
+//-----
 trait ATrait {
     fn lol() -> u32;
 }`,
