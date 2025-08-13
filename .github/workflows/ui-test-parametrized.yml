@@ -11,7 +11,7 @@ jobs:
     strategy:
       matrix:
         scarb: ${{ fromJson(inputs.scarb_versions) }}
-        os: [ubuntu-24.04, windows-latest]
+        os: [ubuntu-24.04]
     runs-on: ${{ matrix.os }}
     steps:
       - uses: actions/checkout@v4
