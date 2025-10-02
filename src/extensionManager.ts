@@ -4,6 +4,7 @@ import { setupLanguageServer } from "./cairols";
 import { executablesEqual, getLSExecutables, LSExecutable } from "./lsExecutable";
 import { Context } from "./context";
 import assert from "node:assert";
+import { ChildProcess } from "node:child_process";
 
 /**
  * There is only one {@link lc.LanguageClient} instance active at one time, which this class manages.
@@ -45,9 +46,25 @@ export class CairoExtensionManager implements vscode.Disposable {
   }
 
   public async stopClient() {
-    await this.client?.stop();
-    this.client = undefined;
     this.runningExecutable = undefined;
+
+    if (!this.client) {
+      return;
+    }
+
+    // Save the handle before calling `stop` because it might get dropped.
+    const serverProcess = this.client["_serverProcess"] as ChildProcess | undefined;
+
+    // This drops `_serverProcess`.
+    await this.client.stop();
+
+    // Abort the process of the language server if it remains alive after calling `stop`.
+    // This happens rarely, in unknown circumstances.
+    if (serverProcess?.pid) {
+      serverProcess.kill("SIGABRT");
+    }
+
+    this.client = undefined;
   }
 
   public getClient(): lc.LanguageClient | undefined {
