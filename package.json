@@ -7,7 +7,8 @@
   "categories": [
     "Programming Languages",
     "Snippets",
-    "Formatters"
+    "Formatters",
+    "Debuggers"
   ],
   "keywords": [
     "cairo",
@@ -93,6 +94,62 @@
         "command": "cairo.showMemoryUsage",
         "title": "Show current memory usage of Cairo Language Server",
         "category": "Cairo"
+      }
+    ],
+    "breakpoints": [
+      {
+        "language": "cairo"
+      }
+    ],
+    "debuggers": [
+      {
+        "type": "cairo",
+        "languages": [
+          "cairo"
+        ],
+        "label": "Cairo Debug",
+        "configurationAttributes": {
+          "launch": {
+            "properties": {
+              "required": [
+                "program"
+              ],
+              "program": {
+                "type": "string",
+                "markdownDescription": "Program to run to start debugging."
+              },
+              "processCwd": {
+                "type": "string",
+                "markdownDescription": "Working directory of `program`."
+              },
+              "logLevel": {
+                "enum": [
+                  "off",
+                  "error",
+                  "warn",
+                  "info",
+                  "debug",
+                  "trace"
+                ],
+                "default": "warn",
+                "markdownDescription": "Control the verbosity of the debugger logs."
+              },
+              "programExtraEnv": {
+                "type": [
+                  "object"
+                ],
+                "additionalProperties": {
+                  "type": [
+                    "string",
+                    "number"
+                  ]
+                },
+                "default": {},
+                "markdownDescription": "Extra environment variables that will be passed to the `program` executable."
+              }
+            }
+          }
+        }
       }
     ],
     "menus": {

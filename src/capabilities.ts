@@ -47,7 +47,43 @@ export class ExecuteInTerminal implements lc.StaticFeature {
   }
 
   fillClientCapabilities(capabilities: ClientCapabilities): void {
-    capabilities.experimental = { cairo: { executeInTerminal: {} } };
+    // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
+    capabilities.experimental = {
+      ...capabilities.experimental,
+      // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
+      cairo: {
+        // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
+        ...capabilities.experimental?.cairo,
+        executeInTerminal: {},
+      },
+    };
+  }
+
+  getState(): lc.FeatureState {
+    return { kind: "static" };
+  }
+
+  initialize(): void {
+    return;
+  }
+}
+
+export class LaunchDebugger implements lc.StaticFeature {
+  clear(): void {
+    return;
+  }
+
+  fillClientCapabilities(capabilities: ClientCapabilities): void {
+    // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
+    capabilities.experimental = {
+      ...capabilities.experimental,
+      // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
+      cairo: {
+        // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
+        ...capabilities.experimental?.cairo,
+        launchDebugger: {},
+      },
+    };
   }
 
   getState(): lc.FeatureState {
