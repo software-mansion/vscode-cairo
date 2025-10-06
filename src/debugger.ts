@@ -1,9 +1,10 @@
 import * as vscode from "vscode";
 import { Context } from "./context";
 import { ChildProcess, spawn } from "child_process";
-import { RootLogOutputChannel } from "./logging";
+import * as readline from "node:readline";
+import { Readable } from "node:stream";
 
-export function setupDebugger(ctx: Context) {
+export function enableLaunchingDebugger(ctx: Context) {
   const factory = new CairoDebugAdapterServerDescriptorFactory();
   ctx.extension.subscriptions.push(
     vscode.debug.registerDebugAdapterDescriptorFactory("cairo", factory),
@@ -11,33 +12,51 @@ export function setupDebugger(ctx: Context) {
 }
 
 class CairoDebugAdapterServerDescriptorFactory implements vscode.DebugAdapterDescriptorFactory {
-  private debugAdapterProcess?: ChildProcess;
+  private debugAdapterProcesses: ChildProcess[] = [];
 
   createDebugAdapterDescriptor(
     session: vscode.DebugSession,
   ): vscode.ProviderResult<vscode.DebugAdapterDescriptor> {
-    // const server = Net.createServer().listen();
-    // const free_port = (Net.createServer().listen().address() as AddressInfo).port;
-    // server.close();
-    //
-    // executable.args.push(...["--port", free_port.toString()]);
+    const program_arg = session.configuration["program"] as string;
+    const args = program_arg.split(/\s+/g);
+    const program = args.shift()!;
 
-    const program = session.configuration["program"] as string;
-    const log = new RootLogOutputChannel(
-      vscode.window.createOutputChannel("DEBUGGER", {
-        log: true,
-      }),
+    const adapterProcess = spawn(program, args, {
+      stdio: "pipe",
+      cwd: vscode.workspace.workspaceFolders?.[0]?.uri.fsPath,
+      env: process.env,
+    });
+    this.debugAdapterProcesses.push(adapterProcess);
+
+    return this.waitForFreePort(adapterProcess.stdout).then(
+      (port) => new vscode.DebugAdapterServer(port),
     );
+  }
 
-    this.debugAdapterProcess = spawn(program, { stdio: "pipe", env: process.env });
-    const stdout = this.debugAdapterProcess.stdout!;
+  async waitForFreePort(adapterStdout: Readable): Promise<number> {
+    const lineReader = readline.createInterface({ input: adapterStdout });
 
-    return new vscode.DebugAdapterServer(48042);
+    // Wait for the server to print the port number it is listening on.
+    for await (let line of lineReader) {
+      line = line.trim();
+      const matches = line.match("DEBUGGER PORT: ([0-9]*)");
+      if (matches !== null) {
+        const port = parseInt(matches[1]!, 10);
+        return Promise.resolve(port);
+      }
+    }
+
+    throw Error("Have not received a port number from the adapter");
   }
 
   dispose(): void {
-    if (this.debugAdapterProcess) {
-      this.debugAdapterProcess.kill();
+    for (const process of this.debugAdapterProcesses) {
+      process.kill();
+    }
+
+    for (const process of this.debugAdapterProcesses) {
+      // For good measure.
+      if (process.exitCode === undefined) process.kill("SIGKILL");
     }
   }
 }
