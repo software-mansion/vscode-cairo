@@ -26,6 +26,7 @@ class CairoDebugAdapterServerDescriptorFactory implements vscode.DebugAdapterDes
       cwd: vscode.workspace.workspaceFolders?.[0]?.uri.fsPath,
       env: process.env,
     });
+
     this.debugAdapterProcesses.push(adapterProcess);
 
     return this.waitForFreePort(adapterProcess.stdout).then(
