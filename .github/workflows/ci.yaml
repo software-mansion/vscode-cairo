@@ -64,14 +64,14 @@ jobs:
       - run: sudo sysctl -w kernel.apparmor_restrict_unprivileged_userns=0
       # Scarb in PATH
       - run: |
-          curl --proto '=https' --tlsv1.2 -sSf https://docs.swmansion.com/scarb/install.sh | sh -s -- -v "2.9.1"
-          echo "PATH_SCARB_VERSION=2.9.1" >> $GITHUB_ENV
+          curl --proto '=https' --tlsv1.2 -sSf https://docs.swmansion.com/scarb/install.sh | sh -s -- -v "2.12.2"
+          echo "PATH_SCARB_VERSION=2.12.2" >> $GITHUB_ENV
         if: ${{ matrix.from-path }}
 
       # Scarb in config on ~/.local/bin/scarb
       - run: |
-          curl --proto '=https' --tlsv1.2 -sSf https://docs.swmansion.com/scarb/install.sh | sh -s -- -p -v "2.8.5"
-          echo "CONFIG_SCARB_VERSION=2.8.5" >> $GITHUB_ENV
+          curl --proto '=https' --tlsv1.2 -sSf https://docs.swmansion.com/scarb/install.sh | sh -s -- -p -v "2.11.4"
+          echo "CONFIG_SCARB_VERSION=2.11.4" >> $GITHUB_ENV
         if: ${{ matrix.from-config }}
 
       # Scarb from asdf
@@ -79,9 +79,9 @@ jobs:
         if: ${{ matrix.from-asdf-local }}
       - run: |
           asdf plugin add scarb
-          asdf install scarb "2.9.2"
-          asdf local scarb "2.9.2"
-          echo "ASDF_SCARB_VERSION=2.9.2" >> $GITHUB_ENV
+          asdf install scarb "2.10.1"
+          asdf local scarb "2.10.1"
+          echo "ASDF_SCARB_VERSION=2.10.1" >> $GITHUB_ENV
         if: ${{ matrix.from-asdf-local }}
 
       - run: npm ci
@@ -90,7 +90,7 @@ jobs:
   test-ui-parametrized:
     uses: ./.github/workflows/ui-test-parametrized.yml
     with:
-      scarb_versions: '["disabled", "2.8.5", "2.9.1", "latest"]'
+      scarb_versions: '["disabled", "2.11.4", "2.12.2", "latest"]'
   test-ui:
     if: ${{ always() }}
     needs:
