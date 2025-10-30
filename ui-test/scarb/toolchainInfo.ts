@@ -50,11 +50,11 @@ describe("Toolchain info", function () {
     const title = await statusBar!.getAttribute(StatusBar["locators"].StatusBar.itemTitle);
 
     expect(title).to.match(
-      /Cairo, (Cairo Language|Cairo Language Server.+\(.+\))\n\n.+\(.+\)\n\ncairo:.+\(.+\)\n\nsierra:.+\n/,
+      /Cairo, (Cairo Language Server.+\(.+\))\n\n.+\(.+\)\n\ncairo:.+\(.+\)\n\nsierra:.+\n/,
     );
 
     const matches =
-      /Cairo, (?:Cairo Language|Cairo Language Server.+\(.+\))\n\nscarb(.+)\(.+\)\n\ncairo:.+\(.+\)\n\nsierra:.+\n/.exec(
+      /Cairo, (?:Cairo Language Server.+\(.+\))\n\nscarb(.+)\(.+\)\n\ncairo:.+\(.+\)\n\nsierra:.+\n/.exec(
         title,
       );
 
