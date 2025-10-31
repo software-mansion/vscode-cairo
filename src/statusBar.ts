@@ -2,7 +2,6 @@ import * as vscode from "vscode";
 import * as lc from "vscode-languageclient/node";
 import type { Context } from "./context";
 import { toolchainInfo } from "./lspRequests";
-import { Scarb } from "./scarb";
 import { timeout } from "promise-timeout";
 import { CairoExtensionManager } from "./extensionManager";
 
@@ -105,7 +104,6 @@ export class StatusBar {
     try {
       const request = this.client.sendRequest(toolchainInfo);
 
-      // TODO(#50) When there is no handler for method on server it never resolves instead of failing.
       const response = await timeout(request, 1000);
 
       tooltip.value = `Cairo Language Server ${response.ls.version} (${response.ls.path})`;
@@ -115,16 +113,6 @@ export class StatusBar {
       }
     } catch {
       this.context.log.trace("Status bar: Falling back to old version resolution");
-      // TODO(#50) Remove this later.
-      try {
-        const scarb = await Scarb.find(vscode.workspace.workspaceFolders?.[0], this.context);
-        if (scarb) {
-          const version = await scarb.getVersion(this.context);
-          tooltip.appendText(`\n${version}`);
-        }
-      } catch (error) {
-        this.context.log.error(`Error getting Scarb version: ${error}`);
-      }
     }
 
     return tooltip;

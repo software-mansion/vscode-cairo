@@ -34,6 +34,22 @@ jobs:
       - run: npm ci
       - run: npm run lint-fmt
       - run: npm run lint-eslint
+  setup-ui-test:
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@v5
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "20.x"
+          cache: npm
+      - run: sudo sysctl -w kernel.apparmor_restrict_unprivileged_userns=0
+      - run: npm ci
+      - run: npm run setup-ui-test
+      - name: Cache UI Test Resources
+        uses: actions/cache/save@v4
+        with:
+          path: /tmp/test-resources
+          key: test-resources-${{ github.sha }}
   test:
     name: test
     runs-on: ubuntu-24.04
@@ -54,8 +70,15 @@ jobs:
         from-config: [true, false]
         from-path: [true, false]
         from-asdf-local: [true, false]
+    needs:
+      - setup-ui-test
     runs-on: ubuntu-24.04
     steps:
+      - name: Restore Test Resources Cache
+        uses: actions/cache/restore@v4
+        with:
+          path: /tmp/test-resources
+          key: test-resources-${{ github.sha }}
       - uses: actions/checkout@v5
       - uses: actions/setup-node@v4
         with:
@@ -64,14 +87,14 @@ jobs:
       - run: sudo sysctl -w kernel.apparmor_restrict_unprivileged_userns=0
       # Scarb in PATH
       - run: |
-          curl --proto '=https' --tlsv1.2 -sSf https://docs.swmansion.com/scarb/install.sh | sh -s -- -v "2.9.1"
-          echo "PATH_SCARB_VERSION=2.9.1" >> $GITHUB_ENV
+          curl --proto '=https' --tlsv1.2 -sSf https://docs.swmansion.com/scarb/install.sh | sh -s -- -v "2.12.2"
+          echo "PATH_SCARB_VERSION=2.12.2" >> $GITHUB_ENV
         if: ${{ matrix.from-path }}
 
       # Scarb in config on ~/.local/bin/scarb
       - run: |
-          curl --proto '=https' --tlsv1.2 -sSf https://docs.swmansion.com/scarb/install.sh | sh -s -- -p -v "2.8.5"
-          echo "CONFIG_SCARB_VERSION=2.8.5" >> $GITHUB_ENV
+          curl --proto '=https' --tlsv1.2 -sSf https://docs.swmansion.com/scarb/install.sh | sh -s -- -p -v "2.11.4"
+          echo "CONFIG_SCARB_VERSION=2.11.4" >> $GITHUB_ENV
         if: ${{ matrix.from-config }}
 
       # Scarb from asdf
@@ -79,18 +102,20 @@ jobs:
         if: ${{ matrix.from-asdf-local }}
       - run: |
           asdf plugin add scarb
-          asdf install scarb "2.9.2"
-          asdf local scarb "2.9.2"
-          echo "ASDF_SCARB_VERSION=2.9.2" >> $GITHUB_ENV
+          asdf install scarb "2.10.1"
+          asdf local scarb "2.10.1"
+          echo "ASDF_SCARB_VERSION=2.10.1" >> $GITHUB_ENV
         if: ${{ matrix.from-asdf-local }}
 
       - run: npm ci
       - run: npm run compile-test
       - run: xvfb-run --auto-servernum --server-args='-screen 0 1920x1080x24' npm run ui-test-scarb
   test-ui-parametrized:
+    needs:
+      - setup-ui-test
     uses: ./.github/workflows/ui-test-parametrized.yml
     with:
-      scarb_versions: '["disabled", "2.8.5", "2.9.1", "latest"]'
+      scarb_versions: '["disabled", "2.11.4", "2.12.2", "latest"]'
   test-ui:
     if: ${{ always() }}
     needs:

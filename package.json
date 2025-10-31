@@ -243,6 +243,7 @@
     "package": "npx vsce package -o cairo1.vsix",
     "publish": "npx vsce publish -i cairo1.vsix && npx ovsx publish -i cairo1.vsix",
     "test": "node --test out/test/",
+    "setup-ui-test": "extest get-vscode --code_version max --storage /tmp/test-resources && extest get-chromedriver --code_version max --storage /tmp/test-resources",
     "ui-test-scarb": "extest setup-and-run './out/ui-test/scarb/*.js' --code_version max --code_settings ui-test/settings.json --extensions_dir .test-extensions",
     "ui-test": "extest setup-and-run './out/ui-test/generic/*.js' --code_version max --code_settings ui-test/settings.json --extensions_dir .test-extensions"
   },
@@ -274,7 +275,7 @@
     "prettier": "3.6.2",
     "typescript": "^5.7.3",
     "typescript-eslint": "^8.45.0",
-    "vscode-extension-tester": "^8.18.0",
+    "vscode-extension-tester": "^8.19.0",
     "vscode-oniguruma": "^2.0.1",
     "vscode-textmate": "^9.2.0"
   }

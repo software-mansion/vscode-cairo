@@ -14,6 +14,11 @@ jobs:
         os: [ubuntu-24.04]
     runs-on: ${{ matrix.os }}
     steps:
+      - name: Restore Test Resources Cache
+        uses: actions/cache/restore@v4
+        with:
+          path: /tmp/test-resources
+          key: test-resources-${{ github.sha }}
       - uses: actions/checkout@v5
       - uses: actions/setup-node@v4
         with:
