@@ -26,10 +26,12 @@ class CairoDebugAdapterServerDescriptorFactory implements vscode.DebugAdapterDes
     const args = program_arg.split(/\s+/g);
     const program = args.shift()!;
 
+    const logLevel = session.configuration["logLevel"] || "warn";
+
     const adapterProcess = spawn(program, args, {
       stdio: "pipe",
       cwd: vscode.workspace.workspaceFolders?.[0]?.uri.fsPath,
-      env: process.env,
+      env: { ...process.env, CAIRO_DEBUGGER_LOG: logLevel },
     });
 
     this.debugAdapterProcesses.push(adapterProcess);

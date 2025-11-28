@@ -107,6 +107,19 @@
                 "type": "string",
                 "description": "Program to run to start debugging",
                 "default": "cairo-debugger"
+              },
+              "logLevel": {
+                "type": "string",
+                "enum": [
+                  "off",
+                  "error",
+                  "warn",
+                  "info",
+                  "debug",
+                  "trace"
+                ],
+                "default": "warn",
+                "description": "Control the verbosity of the debugger logs."
               }
             }
           }
