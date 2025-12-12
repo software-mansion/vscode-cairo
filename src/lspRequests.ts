@@ -9,6 +9,8 @@ export const expandMacro = new lc.RequestType<ExpandMacroRequest, ExpandMacroRes
   "cairo/expandMacro",
 );
 
+export const showMemoryUsage = new lc.RequestType0<unknown, void>("cairo/showMemoryUsage");
+
 export interface ProvideVirtualFileRequest {
   uri: string;
 }
