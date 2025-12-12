@@ -85,6 +85,11 @@
         "command": "cairo.viewSyntaxTree",
         "title": "View syntax tree of the current file content",
         "category": "Cairo"
+      },
+      {
+        "command": "cairo.showMemoryUsage",
+        "title": "Show current memory usage of Cairo Language Server",
+        "category": "Cairo"
       }
     ],
     "menus": {

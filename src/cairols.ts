@@ -8,6 +8,7 @@ import {
   registerMacroExpandProvider,
   registerVfsProvider,
   registerViewAnalyzedCratesProvider,
+  registeShowMemoryUsageProvider,
 } from "./textDocumentProviders";
 
 import { executablesEqual, getLSExecutables, LSExecutable } from "./lsExecutable";
@@ -71,6 +72,7 @@ export async function setupLanguageServer(ctx: Context): Promise<SetupResult | u
 
   registerVfsProvider(client, ctx);
   registerMacroExpandProvider(client, ctx);
+  registeShowMemoryUsageProvider(client, ctx);
   registerViewAnalyzedCratesProvider(client, ctx);
 
   ctx.extension.subscriptions.push(

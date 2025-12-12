@@ -1,7 +1,13 @@
 import * as lc from "vscode-languageclient/node";
 import * as vscode from "vscode";
 import { Context } from "./context";
-import { expandMacro, viewSyntaxTree, vfsProvide, viewAnalyzedCrates } from "./lspRequests";
+import {
+  expandMacro,
+  viewSyntaxTree,
+  vfsProvide,
+  viewAnalyzedCrates,
+  showMemoryUsage,
+} from "./lspRequests";
 import { AnsiDecorationProvider } from "./ansi";
 
 export const registerVfsProvider = (client: lc.LanguageClient, ctx: Context) => {
@@ -47,6 +53,37 @@ export const registerMacroExpandProvider = (client: lc.LanguageClient, ctx: Cont
 
   ctx.extension.subscriptions.push(
     vscode.commands.registerCommand("cairo.expandMacro", async () => {
+      const document = await vscode.workspace.openTextDocument(uri);
+
+      eventEmitter.fire(uri);
+
+      return vscode.window.showTextDocument(document, vscode.ViewColumn.Two, true);
+    }),
+  );
+};
+
+export const registeShowMemoryUsageProvider = (client: lc.LanguageClient, ctx: Context) => {
+  const uri = vscode.Uri.parse("show-memory-usage://memory-usage");
+  const eventEmitter = new vscode.EventEmitter<vscode.Uri>();
+
+  const tdcp: vscode.TextDocumentContentProvider = {
+    async provideTextDocumentContent(): Promise<string> {
+      const expanded = await client.sendRequest(showMemoryUsage);
+
+      return (
+        JSON.stringify(expanded, null, 4) ??
+        "Fetching memory usage failed. This may be caused by LS version that does not support this"
+      );
+    },
+    onDidChange: eventEmitter.event,
+  };
+
+  ctx.extension.subscriptions.push(
+    vscode.workspace.registerTextDocumentContentProvider("show-memory-usage", tdcp),
+  );
+
+  ctx.extension.subscriptions.push(
+    vscode.commands.registerCommand("cairo.showMemoryUsage", async () => {
       const document = await vscode.workspace.openTextDocument(uri);
 
       eventEmitter.fire(uri);
