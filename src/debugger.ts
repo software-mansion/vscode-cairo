@@ -5,7 +5,10 @@ import * as readline from "node:readline";
 import { Readable } from "node:stream";
 
 export function enableLaunchingDebugger(ctx: Context) {
-  const factory = new CairoDebugAdapterServerDescriptorFactory();
+  const debuggerLog = vscode.window.createOutputChannel("Cairo Debugger");
+  ctx.extension.subscriptions.push(debuggerLog);
+
+  const factory = new CairoDebugAdapterServerDescriptorFactory(debuggerLog);
   ctx.extension.subscriptions.push(
     vscode.debug.registerDebugAdapterDescriptorFactory("cairo", factory),
   );
@@ -14,6 +17,8 @@ export function enableLaunchingDebugger(ctx: Context) {
 class CairoDebugAdapterServerDescriptorFactory implements vscode.DebugAdapterDescriptorFactory {
   private debugAdapterProcesses: ChildProcess[] = [];
 
+  constructor(private readonly debuggerLog: vscode.OutputChannel) {}
+
   createDebugAdapterDescriptor(
     session: vscode.DebugSession,
   ): vscode.ProviderResult<vscode.DebugAdapterDescriptor> {
@@ -21,12 +26,19 @@ class CairoDebugAdapterServerDescriptorFactory implements vscode.DebugAdapterDes
     const args = program_arg.split(/\s+/g);
     const program = args.shift()!;
 
+    const logLevel = (session.configuration["logLevel"] as string) || "warn";
+
     const adapterProcess = spawn(program, args, {
       stdio: "pipe",
       cwd: vscode.workspace.workspaceFolders?.[0]?.uri.fsPath,
-      env: process.env,
+      env: { ...process.env, SNFORGE_LOG: `off,cairo_debugger=${logLevel}` },
     });
+
     this.debugAdapterProcesses.push(adapterProcess);
+
+    adapterProcess.stderr.on("data", (data: Buffer) => {
+      this.debuggerLog.append(data.toString());
+    });
 
     return this.waitForFreePort(adapterProcess.stdout).then(
       (port) => new vscode.DebugAdapterServer(port),
