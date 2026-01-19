@@ -3,7 +3,7 @@
 This extension provides support for the [Cairo programming language][cairo].
 Cairo is the first Turing-complete language for creating provable programs for general computation.
 
-**Cairo Language Server is alpha-grade software.
+**[Cairo Language Server](https://docs.swmansion.com/cairols/) is alpha-grade software.
 Things are moving rapidly.
 Expect bugs and crashes from time to time.**
 
