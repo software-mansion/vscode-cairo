@@ -4,12 +4,12 @@ import type { Context } from "./context";
 import { toolchainInfo } from "./lspRequests";
 import { timeout } from "promise-timeout";
 import { CairoExtensionManager } from "./extensionManager";
+import { SERVER_STATUS_BAR_PRIORITY, STATUS_BAR_SPINNER } from "./consts";
 
 const CAIRO_STATUS_BAR_COMMAND = "cairo1.statusBar.clicked";
 
 const CAIRO_STATUS_BAR_TXT = "Cairo";
-const SPINNER = "$(loading~spin)";
-const CAIRO_STATUS_BAR_SPINNING = `${CAIRO_STATUS_BAR_TXT} ${SPINNER}`;
+const CAIRO_STATUS_BAR_SPINNING = `${CAIRO_STATUS_BAR_TXT} ${STATUS_BAR_SPINNER}`;
 
 export type ServerStatus =
   | { health: "ok" }
@@ -22,7 +22,10 @@ export class StatusBar {
   private status: ServerStatus;
 
   constructor(private readonly context: Context) {
-    this.statusBarItem = vscode.window.createStatusBarItem(vscode.StatusBarAlignment.Left);
+    this.statusBarItem = vscode.window.createStatusBarItem(
+      vscode.StatusBarAlignment.Left,
+      SERVER_STATUS_BAR_PRIORITY,
+    );
     this.status = { health: "ok" };
 
     this.context.extension.subscriptions.push(this.statusBarItem);
