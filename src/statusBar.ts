@@ -9,7 +9,9 @@ import { SERVER_STATUS_BAR_PRIORITY, STATUS_BAR_SPINNER } from "./consts";
 const CAIRO_STATUS_BAR_COMMAND = "cairo1.statusBar.clicked";
 
 const CAIRO_STATUS_BAR_TXT = "Cairo";
+const CAIRO_PROC_MACRO_STATUS_BAR_TXT = "Resolving procedural macros ...";
 const CAIRO_STATUS_BAR_SPINNING = `${CAIRO_STATUS_BAR_TXT} ${STATUS_BAR_SPINNER}`;
+const CAIRO_PROC_MACRO_STATUS_BAR_SPINNING = `${CAIRO_STATUS_BAR_TXT}: ${CAIRO_PROC_MACRO_STATUS_BAR_TXT} ${STATUS_BAR_SPINNER}`;
 
 export type ServerStatus =
   | { health: "ok" }
@@ -20,6 +22,8 @@ export class StatusBar {
   private readonly statusBarItem: vscode.StatusBarItem;
   private client?: lc.LanguageClient | undefined;
   private status: ServerStatus;
+  private isMainStatusLoading: boolean;
+  private isProcMacroStatusLoading = false;
 
   constructor(private readonly context: Context) {
     this.statusBarItem = vscode.window.createStatusBarItem(
@@ -29,14 +33,33 @@ export class StatusBar {
     this.status = { health: "ok" };
 
     this.context.extension.subscriptions.push(this.statusBarItem);
+    this.isMainStatusLoading = false;
   }
 
-  private startSpinning() {
-    this.statusBarItem.text = CAIRO_STATUS_BAR_SPINNING;
+  private startSpinningMainStatusBar() {
+    this.isMainStatusLoading = true;
+    if (!this.isProcMacroStatusLoading) {
+      this.statusBarItem.text = CAIRO_STATUS_BAR_SPINNING;
+    }
   }
 
   private stopSpinning() {
+    this.isMainStatusLoading = false;
     this.statusBarItem.text = CAIRO_STATUS_BAR_TXT;
+  }
+
+  private startSpinningProcMacroStatusBar() {
+    this.isProcMacroStatusLoading = true;
+    this.statusBarItem.text = CAIRO_PROC_MACRO_STATUS_BAR_SPINNING;
+  }
+
+  private stopSpinningProcMacroStatusBar() {
+    this.isProcMacroStatusLoading = false;
+    if (this.isMainStatusLoading) {
+      this.startSpinningMainStatusBar();
+    } else {
+      this.stopSpinning();
+    }
   }
 
   private subscribeToStatusNotifications() {
@@ -48,7 +71,21 @@ export class StatusBar {
           if (idle) {
             this.stopSpinning();
           } else {
-            this.startSpinning();
+            this.startSpinningMainStatusBar();
+          }
+        },
+      ),
+    );
+
+    this.context.extension.subscriptions.push(
+      this.client!.onNotification(
+        "cairo/procMacroControllerStatus",
+        (serverStatusParams: { event: string; idle: boolean }) => {
+          const { idle } = serverStatusParams;
+          if (idle) {
+            this.stopSpinningProcMacroStatusBar();
+          } else {
+            this.startSpinningProcMacroStatusBar();
           }
         },
       ),
