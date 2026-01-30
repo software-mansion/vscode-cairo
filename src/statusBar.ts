@@ -4,14 +4,18 @@ import type { Context } from "./context";
 import { toolchainInfo } from "./lspRequests";
 import { timeout } from "promise-timeout";
 import { CairoExtensionManager } from "./extensionManager";
-import { SERVER_STATUS_BAR_PRIORITY, STATUS_BAR_SPINNER } from "./consts";
 
 const CAIRO_STATUS_BAR_COMMAND = "cairo1.statusBar.clicked";
-
+const STATUS_BAR_SPINNER = "$(loading~spin)";
 const CAIRO_STATUS_BAR_TXT = "Cairo";
 const CAIRO_PROC_MACRO_STATUS_BAR_TXT = "Resolving procedural macros ...";
 const CAIRO_STATUS_BAR_SPINNING = `${CAIRO_STATUS_BAR_TXT} ${STATUS_BAR_SPINNER}`;
 const CAIRO_PROC_MACRO_STATUS_BAR_SPINNING = `${CAIRO_STATUS_BAR_TXT}: ${CAIRO_PROC_MACRO_STATUS_BAR_TXT} ${STATUS_BAR_SPINNER}`;
+
+const ANALYSIS_START_EVENT = "AnalysisStarted";
+const ANALYSIS_FINISH_EVENT = "AnalysisFinished";
+const MACRO_BUILD_START_EVENT = "MacrosBuildingStarted";
+const MACRO_BUILD_FINISH_EVENT = "MacrosBuildingFinished";
 
 export type ServerStatus =
   | { health: "ok" }
@@ -26,10 +30,7 @@ export class StatusBar {
   private isProcMacroStatusLoading = false;
 
   constructor(private readonly context: Context) {
-    this.statusBarItem = vscode.window.createStatusBarItem(
-      vscode.StatusBarAlignment.Left,
-      SERVER_STATUS_BAR_PRIORITY,
-    );
+    this.statusBarItem = vscode.window.createStatusBarItem(vscode.StatusBarAlignment.Left);
     this.status = { health: "ok" };
 
     this.context.extension.subscriptions.push(this.statusBarItem);
@@ -64,31 +65,27 @@ export class StatusBar {
 
   private subscribeToStatusNotifications() {
     this.context.extension.subscriptions.push(
-      this.client!.onNotification(
-        "cairo/serverStatus",
-        (serverStatusParams: { event: string; idle: boolean }) => {
-          const { idle } = serverStatusParams;
-          if (idle) {
-            this.stopSpinning();
-          } else {
+      this.client!.onNotification("cairo/serverStatus", (serverStatusParams: { event: string }) => {
+        const { event } = serverStatusParams;
+        switch (event) {
+          case ANALYSIS_START_EVENT: {
             this.startSpinningMainStatusBar();
+            break;
           }
-        },
-      ),
-    );
-
-    this.context.extension.subscriptions.push(
-      this.client!.onNotification(
-        "cairo/procMacroControllerStatus",
-        (serverStatusParams: { event: string; idle: boolean }) => {
-          const { idle } = serverStatusParams;
-          if (idle) {
-            this.stopSpinningProcMacroStatusBar();
-          } else {
+          case ANALYSIS_FINISH_EVENT: {
+            this.stopSpinning();
+            break;
+          }
+          case MACRO_BUILD_START_EVENT: {
             this.startSpinningProcMacroStatusBar();
+            break;
           }
-        },
-      ),
+          case MACRO_BUILD_FINISH_EVENT: {
+            this.stopSpinningProcMacroStatusBar();
+            break;
+          }
+        }
+      }),
     );
   }
 
