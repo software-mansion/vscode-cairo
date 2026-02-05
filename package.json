@@ -7,7 +7,8 @@
   "categories": [
     "Programming Languages",
     "Snippets",
-    "Formatters"
+    "Formatters",
+    "Debuggers"
   ],
   "keywords": [
     "cairo",
@@ -90,6 +91,31 @@
         "command": "cairo.showMemoryUsage",
         "title": "Show current memory usage of Cairo Language Server",
         "category": "Cairo"
+      }
+    ],
+    "breakpoints": [
+      {
+        "language": "cairo"
+      }
+    ],
+    "debuggers": [
+      {
+        "type": "cairo",
+        "languages": [
+          "cairo"
+        ],
+        "label": "Cairo Debug",
+        "configurationAttributes": {
+          "launch": {
+            "properties": {
+              "program": {
+                "type": "string",
+                "description": "Program to run to start debugging",
+                "default": "cairo-debugger"
+              }
+            }
+          }
+        }
       }
     ],
     "menus": {
