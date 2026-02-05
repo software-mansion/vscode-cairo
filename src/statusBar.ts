@@ -6,10 +6,16 @@ import { timeout } from "promise-timeout";
 import { CairoExtensionManager } from "./extensionManager";
 
 const CAIRO_STATUS_BAR_COMMAND = "cairo1.statusBar.clicked";
-
+const STATUS_BAR_SPINNER = "$(loading~spin)";
 const CAIRO_STATUS_BAR_TXT = "Cairo";
-const SPINNER = "$(loading~spin)";
-const CAIRO_STATUS_BAR_SPINNING = `${CAIRO_STATUS_BAR_TXT} ${SPINNER}`;
+const CAIRO_PROC_MACRO_STATUS_BAR_TXT = "Building procedural macros ...";
+const CAIRO_STATUS_BAR_SPINNING = `${CAIRO_STATUS_BAR_TXT} ${STATUS_BAR_SPINNER}`;
+const CAIRO_PROC_MACRO_STATUS_BAR_SPINNING = `${CAIRO_STATUS_BAR_TXT}: ${CAIRO_PROC_MACRO_STATUS_BAR_TXT} ${STATUS_BAR_SPINNER}`;
+
+const ANALYSIS_START_EVENT = "AnalysisStarted";
+const ANALYSIS_FINISH_EVENT = "AnalysisFinished";
+const MACRO_BUILD_START_EVENT = "MacrosBuildingStarted";
+const MACRO_BUILD_FINISH_EVENT = "MacrosBuildingFinished";
 
 export type ServerStatus =
   | { health: "ok" }
@@ -20,35 +26,66 @@ export class StatusBar {
   private readonly statusBarItem: vscode.StatusBarItem;
   private client?: lc.LanguageClient | undefined;
   private status: ServerStatus;
+  private isMainStatusLoading: boolean;
+  private isProcMacroStatusLoading = false;
 
   constructor(private readonly context: Context) {
     this.statusBarItem = vscode.window.createStatusBarItem(vscode.StatusBarAlignment.Left);
     this.status = { health: "ok" };
 
     this.context.extension.subscriptions.push(this.statusBarItem);
+    this.isMainStatusLoading = false;
   }
 
-  private startSpinning() {
-    this.statusBarItem.text = CAIRO_STATUS_BAR_SPINNING;
+  private startSpinningStatusBar() {
+    this.isMainStatusLoading = true;
+    if (!this.isProcMacroStatusLoading) {
+      this.statusBarItem.text = CAIRO_STATUS_BAR_SPINNING;
+    }
   }
 
-  private stopSpinning() {
+  private stopSpinningStatusBar() {
+    this.isMainStatusLoading = false;
     this.statusBarItem.text = CAIRO_STATUS_BAR_TXT;
+  }
+
+  private startProcMacroBuildingLoadingStatusBar() {
+    this.isProcMacroStatusLoading = true;
+    this.statusBarItem.text = CAIRO_PROC_MACRO_STATUS_BAR_SPINNING;
+  }
+
+  private stopProcMacroBuildingLoadingStatusBar() {
+    this.isProcMacroStatusLoading = false;
+    if (this.isMainStatusLoading) {
+      this.startSpinningStatusBar();
+    } else {
+      this.stopSpinningStatusBar();
+    }
   }
 
   private subscribeToStatusNotifications() {
     this.context.extension.subscriptions.push(
-      this.client!.onNotification(
-        "cairo/serverStatus",
-        (serverStatusParams: { event: string; idle: boolean }) => {
-          const { idle } = serverStatusParams;
-          if (idle) {
-            this.stopSpinning();
-          } else {
-            this.startSpinning();
+      this.client!.onNotification("cairo/serverStatus", (serverStatusParams: { event: string }) => {
+        const { event } = serverStatusParams;
+        switch (event) {
+          case ANALYSIS_START_EVENT: {
+            this.startSpinningStatusBar();
+            break;
           }
-        },
-      ),
+          case ANALYSIS_FINISH_EVENT: {
+            this.stopSpinningStatusBar();
+            break;
+          }
+          case MACRO_BUILD_START_EVENT: {
+            this.startProcMacroBuildingLoadingStatusBar();
+            break;
+          }
+          case MACRO_BUILD_FINISH_EVENT: {
+            this.stopProcMacroBuildingLoadingStatusBar();
+            break;
+          }
+        }
+      }),
     );
   }
 
@@ -162,13 +199,13 @@ export class StatusBar {
       case "warning": {
         backgroundColor = new vscode.ThemeColor("statusBarItem.warningBackground");
         tooltip.appendText("Server status: OK").appendText(`\nWarning: ${status.message}`);
-        this.stopSpinning();
+        this.stopSpinningStatusBar();
         break;
       }
       case "error": {
         backgroundColor = new vscode.ThemeColor("statusBarItem.errorBackground");
         tooltip.appendText(`Server status: Error\n${status.message}`);
-        this.stopSpinning();
+        this.stopSpinningStatusBar();
         break;
       }
     }
