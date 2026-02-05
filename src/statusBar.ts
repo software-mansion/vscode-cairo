@@ -8,7 +8,7 @@ import { CairoExtensionManager } from "./extensionManager";
 const CAIRO_STATUS_BAR_COMMAND = "cairo1.statusBar.clicked";
 const STATUS_BAR_SPINNER = "$(loading~spin)";
 const CAIRO_STATUS_BAR_TXT = "Cairo";
-const CAIRO_PROC_MACRO_STATUS_BAR_TXT = "Resolving procedural macros ...";
+const CAIRO_PROC_MACRO_STATUS_BAR_TXT = "Building procedural macros ...";
 const CAIRO_STATUS_BAR_SPINNING = `${CAIRO_STATUS_BAR_TXT} ${STATUS_BAR_SPINNER}`;
 const CAIRO_PROC_MACRO_STATUS_BAR_SPINNING = `${CAIRO_STATUS_BAR_TXT}: ${CAIRO_PROC_MACRO_STATUS_BAR_TXT} ${STATUS_BAR_SPINNER}`;
 
@@ -37,29 +37,29 @@ export class StatusBar {
     this.isMainStatusLoading = false;
   }
 
-  private startSpinningMainStatusBar() {
+  private startSpinningStatusBar() {
     this.isMainStatusLoading = true;
     if (!this.isProcMacroStatusLoading) {
       this.statusBarItem.text = CAIRO_STATUS_BAR_SPINNING;
     }
   }
 
-  private stopSpinning() {
+  private stopSpinningStatusBar() {
     this.isMainStatusLoading = false;
     this.statusBarItem.text = CAIRO_STATUS_BAR_TXT;
   }
 
-  private startSpinningProcMacroStatusBar() {
+  private startProcMacroBuildingLoadingStatusBar() {
     this.isProcMacroStatusLoading = true;
     this.statusBarItem.text = CAIRO_PROC_MACRO_STATUS_BAR_SPINNING;
   }
 
-  private stopSpinningProcMacroStatusBar() {
+  private stopProcMacroBuildingLoadingStatusBar() {
     this.isProcMacroStatusLoading = false;
     if (this.isMainStatusLoading) {
-      this.startSpinningMainStatusBar();
+      this.startSpinningStatusBar();
     } else {
-      this.stopSpinning();
+      this.stopSpinningStatusBar();
     }
   }
 
@@ -69,19 +69,19 @@ export class StatusBar {
         const { event } = serverStatusParams;
         switch (event) {
           case ANALYSIS_START_EVENT: {
-            this.startSpinningMainStatusBar();
+            this.startSpinningStatusBar();
             break;
           }
           case ANALYSIS_FINISH_EVENT: {
-            this.stopSpinning();
+            this.stopSpinningStatusBar();
             break;
           }
           case MACRO_BUILD_START_EVENT: {
-            this.startSpinningProcMacroStatusBar();
+            this.startProcMacroBuildingLoadingStatusBar();
             break;
           }
           case MACRO_BUILD_FINISH_EVENT: {
-            this.stopSpinningProcMacroStatusBar();
+            this.stopProcMacroBuildingLoadingStatusBar();
             break;
           }
         }
@@ -199,13 +199,13 @@ export class StatusBar {
       case "warning": {
         backgroundColor = new vscode.ThemeColor("statusBarItem.warningBackground");
         tooltip.appendText("Server status: OK").appendText(`\nWarning: ${status.message}`);
-        this.stopSpinning();
+        this.stopSpinningStatusBar();
         break;
       }
       case "error": {
         backgroundColor = new vscode.ThemeColor("statusBarItem.errorBackground");
         tooltip.appendText(`Server status: Error\n${status.message}`);
-        this.stopSpinning();
+        this.stopSpinningStatusBar();
         break;
       }
     }
