@@ -2,9 +2,11 @@ import * as vscode from "vscode";
 import * as lc from "vscode-languageclient/node";
 import { Context } from "./context";
 import { CairoExtensionManager } from "./extensionManager";
+import { maybeRecommendTomlExtension } from "./tomlRecommendation";
 
 export async function activate(extensionContext: vscode.ExtensionContext) {
   const ctx = Context.create(extensionContext);
+  await maybeRecommendTomlExtension(ctx);
 
   if (ctx.config.get("enableLanguageServer")) {
     const extensionManager = CairoExtensionManager.fromContext(ctx);
