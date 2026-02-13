@@ -33,6 +33,9 @@
   ],
   "main": "./dist/extension",
   "browser": "./dist/web",
+  "extensionPack": [
+    "tamasfe.even-better-toml"
+  ],
   "type": "commonjs",
   "contributes": {
     "languages": [
