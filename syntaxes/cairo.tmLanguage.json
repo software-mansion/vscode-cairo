@@ -324,12 +324,6 @@
         },
         {
           "include": "#strings"
-        },
-        {
-          "include": "#gtypes"
-        },
-        {
-          "include": "#types"
         }
       ]
     },
