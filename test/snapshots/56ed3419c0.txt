@@ -30,10 +30,9 @@ fn arbitrary_token_tree() {}
 [                    source.cairo meta.attribute.cairo punctuation.brackets.attribute.cairo
 derive               source.cairo meta.attribute.cairo
 (                    source.cairo meta.attribute.cairo punctuation.brackets.round.cairo
-Copy                 source.cairo meta.attribute.cairo entity.name.type.cairo
+Copy                 source.cairo meta.attribute.cairo
 ,                    source.cairo meta.attribute.cairo punctuation.comma.cairo
-␣                    source.cairo meta.attribute.cairo
-Drop                 source.cairo meta.attribute.cairo entity.name.type.cairo
+␣Drop                source.cairo meta.attribute.cairo
 )                    source.cairo meta.attribute.cairo punctuation.brackets.round.cairo
 ]                    source.cairo meta.attribute.cairo punctuation.brackets.attribute.cairo
 enum                 source.cairo keyword.declaration.enum.cairo storage.type.cairo
@@ -64,16 +63,13 @@ empty                source.cairo entity.name.module.cairo
 [                    source.cairo meta.attribute.cairo punctuation.brackets.attribute.cairo
 derive               source.cairo meta.attribute.cairo
 (                    source.cairo meta.attribute.cairo punctuation.brackets.round.cairo
-Copy                 source.cairo meta.attribute.cairo entity.name.type.cairo
+Copy                 source.cairo meta.attribute.cairo
 ,                    source.cairo meta.attribute.cairo punctuation.comma.cairo
-␣                    source.cairo meta.attribute.cairo
-Drop                 source.cairo meta.attribute.cairo entity.name.type.cairo
+␣Drop                source.cairo meta.attribute.cairo
 ,                    source.cairo meta.attribute.cairo punctuation.comma.cairo
-␣                    source.cairo meta.attribute.cairo
-PartialEq            source.cairo meta.attribute.cairo entity.name.type.cairo
+␣PartialEq           source.cairo meta.attribute.cairo
 ,                    source.cairo meta.attribute.cairo punctuation.comma.cairo
-␣                    source.cairo meta.attribute.cairo
-Serde                source.cairo meta.attribute.cairo entity.name.type.cairo
+␣Serde               source.cairo meta.attribute.cairo
 )                    source.cairo meta.attribute.cairo punctuation.brackets.round.cairo
 ]                    source.cairo meta.attribute.cairo punctuation.brackets.attribute.cairo
 struct               source.cairo keyword.declaration.struct.cairo storage.type.cairo
@@ -116,8 +112,7 @@ attr                 source.cairo meta.attribute.cairo
 (                    source.cairo meta.attribute.cairo punctuation.brackets.round.cairo
 value                source.cairo meta.attribute.cairo
 :                    source.cairo meta.attribute.cairo keyword.operator.key-value.cairo
-␣                    source.cairo meta.attribute.cairo
-C                    source.cairo meta.attribute.cairo entity.name.type.cairo
+␣C                   source.cairo meta.attribute.cairo
 )                    source.cairo meta.attribute.cairo punctuation.brackets.round.cairo
 )                    source.cairo meta.attribute.cairo punctuation.brackets.round.cairo
 ]                    source.cairo meta.attribute.cairo punctuation.brackets.attribute.cairo
