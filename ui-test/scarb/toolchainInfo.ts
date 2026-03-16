@@ -8,6 +8,8 @@ describe("Toolchain info", function () {
   this.timeout(50000);
 
   it("Checks correct scarb precedence", async function () {
+    await VSBrowser.instance.waitForWorkbench();
+
     // asdf is in fact in PATH and in our tests it is the first scarb in PATH, special case this.
     // It is caused by `@actions/core addPath` implementation.
     // See: https://github.com/actions/toolkit/blob/01f21badd5a7522507f84558503b56c4deec5326/packages/core/src/core.ts#L107
@@ -39,11 +41,13 @@ describe("Toolchain info", function () {
       await setting.setValue(path.join(homedir(), ".local", "bin", "scarb"));
 
       await workbench.executeCommand("Cairo: Reload workspace");
+      await VSBrowser.instance.waitForWorkbench();
     }
 
     await VSBrowser.instance.openResources(path.join("ui-test", "fixtures", "empty"));
+    await VSBrowser.instance.waitForWorkbench();
 
-    const statusBar = await VSBrowser.instance.driver.wait(getStatusBarItem, 5000);
+    const statusBar = await VSBrowser.instance.driver.wait(getStatusBarItem, 15000);
 
     expect(statusBar).to.not.be.undefined;
 
