@@ -30,25 +30,34 @@ describe("Toolchain info", function () {
     }
 
     if (process.env.CONFIG_SCARB_VERSION) {
+      console.log("A");
       const workbench = new Workbench();
-
+      console.log("B");
       const settings = await workbench.openSettings();
-
+      console.log("C");
       const setting = await settings.findSetting("Scarb Path", "Cairo1");
-
+      console.log("D");
       await setting.setValue(path.join(homedir(), ".local", "bin", "scarb"));
-
+      console.log("E");
       await workbench.executeCommand("Cairo: Reload workspace");
+      console.log("F");
     }
-
-    await VSBrowser.instance.openResources(path.join("ui-test", "fixtures", "empty"));
-
-    const statusBar = await VSBrowser.instance.driver.wait(getStatusBarItem, 5000);
-
+    console.log("G");
+    await VSBrowser.instance.openResources(
+      path.join("ui-test", "fixtures", "empty"),
+    );
+    console.log("H");
+    const statusBar = await VSBrowser.instance.driver.wait(
+      getStatusBarItem,
+      5000,
+    );
+    console.log("I");
     expect(statusBar).to.not.be.undefined;
-
-    const title = await statusBar!.getAttribute(StatusBar["locators"].StatusBar.itemTitle);
-
+    console.log("J");
+    const title = await statusBar!.getAttribute(
+      StatusBar["locators"].StatusBar.itemTitle,
+    );
+    console.log("K");
     expect(title).to.match(
       /Cairo, (Cairo Language Server.+\(.+\))\n\n.+\(.+\)\n\ncairo:.+\(.+\)\n\nsierra:.+\n/,
     );
@@ -63,7 +72,9 @@ describe("Toolchain info", function () {
     expect(matches![1]).to.not.be.undefined;
     expect(matches![1]).to.not.be.null;
 
-    const scarbVersion = matches![1]!.replaceAll("&nbsp;", "").replaceAll("\\", "");
+    const scarbVersion = matches![1]!
+      .replaceAll("&nbsp;", "")
+      .replaceAll("\\", "");
 
     expect(scarbVersion).to.be.eq(expectedScarbVersion);
   });

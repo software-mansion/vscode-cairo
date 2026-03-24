@@ -1,7 +1,9 @@
 import { StatusBar, WebElement } from "vscode-extension-tester";
 
 export async function getStatusBarItem(): Promise<WebElement | undefined> {
+  console.log("1");
   const items = await new StatusBar().getItems();
+  console.log("2");
 
   for (const item of items) {
     try {
@@ -17,6 +19,6 @@ export async function getStatusBarItem(): Promise<WebElement | undefined> {
       // Else it is not interesting for us anyway.
     }
   }
-
+  console.log("3");
   return undefined;
 }
