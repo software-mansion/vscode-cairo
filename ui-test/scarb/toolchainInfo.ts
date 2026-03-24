@@ -43,10 +43,12 @@ describe("Toolchain info", function () {
       console.log("F");
     }
     console.log("G");
+    await VSBrowser.instance.waitForWorkbench();
     await VSBrowser.instance.openResources(
       path.join("ui-test", "fixtures", "empty"),
     );
     console.log("H");
+    await VSBrowser.instance.waitForWorkbench();
     const statusBar = await VSBrowser.instance.driver.wait(
       getStatusBarItem,
       5000,
