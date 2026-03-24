@@ -98,12 +98,12 @@ jobs:
         if: ${{ matrix.from-config }}
 
       # Scarb from asdf
-      - uses: asdf-vm/actions/setup@v3
+      - uses: asdf-vm/actions/setup@v4
         if: ${{ matrix.from-asdf-local }}
       - run: |
           asdf plugin add scarb
           asdf install scarb "2.10.1"
-          asdf local scarb "2.10.1"
+          asdf set -u scarb "2.10.1"
           echo "ASDF_SCARB_VERSION=2.10.1" >> $GITHUB_ENV
         if: ${{ matrix.from-asdf-local }}
 
