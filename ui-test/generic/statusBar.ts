@@ -12,6 +12,7 @@ describe("Status bar", function () {
   });
 
   it("Displays Cairo toolchain version", async function () {
+    await VSBrowser.instance.waitForWorkbench();
     const statusBar = await VSBrowser.instance.driver.wait(
       getStatusBarItem,
       5000,
@@ -35,6 +36,7 @@ describe("Status bar", function () {
   });
 
   it("checks if status bar is disabled", async function () {
+    await VSBrowser.instance.waitForWorkbench();
     const settings = await new Workbench().openSettings();
 
     const setting = await settings.findSetting("Show In Status Bar", "Cairo1");
