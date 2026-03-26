@@ -1,4 +1,5 @@
 import { StatusBar, VSBrowser, Workbench } from "vscode-extension-tester";
+import { openSettings } from "../../test-support/page-objects/settings";
 import { expect } from "chai";
 import * as path from "path";
 import { getStatusBarItem } from "../../test-support/page-objects/cairoStatusBarItem";
@@ -34,7 +35,7 @@ describe("Toolchain info", function () {
     if (process.env.CONFIG_SCARB_VERSION) {
       const workbench = new Workbench();
 
-      const settings = await workbench.openSettings();
+      const settings = await openSettings();
 
       const setting = await settings.findSetting("Scarb Path", "Cairo1");
 

@@ -1,8 +1,9 @@
-import { StatusBar, VSBrowser, Workbench } from "vscode-extension-tester";
+import { StatusBar, VSBrowser } from "vscode-extension-tester";
 import { expect } from "chai";
 import { isScarbAvailable } from "../../test-support/scarb";
 import * as path from "path";
 import { getStatusBarItem } from "../../test-support/page-objects/cairoStatusBarItem";
+import { openSettings } from "../../test-support/page-objects/settings";
 
 describe("Status bar", function () {
   this.timeout(50000);
@@ -37,7 +38,7 @@ describe("Status bar", function () {
 
   it("checks if status bar is disabled", async function () {
     await VSBrowser.instance.waitForWorkbench();
-    const settings = await new Workbench().openSettings();
+    const settings = await openSettings();
 
     const setting = await settings.findSetting("Show In Status Bar", "Cairo1");
     await setting.setValue(false);
