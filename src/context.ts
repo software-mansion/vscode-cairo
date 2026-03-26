@@ -1,5 +1,5 @@
 import * as vscode from "vscode";
-import { Config } from "./config";
+import { Config } from "./config_ls";
 import { RootLogOutputChannel } from "./logging";
 import { StatusBar } from "./statusBar";
 

@@ -26,7 +26,9 @@ export class StandaloneLS {
     const configPathChecked = await checkTool(configPath);
 
     if (!configPathChecked) {
-      throw new Error(`configured CairoLS path does not exist: ${configPathChecked}`);
+      throw new Error(
+        `configured CairoLS path does not exist or is not an executable: ${configPath}`,
+      );
     }
 
     ctx.log.debug(`using CairoLS from config: ${configPathChecked}`);
