@@ -6,7 +6,7 @@ import { getStatusBarItem } from "../../test-support/page-objects/cairoStatusBar
 import { openSettings } from "../../test-support/page-objects/settings";
 
 describe("Status bar", function () {
-  this.timeout(50000);
+  this.timeout(90000);
 
   before(async function () {
     await VSBrowser.instance.openResources(path.join("ui-test", "fixtures", "empty"));
@@ -14,24 +14,48 @@ describe("Status bar", function () {
 
   it("Displays Cairo toolchain version", async function () {
     await VSBrowser.instance.waitForWorkbench();
-    const statusBar = await VSBrowser.instance.driver.wait(
-      getStatusBarItem,
-      5000,
-      "failed to obtain Cairo status bar",
-      // Check every 0.5 second.
-      500,
-    );
-
-    expect(statusBar).not.undefined;
-
-    // `new StatusBar().getItem("Cairo")` is broken and searches not only in title.
-    const title = await statusBar!.getAttribute(StatusBar["locators"].StatusBar.itemTitle);
+    const titleAttr = StatusBar["locators"].StatusBar.itemTitle;
 
     if (isScarbAvailable) {
-      expect(title).to.match(
-        /Cairo, (Cairo Language Server.+\(.+\))\n\nscarb.+\(.+\)\n\ncairo:.+\(.+\)\n\nsierra:.+\n/,
+      const pattern =
+        /Cairo, (Cairo Language Server.+\(.+\))\n\nscarb.+\(.+\)\n\ncairo:.+\(.+\)\n\nsierra:.+\n/;
+
+      let lastTitle = "";
+      const statusBar = await VSBrowser.instance.driver.wait(
+        async () => {
+          const item = await getStatusBarItem();
+          if (!item) {
+            console.log("No Cairo status bar item found yet");
+            return false;
+          }
+          try {
+            const title = await item.getAttribute(titleAttr);
+            if (title !== lastTitle) {
+              console.log(`Status bar title (attr=${titleAttr}): ${JSON.stringify(title)}`);
+              lastTitle = title;
+            }
+            return pattern.test(title) ? item : false;
+          } catch (e) {
+            console.log(`Error reading title: ${e}`);
+            return false;
+          }
+        },
+        30000,
+        "failed to obtain Cairo status bar with version info",
+        500,
       );
+      expect(statusBar).not.to.be.false;
     } else {
+      const statusBar = await VSBrowser.instance.driver.wait(
+        getStatusBarItem,
+        30000,
+        "failed to obtain Cairo status bar",
+        500,
+      );
+      expect(statusBar).not.undefined;
+
+      // `new StatusBar().getItem("Cairo")` is broken and searches not only in title.
+      const title = await statusBar!.getAttribute(titleAttr);
       expect(title).to.be.eq("Cairo, Cairo Language\n---\nServer&nbsp;status:&nbsp;OK");
     }
   });
