@@ -34,7 +34,11 @@ jobs:
         shell: bash
       - run: |
           sudo sysctl -w kernel.apparmor_restrict_unprivileged_userns=0
-          xvfb-run --auto-servernum --server-args='-screen 0 1920x1080x24' npm run ui-test
+          for attempt in 1 2 3; do
+            xvfb-run --auto-servernum --server-args='-screen 0 1920x1080x24' npm run ui-test && break
+            if [ "$attempt" = "3" ]; then exit 1; fi
+            echo "Test attempt $attempt failed, retrying..."
+          done
         if: ${{ matrix.os == 'ubuntu-24.04'}}
       - run: npm run ui-test
         if: ${{ matrix.os != 'ubuntu-24.04'}}

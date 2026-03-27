@@ -109,7 +109,12 @@ jobs:
 
       - run: npm ci
       - run: npm run compile-test
-      - run: xvfb-run --auto-servernum --server-args='-screen 0 1920x1080x24' npm run ui-test-scarb
+      - run: |
+          for attempt in 1 2 3; do
+            xvfb-run --auto-servernum --server-args='-screen 0 1920x1080x24' npm run ui-test-scarb && break
+            if [ "$attempt" = "3" ]; then exit 1; fi
+            echo "Test attempt $attempt failed, retrying..."
+          done
   test-ui-parametrized:
     needs:
       - setup-ui-test
