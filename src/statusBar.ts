@@ -211,6 +211,13 @@ export class StatusBar {
       }
     }
 
+    // Re-check config after the async makeTooltip() call: the setting may have
+    // changed while we were waiting, and we must not re-show the bar in that case.
+    if (!vscode.workspace.getConfiguration("cairo1").get<boolean>("showInStatusBar", true)) {
+      this.statusBarItem.hide();
+      return;
+    }
+
     this.statusBarItem.backgroundColor = backgroundColor;
     this.statusBarItem.tooltip = tooltip;
     this.statusBarItem.show();
