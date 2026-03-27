@@ -62,7 +62,9 @@ describe("Status bar", function () {
           try {
             const title = await item.getAttribute(titleAttr);
             if (title !== lastTitle) {
-              console.log(`Status bar title (no scarb, attr=${titleAttr}): ${JSON.stringify(title)}`);
+              console.log(
+                `Status bar title (no scarb, attr=${titleAttr}): ${JSON.stringify(title)}`,
+              );
               lastTitle = title;
             }
             return noScarbPattern.test(title) ? item : false;
