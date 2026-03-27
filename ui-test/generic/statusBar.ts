@@ -10,13 +10,9 @@ describe("Status bar", function () {
 
   before(async function () {
     const resourcePath = path.resolve(path.join("ui-test", "fixtures", "empty"));
-    const wb = new Workbench();
-    try {
-      const titleBefore = await wb.getTitleBar().getTitle();
-      console.log(`Title before openResources: ${titleBefore}`);
-    } catch (e) {
-      console.log(`Could not get title before: ${e}`);
-    }
+    const driver = VSBrowser.instance.driver;
+    const handlesBefore = await driver.getAllWindowHandles();
+    console.log(`Window handles before: ${handlesBefore.length}`);
     console.log(`Opening resources: ${resourcePath}`);
     try {
       await VSBrowser.instance.openResources(resourcePath);
@@ -24,11 +20,13 @@ describe("Status bar", function () {
     } catch (e) {
       console.log(`openResources error: ${e}`);
     }
-    try {
-      const titleAfter = await wb.getTitleBar().getTitle();
-      console.log(`Title after openResources: ${titleAfter}`);
-    } catch (e) {
-      console.log(`Could not get title after: ${e}`);
+    const handlesAfter = await driver.getAllWindowHandles();
+    console.log(`Window handles after: ${handlesAfter.length}`);
+    if (handlesAfter.length > handlesBefore.length) {
+      // Switch to the new window (which might have the workspace)
+      const newHandle = handlesAfter.find((h: string) => !handlesBefore.includes(h))!;
+      await driver.switchTo().window(newHandle);
+      console.log("Switched to new window");
     }
   });
 
