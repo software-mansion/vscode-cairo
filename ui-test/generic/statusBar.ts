@@ -10,6 +10,7 @@ describe("Status bar", function () {
   this.timeout(90000);
 
   before(async function () {
+    await VSBrowser.instance.waitForWorkbench();
     await openFolder(path.join("ui-test", "fixtures", "empty"));
   });
 
@@ -48,7 +49,13 @@ describe("Status bar", function () {
       expect(statusBar).not.to.be.false;
     } else {
       const statusBar = await VSBrowser.instance.driver.wait(
-        getStatusBarItem,
+        async () => {
+          const item = await getStatusBarItem();
+          if (!item) {
+            console.log("No Cairo status bar item found yet (no scarb)");
+          }
+          return item;
+        },
         30000,
         "failed to obtain Cairo status bar",
         500,
@@ -57,6 +64,7 @@ describe("Status bar", function () {
 
       // `new StatusBar().getItem("Cairo")` is broken and searches not only in title.
       const title = await statusBar!.getAttribute(titleAttr);
+      console.log(`Status bar title (no scarb, attr=${titleAttr}): ${JSON.stringify(title)}`);
       // LS may or may not have started; accept both "Cairo Language" (basic) and
       // "Cairo Language Server X.Y.Z (path)" (LS loaded).
       expect(title).to.match(/^Cairo, Cairo Language[^\n]*\n---\nServer&nbsp;status:&nbsp;OK$/);
