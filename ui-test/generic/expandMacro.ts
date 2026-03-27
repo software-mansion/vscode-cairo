@@ -1,28 +1,20 @@
 import { EditorView, TextEditor, VSBrowser, Workbench } from "vscode-extension-tester";
 import { expect } from "chai";
-import { isScarbAvailable } from "../../test-support/scarb";
 import * as path from "path";
 import { normalize } from "../../test-support/normalize";
 
 describe("Expand macro test", function () {
   this.timeout(50000);
 
-  let editorView: EditorView;
-
-  before(async function () {
-    if (!isScarbAvailable) {
-      this.skip();
-    }
-
-    editorView = new EditorView();
-
-    await VSBrowser.instance.openResources(path.join("ui-test", "fixtures", "expand_macro"));
+  before(function () {
+    // All tests in this suite are skipped; skip setup to avoid calling openResources().
+    this.skip();
   });
 
   // TODO(#136): Fix this test yielding different results depending on scarb version
   it.skip("checks if macro correctly expands", async function () {
     await assertExpandAt(
-      editorView,
+      new EditorView(),
       1,
       1,
       `#[generate_trait]
