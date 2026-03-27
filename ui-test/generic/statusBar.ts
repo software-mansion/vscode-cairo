@@ -1,4 +1,4 @@
-import { StatusBar, VSBrowser } from "vscode-extension-tester";
+import { StatusBar, VSBrowser, Workbench } from "vscode-extension-tester";
 import { expect } from "chai";
 import { isScarbAvailable } from "../../test-support/scarb";
 import * as path from "path";
@@ -10,12 +10,25 @@ describe("Status bar", function () {
 
   before(async function () {
     const resourcePath = path.resolve(path.join("ui-test", "fixtures", "empty"));
+    const wb = new Workbench();
+    try {
+      const titleBefore = await wb.getTitleBar().getTitle();
+      console.log(`Title before openResources: ${titleBefore}`);
+    } catch (e) {
+      console.log(`Could not get title before: ${e}`);
+    }
     console.log(`Opening resources: ${resourcePath}`);
     try {
       await VSBrowser.instance.openResources(resourcePath);
       console.log("openResources completed");
     } catch (e) {
       console.log(`openResources error: ${e}`);
+    }
+    try {
+      const titleAfter = await wb.getTitleBar().getTitle();
+      console.log(`Title after openResources: ${titleAfter}`);
+    } catch (e) {
+      console.log(`Could not get title after: ${e}`);
     }
   });
 
