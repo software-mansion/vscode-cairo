@@ -61,7 +61,7 @@ describe("Toolchain info", function () {
       const textInput = await driver.wait(
         () =>
           driver
-            .findElements(By.css(".settings-editor .setting-item-control input[type='text']"))
+            .findElements(By.css(".settings-editor .setting-item-control input"))
             .then((els) => (els.length > 0 ? els[0] : false)),
         10000,
         "Scarb path text input did not appear",
