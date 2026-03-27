@@ -48,26 +48,34 @@ describe("Status bar", function () {
       );
       expect(statusBar).not.to.be.false;
     } else {
+      // LS may or may not have started; accept both "Cairo Language" (basic) and
+      // "Cairo Language Server X.Y.Z (path)" (LS loaded).
+      const noScarbPattern = /^Cairo, Cairo Language[^\n]*\n---\nServer&nbsp;status:&nbsp;OK$/;
+      let lastTitle = "";
       const statusBar = await VSBrowser.instance.driver.wait(
         async () => {
           const item = await getStatusBarItem();
           if (!item) {
             console.log("No Cairo status bar item found yet (no scarb)");
+            return false;
           }
-          return item;
+          try {
+            const title = await item.getAttribute(titleAttr);
+            if (title !== lastTitle) {
+              console.log(`Status bar title (no scarb, attr=${titleAttr}): ${JSON.stringify(title)}`);
+              lastTitle = title;
+            }
+            return noScarbPattern.test(title) ? item : false;
+          } catch (e) {
+            console.log(`Error reading title: ${e}`);
+            return false;
+          }
         },
         60000,
-        "failed to obtain Cairo status bar",
+        "failed to obtain Cairo status bar with expected title",
         500,
       );
-      expect(statusBar).not.undefined;
-
-      // `new StatusBar().getItem("Cairo")` is broken and searches not only in title.
-      const title = await statusBar!.getAttribute(titleAttr);
-      console.log(`Status bar title (no scarb, attr=${titleAttr}): ${JSON.stringify(title)}`);
-      // LS may or may not have started; accept both "Cairo Language" (basic) and
-      // "Cairo Language Server X.Y.Z (path)" (LS loaded).
-      expect(title).to.match(/^Cairo, Cairo Language[^\n]*\n---\nServer&nbsp;status:&nbsp;OK$/);
+      expect(statusBar).not.to.be.false;
     }
   });
 
