@@ -28,7 +28,6 @@ export class StatusBar {
   private status: ServerStatus;
   private isMainStatusLoading: boolean;
   private isProcMacroStatusLoading = false;
-  private tooltipInitialized = false;
 
   constructor(private readonly context: Context) {
     this.statusBarItem = vscode.window.createStatusBarItem(vscode.StatusBarAlignment.Left);
@@ -75,10 +74,7 @@ export class StatusBar {
           }
           case ANALYSIS_FINISH_EVENT: {
             this.stopSpinningStatusBar();
-            if (!this.tooltipInitialized) {
-              this.tooltipInitialized = true;
-              void this.update();
-            }
+            void this.update();
             break;
           }
           case MACRO_BUILD_START_EVENT: {
