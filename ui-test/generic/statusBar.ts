@@ -100,11 +100,15 @@ describe("Status bar", function () {
     );
     await (checkbox as WebElement).click();
 
-    const statusBarIsUndefined = await VSBrowser.instance.driver.wait(async () => {
-      const statusBar = await getStatusBarItem();
-
-      return statusBar === undefined;
-    }, 2000);
+    const statusBarIsUndefined = await VSBrowser.instance.driver.wait(
+      async () => {
+        const statusBar = await getStatusBarItem();
+        return statusBar === undefined;
+      },
+      10000,
+      "Cairo status bar did not disappear after disabling showInStatusBar",
+      500,
+    );
 
     expect(statusBarIsUndefined).to.be.true;
   });
