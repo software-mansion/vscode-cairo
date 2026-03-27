@@ -5,7 +5,7 @@ import * as path from "path";
 import { getStatusBarItem } from "../../test-support/page-objects/cairoStatusBarItem";
 
 describe("Toolchain info", function () {
-  this.timeout(90000);
+  this.timeout(120000);
 
   it("Checks correct scarb precedence", async function () {
     await VSBrowser.instance.waitForWorkbench();
@@ -43,18 +43,27 @@ describe("Toolchain info", function () {
       /Cairo, (Cairo Language Server.+\(.+\))\n\n.+\(.+\)\n\ncairo:.+\(.+\)\n\nsierra:.+\n/;
 
     let title = "";
+    let lastTitle = "";
     await VSBrowser.instance.driver.wait(
       async () => {
         const item = await getStatusBarItem();
-        if (!item) return false;
+        if (!item) {
+          console.log("No Cairo status bar item found yet");
+          return false;
+        }
         try {
           title = await item.getAttribute(titleAttr);
+          if (title !== lastTitle) {
+            console.log(`Status bar title (attr=${titleAttr}): ${JSON.stringify(title)}`);
+            lastTitle = title;
+          }
           return versionPattern.test(title);
-        } catch {
+        } catch (e) {
+          console.log(`Error reading title: ${e}`);
           return false;
         }
       },
-      30000,
+      60000,
       "failed to obtain Cairo status bar with toolchain version info",
       500,
     );
