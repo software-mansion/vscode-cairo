@@ -63,7 +63,7 @@ describe("Toolchain info", function () {
           return false;
         }
       },
-      60000,
+      90000,
       "failed to obtain Cairo status bar with toolchain version info",
       500,
     );

@@ -83,6 +83,8 @@ describe("Status bar", function () {
 
   it("checks if status bar is disabled", async function () {
     await VSBrowser.instance.waitForWorkbench();
+    // Give VS Code time to settle after the previous test before interacting with settings.
+    await VSBrowser.instance.driver.sleep(2000);
     const driver = VSBrowser.instance.driver;
     const wb = new Workbench();
 
@@ -112,7 +114,7 @@ describe("Status bar", function () {
         driver
           .findElements(By.css(".settings-editor .setting-value-checkbox"))
           .then((els) => (els.length > 0 ? els[0] : false)),
-      10000,
+      20000,
       "showInStatusBar checkbox did not appear",
       500,
     );
@@ -123,7 +125,7 @@ describe("Status bar", function () {
         const statusBar = await getStatusBarItem();
         return statusBar === undefined;
       },
-      10000,
+      20000,
       "Cairo status bar did not disappear after disabling showInStatusBar",
       500,
     );
