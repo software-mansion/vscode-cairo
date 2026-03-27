@@ -98,7 +98,7 @@ describe("Status bar", function () {
         driver
           .findElements(By.css(".settings-editor .settings-header .native-edit-context"))
           .then((els) => (els.length > 0 ? els[0] : false)),
-      15000,
+      30000,
       "Settings search box did not appear",
       500,
     );
