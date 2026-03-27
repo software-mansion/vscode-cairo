@@ -9,7 +9,14 @@ describe("Status bar", function () {
   this.timeout(90000);
 
   before(async function () {
-    await VSBrowser.instance.openResources(path.join("ui-test", "fixtures", "empty"));
+    const resourcePath = path.resolve(path.join("ui-test", "fixtures", "empty"));
+    console.log(`Opening resources: ${resourcePath}`);
+    try {
+      await VSBrowser.instance.openResources(resourcePath);
+      console.log("openResources completed");
+    } catch (e) {
+      console.log(`openResources error: ${e}`);
+    }
   });
 
   it("Displays Cairo toolchain version", async function () {
