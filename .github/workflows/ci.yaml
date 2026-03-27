@@ -107,6 +107,9 @@ jobs:
           echo "ASDF_SCARB_VERSION=2.10.1" >> $GITHUB_ENV
         if: ${{ matrix.from-asdf-local }}
 
+      - name: Pre-configure cairo1.scarbPath in test settings
+        if: ${{ matrix.from-config }}
+        run: printf '{"cairo1.scarbPath":"%s/.local/bin/scarb"}' "$HOME" > ui-test/settings.json
       - run: npm ci
       - run: npm run compile-test
       - run: xvfb-run --auto-servernum --server-args='-screen 0 1920x1080x24' npm run ui-test-scarb

@@ -1,10 +1,8 @@
-import { StatusBar, VSBrowser, Workbench } from "vscode-extension-tester";
-import { By, Key, WebElement } from "selenium-webdriver";
+import { StatusBar, VSBrowser } from "vscode-extension-tester";
 import { openFolder } from "../../test-support/page-objects/workspace";
 import { expect } from "chai";
 import * as path from "path";
 import { getStatusBarItem } from "../../test-support/page-objects/cairoStatusBarItem";
-import { homedir } from "os";
 
 describe("Toolchain info", function () {
   this.timeout(90000);
@@ -33,50 +31,8 @@ describe("Toolchain info", function () {
       this.skip();
     }
 
-    if (process.env.CONFIG_SCARB_VERSION) {
-      const driver = VSBrowser.instance.driver;
-      const wb = new Workbench();
-
-      // Dismiss any open overlays.
-      await driver.actions().sendKeys(Key.ESCAPE).perform();
-      await driver.sleep(300);
-
-      await wb.executeCommand("Preferences: Open User Settings");
-
-      // Wait for the settings search box to appear.
-      const searchBox = await driver.wait(
-        () =>
-          driver
-            .findElements(By.css(".settings-editor .settings-header .native-edit-context"))
-            .then((els) => (els.length > 0 ? els[0] : false)),
-        15000,
-        "Settings search box did not appear",
-        500,
-      );
-
-      // Search for the Scarb path setting by ID.
-      await (searchBox as WebElement).sendKeys(Key.chord(Key.CONTROL, "a"), "cairo1.scarbPath");
-
-      // Wait for the text input and set the value, pressing Enter to commit.
-      const textInput = await driver.wait(
-        () =>
-          driver
-            .findElements(By.css(".settings-editor .setting-item-control input"))
-            .then((els) => (els.length > 0 ? els[0] : false)),
-        10000,
-        "Scarb path text input did not appear",
-        500,
-      );
-
-      await (textInput as WebElement).clear();
-      await (textInput as WebElement).sendKeys(
-        path.join(homedir(), ".local", "bin", "scarb"),
-        Key.ENTER,
-      );
-
-      await driver.sleep(500); // Wait for settings to save.
-      await wb.executeCommand("Cairo: Reload workspace");
-    }
+    // When CONFIG_SCARB_VERSION is set, the CI workflow pre-configures cairo1.scarbPath
+    // in ui-test/settings.json before starting VS Code, so no UI interaction is needed here.
 
     await openFolder(path.join("ui-test", "fixtures", "empty"));
 
