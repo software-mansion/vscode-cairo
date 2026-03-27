@@ -1,11 +1,13 @@
 import { StatusBar, VSBrowser, Workbench } from "vscode-extension-tester";
+import { openSettings } from "../../test-support/page-objects/settings";
+import { openFolder } from "../../test-support/page-objects/workspace";
 import { expect } from "chai";
 import * as path from "path";
 import { getStatusBarItem } from "../../test-support/page-objects/cairoStatusBarItem";
 import { homedir } from "os";
 
 describe("Toolchain info", function () {
-  this.timeout(50000);
+  this.timeout(90000);
 
   it("Checks correct scarb precedence", async function () {
     await VSBrowser.instance.waitForWorkbench();
@@ -34,7 +36,7 @@ describe("Toolchain info", function () {
     if (process.env.CONFIG_SCARB_VERSION) {
       const workbench = new Workbench();
 
-      const settings = await workbench.openSettings();
+      const settings = await openSettings();
 
       const setting = await settings.findSetting("Scarb Path", "Cairo1");
 
@@ -43,15 +45,30 @@ describe("Toolchain info", function () {
       await workbench.executeCommand("Cairo: Reload workspace");
     }
 
-    await VSBrowser.instance.waitForWorkbench();
-    await VSBrowser.instance.openResources(path.join("ui-test", "fixtures", "empty"));
+    await openFolder(path.join("ui-test", "fixtures", "empty"));
 
     await VSBrowser.instance.waitForWorkbench();
-    const statusBar = await VSBrowser.instance.driver.wait(getStatusBarItem, 15000);
 
-    expect(statusBar).to.not.be.undefined;
+    const titleAttr = StatusBar["locators"].StatusBar.itemTitle;
+    const versionPattern =
+      /Cairo, (Cairo Language Server.+\(.+\))\n\n.+\(.+\)\n\ncairo:.+\(.+\)\n\nsierra:.+\n/;
 
-    const title = await statusBar!.getAttribute(StatusBar["locators"].StatusBar.itemTitle);
+    let title = "";
+    await VSBrowser.instance.driver.wait(
+      async () => {
+        const item = await getStatusBarItem();
+        if (!item) return false;
+        try {
+          title = await item.getAttribute(titleAttr);
+          return versionPattern.test(title);
+        } catch {
+          return false;
+        }
+      },
+      30000,
+      "failed to obtain Cairo status bar with toolchain version info",
+      500,
+    );
 
     expect(title).to.match(
       /Cairo, (Cairo Language Server.+\(.+\))\n\n.+\(.+\)\n\ncairo:.+\(.+\)\n\nsierra:.+\n/,

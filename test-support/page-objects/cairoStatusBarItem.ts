@@ -3,10 +3,12 @@ import { StatusBar, WebElement } from "vscode-extension-tester";
 export async function getStatusBarItem(): Promise<WebElement | undefined> {
   const items = await new StatusBar().getItems();
 
+  const texts: string[] = [];
   for (const item of items) {
     try {
       // This can throw StaleElementReferenceError because item was destroyed before reading its text.
       const text = await item.getText();
+      texts.push(text);
 
       if (text.startsWith("Cairo")) {
         return item;
@@ -16,6 +18,10 @@ export async function getStatusBarItem(): Promise<WebElement | undefined> {
       // If this was cairo status bar we will simply return after loop.
       // Else it is not interesting for us anyway.
     }
+  }
+
+  if (texts.length > 0) {
+    console.log(`Status bar items (${texts.length}): ${JSON.stringify(texts.slice(0, 5))}`);
   }
 
   return undefined;
