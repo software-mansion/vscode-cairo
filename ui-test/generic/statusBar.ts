@@ -1,9 +1,9 @@
 import { InputBox, StatusBar, VSBrowser, Workbench } from "vscode-extension-tester";
+import { By, Key } from "selenium-webdriver";
 import { expect } from "chai";
 import { isScarbAvailable } from "../../test-support/scarb";
 import * as path from "path";
 import { getStatusBarItem } from "../../test-support/page-objects/cairoStatusBarItem";
-import { openSettings } from "../../test-support/page-objects/settings";
 
 describe("Status bar", function () {
   this.timeout(90000);
@@ -70,10 +70,40 @@ describe("Status bar", function () {
 
   it("checks if status bar is disabled", async function () {
     await VSBrowser.instance.waitForWorkbench();
-    const settings = await openSettings();
+    const driver = VSBrowser.instance.driver;
+    const wb = new Workbench();
 
-    const setting = await settings.findSetting("Show In Status Bar", "Cairo1");
-    await setting.setValue(false);
+    // Dismiss any open overlays before opening settings.
+    await driver.actions().sendKeys(Key.ESCAPE).perform();
+    await driver.sleep(300);
+
+    await wb.executeCommand("Preferences: Open User Settings");
+
+    // Wait for the settings search box to appear.
+    const searchBox = await driver.wait(
+      () =>
+        driver
+          .findElements(By.css(".settings-editor .settings-header .native-edit-context"))
+          .then((els) => (els.length > 0 ? els[0] : false)),
+      15000,
+      "Settings search box did not appear",
+      500,
+    );
+
+    // Search for the setting by ID.
+    await (searchBox as any).sendKeys(Key.chord(Key.CONTROL, "a"), "cairo1.showInStatusBar");
+
+    // Wait for and click the checkbox to disable the setting.
+    const checkbox = await driver.wait(
+      () =>
+        driver
+          .findElements(By.css(".settings-editor .setting-value-checkbox"))
+          .then((els) => (els.length > 0 ? els[0] : false)),
+      10000,
+      "showInStatusBar checkbox did not appear",
+      500,
+    );
+    await (checkbox as any).click();
 
     const statusBarIsUndefined = await VSBrowser.instance.driver.wait(async () => {
       const statusBar = await getStatusBarItem();
