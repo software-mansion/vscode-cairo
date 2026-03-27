@@ -57,7 +57,9 @@ describe("Status bar", function () {
 
       // `new StatusBar().getItem("Cairo")` is broken and searches not only in title.
       const title = await statusBar!.getAttribute(titleAttr);
-      expect(title).to.be.eq("Cairo, Cairo Language\n---\nServer&nbsp;status:&nbsp;OK");
+      // LS may or may not have started; accept both "Cairo Language" (basic) and
+      // "Cairo Language Server X.Y.Z (path)" (LS loaded).
+      expect(title).to.match(/^Cairo, Cairo Language[^\n]*\n---\nServer&nbsp;status:&nbsp;OK$/);
     }
   });
 

@@ -1,5 +1,5 @@
 import { StatusBar, VSBrowser, Workbench } from "vscode-extension-tester";
-import { openSettings } from "../../test-support/page-objects/settings";
+import { By, Key, WebElement } from "selenium-webdriver";
 import { openFolder } from "../../test-support/page-objects/workspace";
 import { expect } from "chai";
 import * as path from "path";
@@ -34,15 +34,48 @@ describe("Toolchain info", function () {
     }
 
     if (process.env.CONFIG_SCARB_VERSION) {
-      const workbench = new Workbench();
+      const driver = VSBrowser.instance.driver;
+      const wb = new Workbench();
 
-      const settings = await openSettings();
+      // Dismiss any open overlays.
+      await driver.actions().sendKeys(Key.ESCAPE).perform();
+      await driver.sleep(300);
 
-      const setting = await settings.findSetting("Scarb Path", "Cairo1");
+      await wb.executeCommand("Preferences: Open User Settings");
 
-      await setting.setValue(path.join(homedir(), ".local", "bin", "scarb"));
+      // Wait for the settings search box to appear.
+      const searchBox = await driver.wait(
+        () =>
+          driver
+            .findElements(By.css(".settings-editor .settings-header .native-edit-context"))
+            .then((els) => (els.length > 0 ? els[0] : false)),
+        15000,
+        "Settings search box did not appear",
+        500,
+      );
 
-      await workbench.executeCommand("Cairo: Reload workspace");
+      // Search for the Scarb path setting by ID.
+      await (searchBox as WebElement).sendKeys(Key.chord(Key.CONTROL, "a"), "cairo1.scarbPath");
+
+      // Wait for the text input and set the value, pressing Enter to commit.
+      const textInput = await driver.wait(
+        () =>
+          driver
+            .findElements(By.css(".settings-editor .setting-item-control input[type='text']"))
+            .then((els) => (els.length > 0 ? els[0] : false)),
+        10000,
+        "Scarb path text input did not appear",
+        500,
+      );
+
+      await (textInput as WebElement).clear();
+      await (textInput as WebElement).sendKeys(
+        path.join(homedir(), ".local", "bin", "scarb"),
+        Key.ENTER,
+      );
+
+      await driver.sleep(500); // Wait for settings to save.
+      await wb.executeCommand("Cairo: Reload workspace");
     }
 
     await openFolder(path.join("ui-test", "fixtures", "empty"));
