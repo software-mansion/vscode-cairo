@@ -1,4 +1,4 @@
-import { StatusBar, VSBrowser } from "vscode-extension-tester";
+import { InputBox, StatusBar, VSBrowser, Workbench } from "vscode-extension-tester";
 import { expect } from "chai";
 import { isScarbAvailable } from "../../test-support/scarb";
 import * as path from "path";
@@ -10,24 +10,14 @@ describe("Status bar", function () {
 
   before(async function () {
     const resourcePath = path.resolve(path.join("ui-test", "fixtures", "empty"));
-    const driver = VSBrowser.instance.driver;
-    const handlesBefore = await driver.getAllWindowHandles();
-    console.log(`Window handles before: ${handlesBefore.length}`);
-    console.log(`Opening resources: ${resourcePath}`);
-    try {
-      await VSBrowser.instance.openResources(resourcePath);
-      console.log("openResources completed");
-    } catch (e) {
-      console.log(`openResources error: ${e}`);
-    }
-    const handlesAfter = await driver.getAllWindowHandles();
-    console.log(`Window handles after: ${handlesAfter.length}`);
-    if (handlesAfter.length > handlesBefore.length) {
-      // Switch to the new window (which might have the workspace)
-      const newHandle = handlesAfter.find((h: string) => !handlesBefore.includes(h))!;
-      await driver.switchTo().window(newHandle);
-      console.log("Switched to new window");
-    }
+    const wb = new Workbench();
+
+    // openResources() uses `code -r` which doesn't work when VS Code runs under ChromeDriver.
+    // Instead, use VS Code's built-in "Add Root Folder" command which goes through the UI.
+    await wb.executeCommand("workbench.action.addRootFolder");
+    const inputBox = await InputBox.create();
+    await inputBox.setText(resourcePath);
+    await inputBox.confirm();
   });
 
   it("Displays Cairo toolchain version", async function () {
