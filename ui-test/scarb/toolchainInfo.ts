@@ -5,7 +5,7 @@ import * as path from "path";
 import { getStatusBarItem } from "../../test-support/page-objects/cairoStatusBarItem";
 
 describe("Toolchain info", function () {
-  this.timeout(200000);
+  this.timeout(240000);
 
   it("Checks correct scarb precedence", async function () {
     await VSBrowser.instance.waitForWorkbench();
@@ -63,7 +63,7 @@ describe("Toolchain info", function () {
           return false;
         }
       },
-      120000,
+      150000,
       "failed to obtain Cairo status bar with toolchain version info",
       500,
     );

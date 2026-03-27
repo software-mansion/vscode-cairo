@@ -142,7 +142,7 @@ export class StatusBar {
     try {
       const request = this.client.sendRequest(toolchainInfo);
 
-      const response = await timeout(request, 1000);
+      const response = await timeout(request, 3000);
 
       tooltip.value = `Cairo Language Server ${response.ls.version} (${response.ls.path})`;
 
