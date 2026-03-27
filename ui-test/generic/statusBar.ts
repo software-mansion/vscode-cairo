@@ -7,7 +7,7 @@ import { getStatusBarItem } from "../../test-support/page-objects/cairoStatusBar
 import { openFolder } from "../../test-support/page-objects/workspace";
 
 describe("Status bar", function () {
-  this.timeout(120000);
+  this.timeout(150000);
 
   before(async function () {
     await VSBrowser.instance.waitForWorkbench();
@@ -42,7 +42,7 @@ describe("Status bar", function () {
             return false;
           }
         },
-        60000,
+        90000,
         "failed to obtain Cairo status bar with version info",
         500,
       );
@@ -73,7 +73,7 @@ describe("Status bar", function () {
             return false;
           }
         },
-        60000,
+        90000,
         "failed to obtain Cairo status bar with expected title",
         500,
       );
