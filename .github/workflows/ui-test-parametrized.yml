@@ -1,11 +1,16 @@
 on:
   workflow_call: # This makes it callable from other workflows
+    inputs:
+      scarb_versions:
+        required: true
+        type: string
+        description: "JSON array of SCARB versions (e.g., ['latest', 'disabled', '2.8.5'])"
 jobs:
   test-ui-parametrized:
     name: test ui
     strategy:
       matrix:
-        scarb: ["latest"]
+        scarb: ${{ fromJson(inputs.scarb_versions) }}
         os: [ubuntu-24.04]
     runs-on: ${{ matrix.os }}
     steps:
@@ -28,9 +33,7 @@ jobs:
       - run: echo "SCARB_VERSION=${{ matrix.scarb }}" >> $GITHUB_ENV
         shell: bash
       - run: |
-          sudo apt update
-          sudo apt install -y xvfb libnspr4 libnss3 libatk1.0-0 libatk-bridge2.0-0 libgtk-3-0 libgbm1 libasound2t64
-      - run: |
+          sudo sysctl -w kernel.apparmor_restrict_unprivileged_userns=0
           xvfb-run --auto-servernum --server-args='-screen 0 1920x1080x24' npm run ui-test
         if: ${{ matrix.os == 'ubuntu-24.04'}}
       - run: npm run ui-test
