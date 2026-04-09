@@ -68,7 +68,7 @@
         "language": "cairo",
         "scopes": {
           "namespace": [
-            "entity.name.namespace.cairo"
+            "entity.name.module.cairo"
           ],
           "class": [
             "entity.name.type.cairo"
