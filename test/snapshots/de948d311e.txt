@@ -80,7 +80,7 @@ felt252              source.cairo meta.function.definition.cairo entity.name.typ
 >                    source.cairo meta.function.definition.cairo punctuation.brackets.angle.cairo
 ␣                    source.cairo meta.function.definition.cairo
 {                    source.cairo meta.function.definition.cairo punctuation.brackets.curly.cairo
-gas                  source.cairo entity.name.namespace.cairo
+gas                  source.cairo entity.name.module.cairo
 ::                   source.cairo keyword.operator.namespace.cairo
 withdraw_gas         source.cairo meta.function.call.cairo entity.name.function.cairo
 (                    source.cairo meta.function.call.cairo punctuation.brackets.round.cairo
@@ -165,7 +165,7 @@ felt252              source.cairo meta.function.definition.cairo entity.name.typ
 )                    source.cairo meta.function.definition.cairo punctuation.brackets.round.cairo
 ␣                    source.cairo meta.function.definition.cairo
 {                    source.cairo meta.function.definition.cairo punctuation.brackets.curly.cairo
-gas                  source.cairo entity.name.namespace.cairo
+gas                  source.cairo entity.name.module.cairo
 ::                   source.cairo keyword.operator.namespace.cairo
 withdraw_gas         source.cairo meta.function.call.cairo entity.name.function.cairo
 (                    source.cairo meta.function.call.cairo punctuation.brackets.round.cairo

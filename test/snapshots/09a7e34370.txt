@@ -23,7 +23,7 @@ T                    source.cairo meta.function.definition.cairo entity.name.typ
 ref                  source.cairo meta.function.definition.cairo storage.modifier.cairo
 :                    source.cairo meta.function.definition.cairo keyword.operator.key-value.cairo
 ␣                    source.cairo meta.function.definition.cairo
-Ref                  source.cairo meta.function.definition.cairo entity.name.namespace.cairo
+Ref                  source.cairo meta.function.definition.cairo entity.name.module.cairo
 ::                   source.cairo meta.function.definition.cairo keyword.operator.namespace.cairo
 <                    source.cairo meta.function.definition.cairo punctuation.brackets.angle.cairo
 T                    source.cairo meta.function.definition.cairo entity.name.type.cairo
