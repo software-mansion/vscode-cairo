@@ -63,6 +63,71 @@
         "path": "./syntaxes/cairo.tmLanguage.json"
       }
     ],
+    "semanticTokenScopes": [
+      {
+        "language": "cairo",
+        "scopes": {
+          "namespace": [
+            "entity.name.namespace.cairo"
+          ],
+          "class": [
+            "entity.name.type.cairo"
+          ],
+          "enum": [
+            "entity.name.type.enum.cairo"
+          ],
+          "interface": [
+            "entity.name.type.trait.cairo"
+          ],
+          "struct": [
+            "entity.name.type.struct.cairo"
+          ],
+          "typeParameter": [
+            "entity.name.type.cairo"
+          ],
+          "type": [
+            "entity.name.type.cairo"
+          ],
+          "parameter": [
+            "variable.other.cairo"
+          ],
+          "variable": [
+            "variable.other.cairo"
+          ],
+          "property": [
+            "variable.other.cairo"
+          ],
+          "enumMember": [
+            "constant.other.caps.cairo"
+          ],
+          "function": [
+            "entity.name.function.cairo"
+          ],
+          "comment": [
+            "comment.line.double-slash.cairo"
+          ],
+          "keyword": [
+            "keyword.other.cairo",
+            "storage.type.cairo"
+          ],
+          "operator": [
+            "keyword.operator.cairo"
+          ],
+          "number": [
+            "constant.numeric.decimal.cairo"
+          ],
+          "string": [
+            "string.quoted.double.cairo"
+          ],
+          "decorator": [
+            "meta.attribute.cairo"
+          ],
+          "macro": [
+            "entity.name.function.macro.cairo"
+          ]
+        }
+      }
+    ],
     "snippets": [
       {
         "language": "cairo",
