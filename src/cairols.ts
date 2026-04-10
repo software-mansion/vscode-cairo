@@ -13,7 +13,7 @@ import {
 
 import { executablesEqual, getLSExecutables, LSExecutable } from "./lsExecutable";
 import assert from "node:assert";
-import { ExecuteInTerminal, ViewSyntaxTreeCapability } from "./capabilities";
+import { ExecuteInTerminal, LaunchDebugger, ViewSyntaxTreeCapability } from "./capabilities";
 
 function notifyScarbMissing(ctx: Context) {
   const message =
@@ -100,6 +100,23 @@ export async function setupLanguageServer(ctx: Context): Promise<SetupResult | u
 
   ctx.extension.subscriptions.push(
     client.onNotification(
+      new lc.NotificationType<{ command: string; cwd: string; testName: string }>(
+        "cairo/launchDebugger",
+      ),
+      ({ command, cwd, testName }) => {
+        vscode.debug.startDebugging(undefined, {
+          name: `${testName} debug`,
+          request: "launch",
+          type: "cairo",
+          program: command,
+          processCwd: cwd,
+        });
+      },
+    ),
+  );
+
+  ctx.extension.subscriptions.push(
+    client.onNotification(
       new lc.NotificationType<string>("cairo/corelib-version-mismatch"),
       // eslint-disable-next-line @typescript-eslint/no-misused-promises
       async (message) => {
@@ -133,6 +150,7 @@ export async function setupLanguageServer(ctx: Context): Promise<SetupResult | u
   );
 
   client.registerFeature(new ExecuteInTerminal());
+  client.registerFeature(new LaunchDebugger());
   client.registerFeature(new ViewSyntaxTreeCapability(client, ctx));
 
   await client.start();
