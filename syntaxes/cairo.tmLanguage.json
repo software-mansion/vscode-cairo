@@ -747,7 +747,7 @@
           "match": "(?<![A-Za-z0-9_])([A-Za-z0-9_]+)((?<!super)::)",
           "captures": {
             "1": {
-              "name": "entity.name.namespace.cairo"
+              "name": "entity.name.module.cairo"
             },
             "2": {
               "name": "keyword.operator.namespace.cairo"

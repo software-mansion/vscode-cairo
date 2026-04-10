@@ -69,7 +69,7 @@ submod               source.cairo entity.name.module.cairo
 ;                    source.cairo punctuation.semi.cairo
 use                  source.cairo meta.use.cairo keyword.other.cairo
 ␣                    source.cairo meta.use.cairo
-submod               source.cairo meta.use.cairo entity.name.namespace.cairo
+submod               source.cairo meta.use.cairo entity.name.module.cairo
 ::                   source.cairo meta.use.cairo keyword.operator.namespace.cairo
 something            source.cairo meta.use.cairo
 ;                    source.cairo meta.use.cairo punctuation.semi.cairo
@@ -422,9 +422,9 @@ VEmpty               source.cairo entity.name.type.cairo
 type                 source.cairo keyword.declaration.type.cairo storage.type.cairo
 Renamed              source.cairo entity.name.type.declaration.cairo
 =                    source.cairo keyword.operator.assignment.equal.cairo
-submod               source.cairo entity.name.namespace.cairo
+submod               source.cairo entity.name.module.cairo
 ::                   source.cairo keyword.operator.namespace.cairo
-inner                source.cairo entity.name.namespace.cairo
+inner                source.cairo entity.name.module.cairo
 ::                   source.cairo keyword.operator.namespace.cairo
 Other                source.cairo entity.name.type.cairo
 ;                    source.cairo punctuation.semi.cairo
@@ -436,7 +436,7 @@ T                    source.cairo entity.name.type.cairo
 =                    source.cairo keyword.operator.assignment.equal.cairo
 super                source.cairo variable.language.super.cairo
 ::                   source.cairo keyword.operator.namespace.cairo
-other                source.cairo entity.name.namespace.cairo
+other                source.cairo entity.name.module.cairo
 ::                   source.cairo keyword.operator.namespace.cairo
 OtherGeneric         source.cairo entity.name.type.cairo
 ::                   source.cairo keyword.operator.namespace.cairo

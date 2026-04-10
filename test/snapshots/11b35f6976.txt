@@ -4,7 +4,7 @@ use _::foo;
 //! > syntax
 use                  source.cairo meta.use.cairo keyword.other.cairo
 ␣                    source.cairo meta.use.cairo
-_                    source.cairo meta.use.cairo entity.name.namespace.cairo
+_                    source.cairo meta.use.cairo entity.name.module.cairo
 ::                   source.cairo meta.use.cairo keyword.operator.namespace.cairo
 foo                  source.cairo meta.use.cairo
 ;                    source.cairo meta.use.cairo punctuation.semi.cairo

@@ -9,7 +9,7 @@ foo                  source.cairo meta.function.definition.cairo entity.name.fun
 a                    source.cairo meta.function.definition.cairo variable.other.cairo
 :                    source.cairo meta.function.definition.cairo keyword.operator.key-value.cairo
 ␣                    source.cairo meta.function.definition.cairo
-Option               source.cairo meta.function.definition.cairo entity.name.namespace.cairo
+Option               source.cairo meta.function.definition.cairo entity.name.module.cairo
 ::                   source.cairo meta.function.definition.cairo keyword.operator.namespace.cairo
 <                    source.cairo meta.function.definition.cairo punctuation.brackets.angle.cairo
 felt252              source.cairo meta.function.definition.cairo entity.name.type.numeric.cairo

@@ -15,7 +15,7 @@ f                    source.cairo meta.function.definition.cairo entity.name.fun
 {                    source.cairo meta.function.definition.cairo punctuation.brackets.curly.cairo
 let                  source.cairo keyword.other.cairo storage.type.cairo
 ref                  source.cairo storage.modifier.cairo
-abc                  source.cairo entity.name.namespace.cairo
+abc                  source.cairo entity.name.module.cairo
 ::                   source.cairo keyword.operator.namespace.cairo
 def                  source.cairo variable.other.cairo
 =                    source.cairo keyword.operator.assignment.equal.cairo

@@ -18,7 +18,7 @@ attribute            source.cairo meta.attribute.cairo
 ]                    source.cairo meta.attribute.cairo punctuation.brackets.attribute.cairo
 use                  source.cairo meta.use.cairo keyword.other.cairo
 ␣                    source.cairo meta.use.cairo
-X                    source.cairo meta.use.cairo entity.name.namespace.cairo
+X                    source.cairo meta.use.cairo entity.name.module.cairo
 ::                   source.cairo meta.use.cairo keyword.operator.namespace.cairo
 *                    source.cairo meta.use.cairo keyword.operator.math.cairo
 ;                    source.cairo meta.use.cairo punctuation.semi.cairo

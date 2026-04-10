@@ -9,7 +9,7 @@ fn foo(a: int) -> felt252 {
 //! > syntax
 use                  source.cairo meta.use.cairo keyword.other.cairo
 ␣                    source.cairo meta.use.cairo
-std                  source.cairo meta.use.cairo entity.name.namespace.cairo
+std                  source.cairo meta.use.cairo entity.name.module.cairo
 ::                   source.cairo meta.use.cairo keyword.operator.namespace.cairo
 format               source.cairo meta.use.cairo
 ;                    source.cairo meta.use.cairo punctuation.semi.cairo

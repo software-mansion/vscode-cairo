@@ -10,7 +10,7 @@ S                    source.cairo meta.function.definition.cairo entity.name.typ
 ,                    source.cairo meta.function.definition.cairo punctuation.comma.cairo
 ␣                    source.cairo meta.function.definition.cairo
 +                    source.cairo meta.function.definition.cairo keyword.operator.math.cairo
-traits               source.cairo meta.function.definition.cairo entity.name.namespace.cairo
+traits               source.cairo meta.function.definition.cairo entity.name.module.cairo
 ::                   source.cairo meta.function.definition.cairo keyword.operator.namespace.cairo
 Into                 source.cairo meta.function.definition.cairo entity.name.type.cairo
 <                    source.cairo meta.function.definition.cairo punctuation.brackets.angle.cairo
@@ -25,7 +25,7 @@ TEvent               source.cairo meta.function.definition.cairo entity.name.typ
 ,                    source.cairo meta.function.definition.cairo punctuation.comma.cairo
 ␣                    source.cairo meta.function.definition.cairo
 -                    source.cairo meta.function.definition.cairo keyword.operator.math.cairo
-traits               source.cairo meta.function.definition.cairo entity.name.namespace.cairo
+traits               source.cairo meta.function.definition.cairo entity.name.module.cairo
 ::                   source.cairo meta.function.definition.cairo keyword.operator.namespace.cairo
 Into                 source.cairo meta.function.definition.cairo entity.name.type.cairo
 <                    source.cairo meta.function.definition.cairo punctuation.brackets.angle.cairo

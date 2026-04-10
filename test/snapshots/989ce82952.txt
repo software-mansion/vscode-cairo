@@ -13,7 +13,7 @@ foo                  source.cairo meta.function.definition.cairo entity.name.fun
 {                    source.cairo meta.function.definition.cairo punctuation.brackets.curly.cairo
 use                  source.cairo meta.use.cairo keyword.other.cairo
 ␣                    source.cairo meta.use.cairo
-X                    source.cairo meta.use.cairo entity.name.namespace.cairo
+X                    source.cairo meta.use.cairo entity.name.module.cairo
 ::                   source.cairo meta.use.cairo keyword.operator.namespace.cairo
 {                    source.cairo meta.use.cairo punctuation.brackets.curly.cairo
 A                    source.cairo meta.use.cairo entity.name.type.cairo
