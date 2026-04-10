@@ -144,7 +144,19 @@
               }
             }
           }
-        }
+        },
+        "configurationSnippets": [
+          {
+            "label": "Cairo: Snforge",
+            "body": {
+              "type": "cairo",
+              "request": "launch",
+              "name": "${1:<test name>} debug",
+              "program": "snforge test --launch-debugger --exact ${1:<test name>}",
+              "processCwd": "^\"\\${workspaceFolder}\""
+            }
+          }
+        ]
       }
     ],
     "menus": {
