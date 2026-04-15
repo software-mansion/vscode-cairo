@@ -3,22 +3,21 @@
 This extension provides support for the [Cairo programming language][cairo].
 Cairo is the first Turing-complete language for creating provable programs for general computation.
 
-**[Cairo Language Server](https://docs.swmansion.com/cairols/) is alpha-grade software.
-Things are moving rapidly.
-Expect bugs and crashes from time to time.**
-
 ## Features
 
-- code completion with imports insertion
-- automatic, incremental analysis
-- diagnostic reporting of build warnings and errors
-- go to definition
-- semantic syntax highlighting
-- documentation lookup on hover
-- function signature provider
-- code formatter
-- supports [Scarb], the Cairo package manager
-- can be configured to use [Dojo Engine]-specific tooling
+- Cairo Language Server support
+  - code completion with imports insertion
+  - automatic, incremental analysis
+  - diagnostic reporting of build warnings and errors
+  - go to definition
+  - semantic syntax highlighting
+  - documentation lookup on hover
+  - function signature provider
+  - code formatter
+  - supports [Scarb], the Cairo package manager
+  - works with [Dojo Engine]
+  - and more!
+- Cairo Debugger 🐛🐞 support
 
 ## Quick start
 
