@@ -279,14 +279,14 @@
           "cairo1.enableProcMacros": {
             "type": "boolean",
             "default": true,
-            "description": "Enable support for procedural macros. This feature is in active development and may not work flawlessly yet!",
+            "description": "Enable support for procedural macros.",
             "scope": "window",
             "order": 5
           },
           "cairo1.experimental.enableProcMacroCache": {
             "type": "boolean",
             "default": false,
-            "markdownDescription": "Enable on disk cache for procedural macros.\n\nThis feature is in active development and does not work flawlessly yet!\n\n**WARNING**: currently the cache is **never** invalidated. If **ANY** of your proc macro dependencies change - remove the `cairo-language-server/proc_macro.cache` file from your target.",
+            "markdownDescription": "Enable on disk cache for procedural macros.\n\n**INFO**: With Language Server version **>=2.15**, this option has no effect, as the Proc Macro Cache is no longer experimental and is **always enabled**.\n\n**WARNING**: If you are using any Language Server version **below 2.15.0** the cache is **NEVER** invalidated. If **ANY** of your proc macro dependencies change - remove the `cairo-language-server/proc_macro.cache` file from your target directory.",
             "scope": "window",
             "order": 6
           },
