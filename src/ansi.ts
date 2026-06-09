@@ -592,7 +592,11 @@ const ansiThemeColors: Record<NamedColor, vscode.ThemeColor | undefined> = {
   [NamedColor.BrightCyan]: new vscode.ThemeColor("terminal.ansiBrightCyan"),
 };
 
+function isNamedColor(color: Color): color is NamedColor {
+  return !!(color & ColorFlags.Named);
+}
+
 function convertColor(color: Color): vscode.ThemeColor | string | undefined {
-  if (color & ColorFlags.Named) return ansiThemeColors[color as NamedColor];
+  if (isNamedColor(color)) return ansiThemeColors[color];
   return "#" + color.toString(16).padStart(6, "0");
 }
