@@ -43,6 +43,11 @@ This extension can be configured through VS Code's configuration settings.
 All settings are under the `cairo1.*` section.
 Consult the settings UI in VS Code for more documentation.
 
+## Language Server Binary Discovery
+
+For details on how the extension locates the Cairo Language Server binary, see the
+[Language Server Binary Discovery][ls-binary-discovery] documentation.
+
 ## Support
 
 For questions or inquiries about Cairo, Cairo Language Server and this extension, reach out to us
@@ -105,3 +110,4 @@ If you have a problem that you think should be fixed, please follow the steps be
 [telegram]: https://t.me/cairo_ls_support
 [troubleshooting]: #troubleshooting
 [vscode-marketplace]: https://marketplace.visualstudio.com/items?itemName=starkware.cairo1
+[ls-binary-discovery]: https://docs.swmansion.com/cairols/docs/language-server-binary-discovery.html
