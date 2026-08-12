@@ -1,11 +1,16 @@
-import { StatusBar, VSBrowser, Workbench } from "vscode-extension-tester";
+import { VSBrowser } from "vscode-extension-tester";
 import { expect } from "chai";
 import * as path from "path";
-import { getStatusBarItem } from "../../test-support/page-objects/cairoStatusBarItem";
+import { getStatusBarItemTitle } from "../../test-support/page-objects/cairoStatusBarItem";
+import { findSetting } from "../../test-support/page-objects/settings";
+import { executeCommand } from "../../test-support/page-objects/workbench";
 import { homedir } from "os";
 
+const TITLE_PATTERN =
+  /Cairo, (Cairo Language Server.+\(.+\))\n\n.+\(.+\)\n\ncairo:.+\(.+\)\n\nsierra:.+\n/;
+
 describe("Toolchain info", function () {
-  this.timeout(50000);
+  this.timeout(120000);
 
   it("Checks correct scarb precedence", async function () {
     await VSBrowser.instance.waitForWorkbench();
@@ -32,46 +37,39 @@ describe("Toolchain info", function () {
     }
 
     if (process.env.CONFIG_SCARB_VERSION) {
-      const workbench = new Workbench();
-
-      const settings = await workbench.openSettings();
-
-      const setting = await settings.findSetting("Scarb Path", "Cairo1");
+      const setting = await findSetting("Scarb Path", "Cairo1");
 
       await setting.setValue(path.join(homedir(), ".local", "bin", "scarb"));
 
-      await workbench.executeCommand("Cairo: Reload workspace");
+      await executeCommand("Cairo: Reload workspace");
     }
 
     await VSBrowser.instance.waitForWorkbench();
     await VSBrowser.instance.openResources(path.join("ui-test", "fixtures", "empty"));
 
     await VSBrowser.instance.waitForWorkbench();
-    const statusBar = await VSBrowser.instance.driver.wait(getStatusBarItem, 15000);
 
-    expect(statusBar).to.not.be.undefined;
-
-    const title = await statusBar!.getAttribute(StatusBar["locators"].StatusBar.itemTitle);
-
-    expect(title).to.match(
-      /Cairo, (Cairo Language Server.+\(.+\))\n\n.+\(.+\)\n\ncairo:.+\(.+\)\n\nsierra:.+\n/,
+    // The title shows toolchain info only after the language server starts (and after
+    // the workspace reload takes effect), so poll until the expected version appears.
+    const title = await getStatusBarItemTitle(
+      (title) => extractScarbVersion(title) === expectedScarbVersion,
+      60000,
     );
 
-    const matches =
-      /Cairo, (?:Cairo Language Server.+\(.+\))\n\nscarb(.+)\(.+\)\n\ncairo:.+\(.+\)\n\nsierra:.+\n/.exec(
-        title,
-      );
-
-    expect(matches).to.not.be.undefined;
-    expect(matches).to.not.be.null;
-    expect(matches![1]).to.not.be.undefined;
-    expect(matches![1]).to.not.be.null;
-
-    const scarbVersion = matches![1]!.replaceAll("&nbsp;", "").replaceAll("\\", "");
-
-    expect(scarbVersion).to.be.eq(expectedScarbVersion);
+    expect(title).to.not.be.undefined;
+    expect(title!).to.match(TITLE_PATTERN);
+    expect(extractScarbVersion(title!)).to.be.eq(expectedScarbVersion);
   });
 });
+
+function extractScarbVersion(title: string): string | undefined {
+  const matches =
+    /Cairo, (?:Cairo Language Server.+\(.+\))\n\nscarb(.+)\(.+\)\n\ncairo:.+\(.+\)\n\nsierra:.+\n/.exec(
+      title,
+    );
+
+  return matches?.[1]?.replaceAll("&nbsp;", "").replaceAll("\\", "");
+}
 
 declare global {
   // eslint-disable-next-line @typescript-eslint/no-namespace
