@@ -1,5 +1,6 @@
 import { VSBrowser } from "vscode-extension-tester";
 import { expect } from "chai";
+import "../../test-support/chaiConfig";
 import { isScarbAvailable } from "../../test-support/scarb";
 import * as path from "path";
 import {
