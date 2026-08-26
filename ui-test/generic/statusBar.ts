@@ -1,11 +1,15 @@
-import { StatusBar, VSBrowser, Workbench } from "vscode-extension-tester";
+import { VSBrowser } from "vscode-extension-tester";
 import { expect } from "chai";
 import { isScarbAvailable } from "../../test-support/scarb";
 import * as path from "path";
-import { getStatusBarItem } from "../../test-support/page-objects/cairoStatusBarItem";
+import {
+  getStatusBarItem,
+  getStatusBarItemTitle,
+} from "../../test-support/page-objects/cairoStatusBarItem";
+import { findSetting } from "../../test-support/page-objects/settings";
 
 describe("Status bar", function () {
-  this.timeout(50000);
+  this.timeout(120000);
 
   before(async function () {
     await VSBrowser.instance.openResources(path.join("ui-test", "fixtures", "empty"));
@@ -13,40 +17,42 @@ describe("Status bar", function () {
 
   it("Displays Cairo toolchain version", async function () {
     await VSBrowser.instance.waitForWorkbench();
-    const statusBar = await VSBrowser.instance.driver.wait(
-      getStatusBarItem,
-      5000,
-      "failed to obtain Cairo status bar",
-      // Check every 0.5 second.
-      500,
-    );
-
-    expect(statusBar).not.undefined;
-
-    // `new StatusBar().getItem("Cairo")` is broken and searches not only in title.
-    const title = await statusBar!.getAttribute(StatusBar["locators"].StatusBar.itemTitle);
 
     if (isScarbAvailable) {
-      expect(title).to.match(
-        /Cairo, (Cairo Language Server.+\(.+\))\n\nscarb.+\(.+\)\n\ncairo:.+\(.+\)\n\nsierra:.+\n/,
-      );
+      const titlePattern =
+        /Cairo, (Cairo Language Server.+\(.+\))\n\nscarb.+\(.+\)\n\ncairo:.+\(.+\)\n\nsierra:.+\n/;
+
+      // The title shows toolchain info only after the language server starts,
+      // so poll until it appears instead of reading it once.
+      const title = await getStatusBarItemTitle((title) => titlePattern.test(title), 60000);
+
+      expect(title).to.not.be.undefined;
+      expect(title!).to.match(titlePattern);
     } else {
-      expect(title).to.be.eq("Cairo, Cairo Language\n---\nServer&nbsp;status:&nbsp;OK");
+      const expectedTitle = "Cairo, Cairo Language\n---\nServer&nbsp;status:&nbsp;OK";
+
+      const title = await getStatusBarItemTitle((title) => title === expectedTitle, 60000);
+
+      expect(title).to.be.eq(expectedTitle);
     }
   });
 
   it("checks if status bar is disabled", async function () {
     await VSBrowser.instance.waitForWorkbench();
-    const settings = await new Workbench().openSettings();
 
-    const setting = await settings.findSetting("Show In Status Bar", "Cairo1");
+    const setting = await findSetting("Show In Status Bar", "Cairo1");
+
     await setting.setValue(false);
 
-    const statusBarIsUndefined = await VSBrowser.instance.driver.wait(async () => {
-      const statusBar = await getStatusBarItem();
+    const statusBarIsUndefined = await VSBrowser.instance.driver.wait(
+      async () => {
+        const statusBar = await getStatusBarItem();
 
-      return statusBar === undefined;
-    }, 2000);
+        return statusBar === undefined;
+      },
+      10000,
+      "Cairo status bar item is still visible after disabling it",
+    );
 
     expect(statusBarIsUndefined).to.be.true;
   });
