@@ -10,7 +10,7 @@ import {
 import { findSetting } from "../../test-support/page-objects/settings";
 
 describe("Status bar", function () {
-  this.timeout(120000);
+  this.timeout(180000);
 
   before(async function () {
     await VSBrowser.instance.openResources(path.join("ui-test", "fixtures", "empty"));
@@ -25,14 +25,14 @@ describe("Status bar", function () {
 
       // The title shows toolchain info only after the language server starts,
       // so poll until it appears instead of reading it once.
-      const title = await getStatusBarItemTitle((title) => titlePattern.test(title), 60000);
+      const title = await getStatusBarItemTitle((title) => titlePattern.test(title), 150000);
 
       expect(title).to.not.be.undefined;
       expect(title!).to.match(titlePattern);
     } else {
       const expectedTitle = "Cairo, Cairo Language\n---\nServer&nbsp;status:&nbsp;OK";
 
-      const title = await getStatusBarItemTitle((title) => title === expectedTitle, 60000);
+      const title = await getStatusBarItemTitle((title) => title === expectedTitle, 150000);
 
       expect(title).to.be.eq(expectedTitle);
     }

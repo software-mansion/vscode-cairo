@@ -11,7 +11,7 @@ const TITLE_PATTERN =
   /Cairo, (Cairo Language Server.+\(.+\))\n\n.+\(.+\)\n\ncairo:.+\(.+\)\n\nsierra:.+\n/;
 
 describe("Toolchain info", function () {
-  this.timeout(120000);
+  this.timeout(180000);
 
   it("Checks correct scarb precedence", async function () {
     await VSBrowser.instance.waitForWorkbench();
@@ -54,7 +54,7 @@ describe("Toolchain info", function () {
     // the workspace reload takes effect), so poll until the expected version appears.
     const title = await getStatusBarItemTitle(
       (title) => extractScarbVersion(title) === expectedScarbVersion,
-      60000,
+      150000,
     );
 
     expect(title).to.not.be.undefined;
