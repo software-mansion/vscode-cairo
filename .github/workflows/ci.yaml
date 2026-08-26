@@ -110,6 +110,16 @@ jobs:
       - run: npm ci
       - run: npm run compile-test
       - run: xvfb-run --auto-servernum --server-args='-screen 0 1920x1080x24' npm run ui-test-scarb
+      - name: Upload test diagnostics
+        if: failure()
+        uses: actions/upload-artifact@v4
+        with:
+          name: ui-test-scarb-diagnostics-config_${{ matrix.from-config }}-path_${{ matrix.from-path }}-asdf_${{ matrix.from-asdf-local }}
+          path: |
+            /tmp/test-resources/screenshots
+            /tmp/test-resources/*.log
+            /tmp/test-resources/settings/logs
+          if-no-files-found: ignore
   test-ui-parametrized:
     needs:
       - setup-ui-test
