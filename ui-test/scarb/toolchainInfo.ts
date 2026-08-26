@@ -1,5 +1,6 @@
 import { VSBrowser } from "vscode-extension-tester";
 import { expect } from "chai";
+import "../../test-support/chaiConfig";
 import * as path from "path";
 import { getStatusBarItemTitle } from "../../test-support/page-objects/cairoStatusBarItem";
 import { findSetting } from "../../test-support/page-objects/settings";
