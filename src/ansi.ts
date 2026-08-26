@@ -593,6 +593,10 @@ const ansiThemeColors: Record<NamedColor, vscode.ThemeColor | undefined> = {
 };
 
 function convertColor(color: Color): vscode.ThemeColor | string | undefined {
+  // `Color` widens to `number`, so the assertion looks redundant to
+  // @typescript-eslint/no-unnecessary-type-assertion, but tsc still needs it to index
+  // `Record<NamedColor, _>` (TS7053).
+  // eslint-disable-next-line @typescript-eslint/no-unnecessary-type-assertion
   if (color & ColorFlags.Named) return ansiThemeColors[color as NamedColor];
   return "#" + color.toString(16).padStart(6, "0");
 }
