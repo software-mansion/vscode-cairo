@@ -1,6 +1,4 @@
 import * as vscode from "vscode";
-import { SemanticTokensFeature } from "vscode-languageclient/lib/common/semanticTokens";
-
 import * as lc from "vscode-languageclient/node";
 import { Context } from "./context";
 import { Scarb } from "./scarb";
@@ -67,8 +65,6 @@ export async function setupLanguageServer(ctx: Context): Promise<SetupResult | u
     serverOptions,
     clientOptions,
   );
-
-  client.registerFeature(new SemanticTokensFeature(client));
 
   registerVfsProvider(client, ctx);
   registerMacroExpandProvider(client, ctx);
