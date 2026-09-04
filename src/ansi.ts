@@ -563,7 +563,7 @@ class Parser {
   }
 }
 
-const ansiThemeColors: Record<NamedColor, vscode.ThemeColor | undefined> = {
+const ansiThemeColors: Partial<Record<number, vscode.ThemeColor>> = {
   [NamedColor.DefaultBackground]: undefined,
   [NamedColor.DefaultForeground]: undefined,
 
@@ -593,6 +593,6 @@ const ansiThemeColors: Record<NamedColor, vscode.ThemeColor | undefined> = {
 };
 
 function convertColor(color: Color): vscode.ThemeColor | string | undefined {
-  if (color & ColorFlags.Named) return ansiThemeColors[color as NamedColor];
+  if (color & ColorFlags.Named) return ansiThemeColors[color];
   return "#" + color.toString(16).padStart(6, "0");
 }

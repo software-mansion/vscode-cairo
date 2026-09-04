@@ -114,7 +114,6 @@ export async function setupLanguageServer(ctx: Context): Promise<SetupResult | u
   ctx.extension.subscriptions.push(
     client.onNotification(
       new lc.NotificationType<string>("cairo/corelib-version-mismatch"),
-      // eslint-disable-next-line @typescript-eslint/no-misused-promises
       async (message) => {
         await ctx.statusBar.setStatus({ health: "error", message });
 
