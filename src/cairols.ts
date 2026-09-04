@@ -1,6 +1,4 @@
 import * as vscode from "vscode";
-import { SemanticTokensFeature } from "vscode-languageclient/lib/common/semanticTokens";
-
 import * as lc from "vscode-languageclient/node";
 import { Context } from "./context";
 import { Scarb } from "./scarb";
@@ -68,8 +66,6 @@ export async function setupLanguageServer(ctx: Context): Promise<SetupResult | u
     clientOptions,
   );
 
-  client.registerFeature(new SemanticTokensFeature(client));
-
   registerVfsProvider(client, ctx);
   registerMacroExpandProvider(client, ctx);
   registeShowMemoryUsageProvider(client, ctx);
@@ -118,7 +114,6 @@ export async function setupLanguageServer(ctx: Context): Promise<SetupResult | u
   ctx.extension.subscriptions.push(
     client.onNotification(
       new lc.NotificationType<string>("cairo/corelib-version-mismatch"),
-      // eslint-disable-next-line @typescript-eslint/no-misused-promises
       async (message) => {
         await ctx.statusBar.setStatus({ health: "error", message });
 

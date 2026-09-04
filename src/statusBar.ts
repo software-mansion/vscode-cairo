@@ -18,9 +18,7 @@ const MACRO_BUILD_START_EVENT = "MacrosBuildingStarted";
 const MACRO_BUILD_FINISH_EVENT = "MacrosBuildingFinished";
 
 export type ServerStatus =
-  | { health: "ok" }
-  | { health: "warning"; message: string }
-  | { health: "error"; message: string };
+  { health: "ok" } | { health: "warning"; message: string } | { health: "error"; message: string };
 
 export class StatusBar {
   private readonly statusBarItem: vscode.StatusBarItem;
