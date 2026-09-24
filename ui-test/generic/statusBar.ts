@@ -20,8 +20,11 @@ describe("Status bar", function () {
     await VSBrowser.instance.waitForWorkbench();
 
     if (isScarbAvailable) {
+      // While the language server is analysing, the item text is `Cairo $(loading~spin)`,
+      // which appears in the title as `Cairo loading~spin`. Accept it, this test only
+      // checks the toolchain info in the tooltip.
       const titlePattern =
-        /Cairo, (Cairo Language Server.+\(.+\))\n\nscarb.+\(.+\)\n\ncairo:.+\(.+\)\n\nsierra:.+\n/;
+        /Cairo(?: loading~spin)?, (Cairo Language Server.+\(.+\))\n\nscarb.+\(.+\)\n\ncairo:.+\(.+\)\n\nsierra:.+\n/;
 
       // The title shows toolchain info only after the language server starts,
       // so poll until it appears instead of reading it once.
