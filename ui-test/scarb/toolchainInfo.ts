@@ -8,10 +8,10 @@ import { executeCommand } from "../../test-support/page-objects/workbench";
 import { homedir } from "os";
 
 // While the language server is analysing, the item text is `Cairo $(loading~spin)`,
-// which appears in the title as `Cairo loading~spin`. Accept it, this test only
+// which appears in the title as `Cairo  loading~spin`. Accept it, this test only
 // checks the toolchain info in the tooltip.
 const TITLE_PATTERN =
-  /Cairo(?: loading~spin)?, (Cairo Language Server.+\(.+\))\n\n.+\(.+\)\n\ncairo:.+\(.+\)\n\nsierra:.+\n/;
+  /Cairo(?:\s+loading~spin)?, (Cairo Language Server.+\(.+\))\n\n.+\(.+\)\n\ncairo:.+\(.+\)\n\nsierra:.+\n/;
 
 describe("Toolchain info", function () {
   this.timeout(180000);
@@ -68,7 +68,7 @@ describe("Toolchain info", function () {
 
 function extractScarbVersion(title: string): string | undefined {
   const matches =
-    /Cairo(?: loading~spin)?, (?:Cairo Language Server.+\(.+\))\n\nscarb(.+)\(.+\)\n\ncairo:.+\(.+\)\n\nsierra:.+\n/.exec(
+    /Cairo(?:\s+loading~spin)?, (?:Cairo Language Server.+\(.+\))\n\nscarb(.+)\(.+\)\n\ncairo:.+\(.+\)\n\nsierra:.+\n/.exec(
       title,
     );
 
