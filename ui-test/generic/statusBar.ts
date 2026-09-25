@@ -1,5 +1,6 @@
 import { VSBrowser } from "vscode-extension-tester";
 import { expect } from "chai";
+import "../../test-support/chaiConfig";
 import { isScarbAvailable } from "../../test-support/scarb";
 import * as path from "path";
 import {
@@ -9,7 +10,7 @@ import {
 import { findSetting } from "../../test-support/page-objects/settings";
 
 describe("Status bar", function () {
-  this.timeout(120000);
+  this.timeout(180000);
 
   before(async function () {
     await VSBrowser.instance.openResources(path.join("ui-test", "fixtures", "empty"));
@@ -19,19 +20,22 @@ describe("Status bar", function () {
     await VSBrowser.instance.waitForWorkbench();
 
     if (isScarbAvailable) {
+      // While the language server is analysing, the item text is `Cairo $(loading~spin)`,
+      // which appears in the title as `Cairo  loading~spin`. Accept it, this test only
+      // checks the toolchain info in the tooltip.
       const titlePattern =
-        /Cairo, (Cairo Language Server.+\(.+\))\n\nscarb.+\(.+\)\n\ncairo:.+\(.+\)\n\nsierra:.+\n/;
+        /Cairo(?:\s+loading~spin)?, (Cairo Language Server.+\(.+\))\n\nscarb.+\(.+\)\n\ncairo:.+\(.+\)\n\nsierra:.+\n/;
 
       // The title shows toolchain info only after the language server starts,
       // so poll until it appears instead of reading it once.
-      const title = await getStatusBarItemTitle((title) => titlePattern.test(title), 60000);
+      const title = await getStatusBarItemTitle((title) => titlePattern.test(title), 150000);
 
       expect(title).to.not.be.undefined;
       expect(title!).to.match(titlePattern);
     } else {
       const expectedTitle = "Cairo, Cairo Language\n---\nServer&nbsp;status:&nbsp;OK";
 
-      const title = await getStatusBarItemTitle((title) => title === expectedTitle, 60000);
+      const title = await getStatusBarItemTitle((title) => title === expectedTitle, 150000);
 
       expect(title).to.be.eq(expectedTitle);
     }

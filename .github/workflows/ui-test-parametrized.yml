@@ -38,3 +38,13 @@ jobs:
         if: ${{ matrix.os == 'ubuntu-24.04'}}
       - run: npm run ui-test
         if: ${{ matrix.os != 'ubuntu-24.04'}}
+      - name: Upload test diagnostics
+        if: failure()
+        uses: actions/upload-artifact@v4
+        with:
+          name: ui-test-diagnostics-scarb_${{ matrix.scarb }}-${{ matrix.os }}
+          path: |
+            /tmp/test-resources/screenshots
+            /tmp/test-resources/*.log
+            /tmp/test-resources/settings/logs
+          if-no-files-found: ignore

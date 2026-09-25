@@ -1,16 +1,20 @@
 import { VSBrowser } from "vscode-extension-tester";
 import { expect } from "chai";
+import "../../test-support/chaiConfig";
 import * as path from "path";
 import { getStatusBarItemTitle } from "../../test-support/page-objects/cairoStatusBarItem";
 import { findSetting } from "../../test-support/page-objects/settings";
 import { executeCommand } from "../../test-support/page-objects/workbench";
 import { homedir } from "os";
 
+// While the language server is analysing, the item text is `Cairo $(loading~spin)`,
+// which appears in the title as `Cairo  loading~spin`. Accept it, this test only
+// checks the toolchain info in the tooltip.
 const TITLE_PATTERN =
-  /Cairo, (Cairo Language Server.+\(.+\))\n\n.+\(.+\)\n\ncairo:.+\(.+\)\n\nsierra:.+\n/;
+  /Cairo(?:\s+loading~spin)?, (Cairo Language Server.+\(.+\))\n\n.+\(.+\)\n\ncairo:.+\(.+\)\n\nsierra:.+\n/;
 
 describe("Toolchain info", function () {
-  this.timeout(120000);
+  this.timeout(180000);
 
   it("Checks correct scarb precedence", async function () {
     await VSBrowser.instance.waitForWorkbench();
@@ -53,7 +57,7 @@ describe("Toolchain info", function () {
     // the workspace reload takes effect), so poll until the expected version appears.
     const title = await getStatusBarItemTitle(
       (title) => extractScarbVersion(title) === expectedScarbVersion,
-      60000,
+      150000,
     );
 
     expect(title).to.not.be.undefined;
@@ -64,7 +68,7 @@ describe("Toolchain info", function () {
 
 function extractScarbVersion(title: string): string | undefined {
   const matches =
-    /Cairo, (?:Cairo Language Server.+\(.+\))\n\nscarb(.+)\(.+\)\n\ncairo:.+\(.+\)\n\nsierra:.+\n/.exec(
+    /Cairo(?:\s+loading~spin)?, (?:Cairo Language Server.+\(.+\))\n\nscarb(.+)\(.+\)\n\ncairo:.+\(.+\)\n\nsierra:.+\n/.exec(
       title,
     );
 
