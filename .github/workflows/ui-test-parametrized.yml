@@ -40,7 +40,7 @@ jobs:
         if: ${{ matrix.os != 'ubuntu-24.04'}}
       - name: Upload test diagnostics
         if: failure()
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v7
         with:
           name: ui-test-diagnostics-scarb_${{ matrix.scarb }}-${{ matrix.os }}
           path: |

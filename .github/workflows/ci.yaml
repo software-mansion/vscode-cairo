@@ -112,7 +112,7 @@ jobs:
       - run: xvfb-run --auto-servernum --server-args='-screen 0 1920x1080x24' npm run ui-test-scarb
       - name: Upload test diagnostics
         if: failure()
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v7
         with:
           name: ui-test-scarb-diagnostics-config_${{ matrix.from-config }}-path_${{ matrix.from-path }}-asdf_${{ matrix.from-asdf-local }}
           path: |
