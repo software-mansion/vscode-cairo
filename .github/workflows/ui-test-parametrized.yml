@@ -15,16 +15,16 @@ jobs:
     runs-on: ${{ matrix.os }}
     steps:
       - name: Restore Test Resources Cache
-        uses: actions/cache/restore@v6
+        uses: actions/cache/restore@v6.1.0
         with:
           path: /tmp/test-resources
           key: test-resources-${{ github.sha }}
-      - uses: actions/checkout@v7
-      - uses: actions/setup-node@v7
+      - uses: actions/checkout@v7.0.1
+      - uses: actions/setup-node@v7.1.0
         with:
           node-version: "20.x"
           cache: npm
-      - uses: software-mansion/setup-scarb@v1
+      - uses: software-mansion/setup-scarb@v1.6.2
         if: ${{ matrix.scarb != 'disabled' }}
         with:
           scarb-version: ${{ matrix.scarb }}
@@ -40,7 +40,7 @@ jobs:
         if: ${{ matrix.os != 'ubuntu-24.04'}}
       - name: Upload test diagnostics
         if: failure()
-        uses: actions/upload-artifact@v7
+        uses: actions/upload-artifact@v7.0.2
         with:
           name: ui-test-diagnostics-scarb_${{ matrix.scarb }}-${{ matrix.os }}
           path: |
